@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accoglienza Classi Prime | ITSCG Primo Levi Seregno</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js per Grafici -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- XLSX per esportazione Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Html2Pdf per scaricare relazioni e pergamene -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- SDK Firebase Compatibili per Web App -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        body, html {
+            font-family: 'Inter', sans-serif;
+            margin: 0; padding: 0; min-height: 100vh;
+            color: #1e293b; overflow-x: hidden;
+        }
+
+        /* Sfondo Animato */
+        .bg-bubbles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 50%, #dbeafe 100%);
+            overflow: hidden;
+        }
+        .bubble {
+            position: absolute; bottom: -150px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.18) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 50%;
+            animation: floatBubble infinite ease-in-out alternate;
+            box-shadow: inset 0 10px 20px rgba(255, 255, 255, 0.6), 0 15px 30px rgba(0, 0, 0, 0.02);
+        }
+        @keyframes floatBubble {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.8; }
+            50% { transform: translateY(-60vh) translateX(100px) rotate(180deg); opacity: 0.5; }
+            100% { transform: translateY(-125vh) translateX(-100px) rotate(360deg); opacity: 0.15; }
+        }
+        .bubble:nth-child(1) { width: 100px; height: 100px; left: 5%; animation-duration: 18s; }
+        .bubble:nth-child(2) { width: 180px; height: 180px; left: 22%; animation-duration: 28s; animation-delay: 2s; }
+        .bubble:nth-child(3) { width: 80px; height: 80px; left: 45%; animation-duration: 14s; animation-delay: 1s; }
+        .bubble:nth-child(4) { width: 150px; height: 150px; left: 65%; animation-duration: 24s; animation-delay: 4s; }
+        .bubble:nth-child(5) { width: 120px; height: 120px; left: 82%; animation-duration: 20s; animation-delay: 0s; }
+        .bubble:nth-child(6) { width: 220px; height: 220px; left: 12%; animation-duration: 32s; animation-delay: 6s; }
+
+        .btn-multicolor {
+            background: linear-gradient(45deg, #00f2fe, #4facfe, #00f2fe);
+            background-size: 200% 200%; animation: gradientShift 4s ease infinite;
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.4); color: white; border: 2px solid rgba(255,255,255,0.4);
+        }
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .view-section { display: none; }
+        .active-view { display: flex; flex-direction: column; }
+        .fade-in { animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Pergamena */
+        .pergamena-container {
+            font-family: 'Cinzel', serif; background: radial-gradient(circle, #fffdf2 0%, #f9f2d1 100%);
+            border: 14px double #b59410; box-shadow: 0 20px 50px rgba(0,0,0,0.22), inset 0 0 60px rgba(181, 148, 16, 0.18);
+            position: relative;
+        }
+        .print-avoid-break { page-break-inside: avoid; }
+
+        /* Tabella Excel */
+        .excel-table-container { max-width: 100%; overflow-x: auto; }
+        .excel-table { border-collapse: collapse; width: 100%; font-size: 13px; }
+        .excel-table th { background-color: #0f172a; color: #ffffff; font-weight: 700; text-align: left; padding: 10px 14px; border: 1px solid #334155; white-space: nowrap; }
+        .excel-table td { padding: 10px 14px; border: 1px solid #cbd5e1; white-space: nowrap; }
+        .excel-table tr:nth-child(even) { background-color: #f8fafc; }
+        .excel-table tr:hover { background-color: #f1f5f9; }
+    </style>
+</head>
+<body class="flex flex-col relative min-h-screen">
+
+    <!-- Sfondo -->
+    <div class="bg-bubbles">
+        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="bg-blue-950 text-white shadow-2xl z-20 relative border-b-4 border-amber-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-24 items-center">
+                <div class="flex items-center cursor-pointer" onclick="navigate('home')">
+                    <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mr-5 shadow-xl overflow-hidden border-2 border-amber-400">
+                        <img src="levi.png" alt="Logo Primo Levi" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" class="w-full h-full object-contain p-1">
+                        <span class="text-blue-950 font-black text-3xl hidden">Levi</span>
+                    </div>
+                    <div>
+                        <span class="font-black text-2xl tracking-wider uppercase text-amber-400">ITSCG Primo Levi</span>
+                        <span class="block text-xs text-blue-200 font-bold tracking-widest"><i class="fa-solid fa-map-location-dot text-amber-400 mr-1.5"></i> Via Briantina 68, 20831 Seregno (MB)</span>
+                    </div>
+                </div>
+                <div>
+                    <button onclick="navigate('teacher-login')" class="btn-multicolor px-7 py-3 rounded-full font-extrabold transition transform hover:scale-105 flex items-center text-xs tracking-wider uppercase">
+                        <i class="fa-solid fa-graduation-cap mr-2 text-base"></i> Area Riservata Docenti
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow relative z-10" id="main-content">
+        
+        <!-- VISTA HOME STUDENTE -->
+        <div id="view-home" class="view-section active-view max-w-4xl mx-auto px-4 py-8 fade-in">
+            <div class="bg-white/95 rounded-3xl shadow-2xl overflow-hidden border border-slate-100 backdrop-blur-md">
+                
+                <div class="bg-gradient-to-br from-blue-950 to-indigo-950 p-10 text-white relative overflow-hidden border-b-4 border-amber-500">
+                    <div class="absolute -right-10 -bottom-10 opacity-10">
+                        <i class="fa-solid fa-scroll text-[18rem]"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <div class="inline-flex items-center space-x-2 bg-amber-400/20 text-amber-300 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-4">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>Accoglienza Anno Scolastico 2026/2027</span>
+                        </div>
+                        <h1 class="text-4xl font-black tracking-tight mb-4 text-amber-400">Accoglienza Classi Prime</h1>
+                        <p class="text-lg text-slate-200 leading-relaxed text-justify">
+                            Vi chiediamo di compilare un questionario a risposta multipla, pensato per raccogliere informazioni utili sia a fini statistici interni alla scuola sia per conoscere meglio ciascuno di voi, in vista del vostro percorso nel primo anno della scuola secondaria di secondo grado. Le domande riguardano le vostre conoscenze personali, le abitudini di studio e le preferenze scolastiche. Non si tratta di una “verifica”, ma di uno strumento per aiutarci a comprendere meglio le vostre esigenze e a organizzare in modo più efficace le attività didattiche e i servizi della scuola. Vi invitiamo quindi a rispondere con attenzione e sincerità, scegliendo per ogni quesito la risposta che ritenete più adatta a voi. Vi auguriamo buon lavoro e vi ringraziamo per la collaborazione.
+                        </p>
+                        <p class="text-xs text-amber-300/90 font-bold mt-4 italic"><i class="fa-solid fa-circle-exclamation mr-1"></i> La compilazione richiede circa 10 minuti ed è strettamente obbligatoria in ogni sua parte ed ha carattere ufficiale.</p>
+                    </div>
+                </div>
+
+                <div class="p-10">
+                    <form id="student-login-form" class="space-y-6" onsubmit="startQuestionnaire(event)">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Nome Completo *</label>
+                                <input type="text" id="stud-nome" required placeholder="Inserisci il tuo nome" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition text-base font-semibold">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Cognome *</label>
+                                <input type="text" id="stud-cognome" required placeholder="Inserisci il tuo cognome" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition text-base font-semibold">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Indirizzo di Studio *</label>
+                                <select id="stud-indirizzo" required class="w-full px-5 py-3.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition text-base font-semibold cursor-pointer">
+                                    <option value="">Scegli il tuo indirizzo...</option>
+                                    <option value="CAT">Costruzione Ambiente e Territorio (CAT)</option>
+                                    <option value="RIM">Relazioni Internazionali per il Marketing (RIM)</option>
+                                    <option value="Logistica">Logistica</option>
+                                    <option value="Moda">Sistema Moda</option>
+                                    <option value="Liceo Scientifico OSA">Liceo Scientifico opzione Scienze Applicate</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Sezione *</label>
+                                <select id="stud-sezione" required class="w-full px-5 py-3.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition text-base font-semibold cursor-pointer">
+                                    <option value="">Seleziona...</option>
+                                    <option value="A">Sezione A</option><option value="B">Sezione B</option>
+                                    <option value="C">Sezione C</option><option value="D">Sezione D</option>
+                                    <option value="I">Sezione I</option><option value="L">Sezione L</option>
+                                    <option value="T">Sezione T</option><option value="V">Sezione V</option>
+                                    <option value="S">Sezione S</option><option value="P">Sezione P</option>
+                                    <option value="N">Sezione N</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Indirizzo Email *</label>
+                            <input type="email" id="stud-email" required placeholder="studente@esempio.it" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition text-base font-semibold">
+                            <span class="block text-xs text-slate-400 mt-2"><i class="fa-solid fa-shield-halved mr-1"></i> Riceverai la Pergamena Ufficiale in formato PDF su questa email.</span>
+                        </div>
+
+                        <div class="pt-6 flex justify-center">
+                            <button type="submit" class="bg-blue-800 hover:bg-blue-900 text-white px-12 py-4 rounded-full font-black text-lg shadow-xl transition-all transform hover:-translate-y-1 flex items-center">
+                                Accedi al Questionario <i class="fa-solid fa-arrow-right-to-bracket ml-3"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA QUESTIONARIO -->
+        <div id="view-questionnaire" class="view-section max-w-4xl mx-auto px-4 py-8 fade-in w-full">
+            <div class="bg-white/95 rounded-3xl shadow-2xl p-8 border border-slate-100 backdrop-blur-md">
+                
+                <div class="mb-8 bg-blue-50/50 p-6 rounded-2xl border border-blue-100 flex flex-col md:flex-row items-center justify-between shadow-inner">
+                    <div class="flex items-center mb-4 md:mb-0">
+                        <div class="w-14 h-14 bg-blue-600 rounded-2xl flex justify-center items-center text-white text-xl font-bold shadow-lg mr-5"><i class="fa-solid fa-user-graduate"></i></div>
+                        <div>
+                            <h2 class="text-xl font-black text-slate-800" id="display-student-name">Studente</h2>
+                            <p class="text-blue-700 font-bold text-sm mt-0.5"><i class="fa-solid fa-chalkboard-user mr-1"></i> Classe <span id="display-student-class" class="underline"></span> - <span id="display-student-address" class="text-xs uppercase font-extrabold bg-blue-100 px-2 py-0.5 rounded ml-1"></span></p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-black text-slate-500 uppercase tracking-widest block mb-1">Avanzamento</span>
+                        <div class="text-2xl font-black text-blue-700" id="progress-text">0%</div>
+                    </div>
+                </div>
+
+                <div class="w-full bg-slate-100 rounded-full h-3.5 mb-10 shadow-inner overflow-hidden border border-slate-200">
+                    <div class="bg-blue-600 h-full rounded-full transition-all duration-300 ease-out" id="progress-bar" style="width: 0%"></div>
+                </div>
+
+                <form id="questions-form" onsubmit="submitQuestionnaire(event)" class="space-y-10">
+                    <div id="questions-container" class="space-y-8"></div>
+                    <div class="pt-8 border-t-2 border-slate-100 flex justify-end">
+                        <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-14 py-4.5 rounded-full font-black text-lg shadow-lg transition transform hover:-translate-y-1 flex items-center" id="submit-btn-student">
+                            <i class="fa-solid fa-paper-plane mr-3"></i> Consegna Questionario Definitivo
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- VISTA PERGAMENA -->
+        <div id="view-certificate" class="view-section max-w-3xl mx-auto px-4 py-12 fade-in w-full">
+            <div class="pergamena-container p-12 rounded-lg text-center shadow-2xl relative overflow-hidden" id="certificate-print-area">
+                <div class="absolute top-4 left-4 opacity-40 text-amber-800 text-4xl"><i class="fa-solid fa-award"></i></div>
+                <div class="absolute top-4 right-4 opacity-40 text-amber-800 text-4xl"><i class="fa-solid fa-award"></i></div>
+                <div class="absolute right-10 bottom-10 w-32 h-32 opacity-90 select-none">
+                    <svg viewBox="0 0 100 100" class="w-full h-full text-amber-600 fill-current">
+                        <polygon points="50,5 61,35 95,35 68,57 79,90 50,70 21,90 32,57 5,35 39,35" stroke="#b59410" stroke-width="2" />
+                        <circle cx="50" cy="50" r="24" fill="#fff" stroke="#b59410" stroke-width="3" />
+                        <text x="50" y="55" font-size="11" font-family="'Cinzel'" text-anchor="middle" fill="#b59410" font-weight="900">LEVI</text>
+                    </svg>
+                </div>
+
+                <div class="flex justify-center mb-6">
+                    <img src="levi.png" alt="Logo" class="h-24 w-24 object-contain" onerror="this.src='https://via.placeholder.com/120?text=Primo+Levi';">
+                </div>
+
+                <div class="space-y-8">
+                    <p class="text-amber-800 font-extrabold tracking-widest text-sm uppercase">Istituto d'Istruzione Secondaria Superiore</p>
+                    <h1 class="text-5xl font-black text-amber-950 tracking-wide uppercase">ITSCG PRIMO LEVI</h1>
+                    <p class="text-slate-600 text-xs italic tracking-widest">- Via Briantina 68, Seregno (MB) -</p>
+                    
+                    <div class="py-6">
+                        <div class="w-24 h-0.5 bg-amber-600 mx-auto mb-6"></div>
+                        <h2 class="text-3xl font-bold text-slate-800 tracking-wider">ATTESTATO DI ACCOGLIENZA</h2>
+                        <p class="text-slate-500 text-sm mt-2 font-medium">Si certifica con stima e gioia che lo studente</p>
+                        <p class="text-4xl font-black text-blue-900 my-4 tracking-wide" id="cert-student-name">NOME COGNOME</p>
+                        <p class="text-slate-600 text-sm leading-relaxed max-w-lg mx-auto">ha completato con successo il percorso conoscitivo di ingresso per l'inserimento nelle classi prime d'istituto, per l'indirizzo di studi:</p>
+                        <p class="text-xl font-black text-amber-900 mt-2 uppercase tracking-wider" id="cert-student-address">INDIRIZZO</p>
+                        <p class="text-lg font-bold text-slate-700 mt-1">Classe <span id="cert-student-class" class="underline font-black">1A</span></p>
+                    </div>
+
+                    <div class="text-slate-600 text-xs leading-relaxed max-w-md mx-auto italic font-semibold">
+                        "La Commissione Accoglienza e Orientamento esprime i migliori auguri per un cammino scolastico ricco di scoperte, soddisfazioni personali e crescita civile all'interno della nostra comunità scolastica."
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-8 pt-10 text-xs text-slate-600 font-bold tracking-wider">
+                        <div><p class="border-b border-amber-600/50 pb-2 w-40 mx-auto">Seregno, MB</p><p class="mt-1 text-[10px]">LUOGO DI EMISSIONE</p></div>
+                        <div><p class="border-b border-amber-600/50 pb-2 w-48 mx-auto font-serif italic text-amber-800 text-sm">La Commissione Orientamento</p><p class="mt-1 text-[10px]">FIRMA AUTORIZZATA</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="printCertificate()" class="bg-amber-600 hover:bg-amber-700 text-white px-8 py-3 rounded-full font-black text-sm uppercase tracking-wider shadow-lg transition"><i class="fa-solid fa-print mr-2"></i> Stampa Subito</button>
+                <button onclick="navigate('home')" class="bg-slate-700 hover:bg-slate-800 text-white px-8 py-3 rounded-full font-black text-sm uppercase tracking-wider shadow-lg transition"><i class="fa-solid fa-house mr-2"></i> Torna alla Home</button>
+            </div>
+        </div>
+
+        <!-- LOGIN DOCENTI -->
+        <div id="view-teacher-login" class="view-section max-w-md mx-auto px-4 py-20 fade-in w-full">
+            <div class="bg-white/95 rounded-3xl shadow-2xl p-10 text-center backdrop-blur-md border border-white relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 to-indigo-600"></div>
+                <div class="w-24 h-24 bg-blue-50 rounded-full flex justify-center items-center mx-auto mb-6 shadow-inner">
+                    <i class="fa-solid fa-user-shield text-5xl text-blue-600"></i>
+                </div>
+                <h2 class="text-3xl font-black text-gray-800 mb-2">Area Riservata</h2>
+                <input type="password" id="teacher-pwd" placeholder="Inserisci Password" class="w-full px-5 py-4 text-center text-lg bg-gray-50 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition mb-6 shadow-sm mt-4">
+                <button onclick="loginTeacher()" class="w-full bg-blue-900 hover:bg-blue-800 text-white px-6 py-4 rounded-xl font-bold text-lg shadow-xl transition transform hover:-translate-y-1">Accedi al Cruscotto</button>
+            </div>
+        </div>
+
+        <!-- DASHBOARD DOCENTI -->
+        <div id="view-teacher-dashboard" class="view-section w-full max-w-7xl mx-auto px-4 py-8 fade-in h-auto min-h-screen">
+            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden backdrop-blur-md border border-gray-100 animate-slideup">
+                
+                <div class="bg-blue-900 text-white px-8 py-6 flex flex-col md:flex-row justify-between items-center relative overflow-hidden">
+                    <div class="absolute right-0 top-0 opacity-10"><i class="fa-solid fa-chart-line text-9xl"></i></div>
+                    <div class="z-10 mb-4 md:mb-0">
+                        <h1 class="text-3xl font-black tracking-tight"><i class="fa-solid fa-microchip text-blue-300 mr-3"></i> Report Analitico d'Istituto</h1>
+                        <p class="text-blue-200 mt-2 text-sm font-medium">Sincronizzazione Live con Database Firestore</p>
+                    </div>
+                    <div class="z-10 flex flex-wrap gap-4 items-center justify-center">
+                        <div class="bg-blue-800 rounded-xl px-5 py-2 flex items-center border border-blue-700 shadow-inner">
+                            <label class="text-blue-200 font-bold text-sm mr-3"><i class="fa-solid fa-filter"></i> Filtra Classe:</label>
+                            <select id="dash-class-filter" onchange="updateDashboard()" class="bg-transparent text-white font-bold text-lg outline-none cursor-pointer appearance-none text-center">
+                                <option value="ALL" class="text-gray-800">Tutto l'Istituto</option>
+                            </select>
+                        </div>
+                        <button onclick="logoutTeacher()" class="bg-red-500 hover:bg-red-600 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition"><i class="fa-solid fa-power-off"></i></button>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 border-b border-gray-200 px-8 py-4 flex flex-wrap gap-4 justify-between items-center">
+                    <div class="text-slate-500 text-xs font-bold uppercase tracking-wider">Stato Cloud: <span class="text-emerald-600 font-bold" id="db-status-count">Verifica connessione in corso...</span></div>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="openMailModal()" class="bg-amber-600 hover:bg-amber-700 text-white px-5 py-2.5 rounded-lg font-black shadow transition flex items-center text-xs uppercase tracking-wider"><i class="fa-solid fa-paper-plane mr-2"></i> Condividi al Coordinatore</button>
+                        <button onclick="exportToExcel()" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg font-black shadow transition flex items-center text-xs uppercase tracking-wider"><i class="fa-solid fa-file-excel mr-2"></i> Esporta Solo Excel</button>
+                        <button onclick="exportToPDF()" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-lg font-black shadow transition flex items-center text-xs uppercase tracking-wider"><i class="fa-solid fa-file-pdf mr-2"></i> Esporta PDF</button>
+                    </div>
+                </div>
+
+                <div id="report-to-print" class="p-8 bg-white">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10" id="kpi-container">
+                        <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100 shadow-sm text-center print-avoid-break">
+                            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl"><i class="fa-solid fa-users"></i></div>
+                            <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Campione Analizzato</p>
+                            <p class="text-4xl font-black text-gray-800" id="kpi-total">0</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100 shadow-sm text-center print-avoid-break">
+                            <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl"><i class="fa-solid fa-graduation-cap"></i></div>
+                            <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Indirizzo Prevalente</p>
+                            <p class="text-xl font-bold text-gray-800 truncate px-2" id="kpi-indirizzo">-</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100 shadow-sm text-center print-avoid-break">
+                            <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl"><i class="fa-solid fa-face-smile"></i></div>
+                            <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Clima Emotivo</p>
+                            <p class="text-xl font-bold text-gray-800" id="kpi-mood">-</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100 shadow-sm text-center print-avoid-break">
+                            <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl"><i class="fa-solid fa-book-open"></i></div>
+                            <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Stile Cognitivo</p>
+                            <p class="text-xl font-bold text-gray-800" id="kpi-auto">-</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-12 print-avoid-break bg-slate-50 border border-slate-200 rounded-3xl p-8 shadow-sm">
+                        <div class="flex items-center mb-6">
+                            <div class="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center mr-3 text-lg"><i class="fa-solid fa-map-location"></i></div>
+                            <h2 class="text-2xl font-black text-slate-800 tracking-tight">Analisi Geografica dell'Utenza d'Ingresso</h2>
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div>
+                                <h3 class="text-sm font-black text-slate-500 uppercase tracking-widest mb-4">Comuni rilevati</h3>
+                                <div id="municipality-breakdown-list" class="space-y-3 max-h-80 overflow-y-auto pr-2"></div>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl border border-slate-200 flex flex-col justify-between">
+                                <div>
+                                    <h4 class="text-xs font-black text-blue-800 uppercase tracking-widest mb-2">Indice di stress logistico stimato</h4>
+                                    <p class="text-slate-600 text-sm leading-relaxed mb-4 text-justify" id="transit-stress-analysis"></p>
+                                </div>
+                                <div class="bg-amber-50 rounded-xl p-4 border border-amber-200 mt-4">
+                                    <span class="text-xs font-black text-amber-800 uppercase tracking-wider block mb-1">Focus Logistico:</span>
+                                    <span class="text-sm font-bold text-slate-700" id="transit-percentage-alert">In attesa di dati...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-12 print-avoid-break">
+                        <h2 class="text-2xl font-black text-gray-800 border-b-4 border-blue-900 pb-2 mb-6 inline-block uppercase tracking-wider">Relazione Conclusiva e Linee Guida d'Istituto</h2>
+                        <div id="ai-analysis-text" class="bg-blue-50/50 p-8 rounded-2xl border border-blue-100 text-gray-800 leading-relaxed space-y-6 text-justify text-lg shadow-inner"></div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-2xl font-black text-gray-800 border-b-4 border-blue-900 pb-2 mb-8 inline-block uppercase tracking-wider">Analisi Dettagliata Sezioni Questionario</h2>
+                        <div id="dynamic-charts-container" class="space-y-12"></div>
+                    </div>
+
+                    <div class="mt-16 print-avoid-break border-t-4 border-slate-200 pt-10">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-emerald-600 text-white rounded-xl flex items-center justify-center mr-3 text-lg"><i class="fa-solid fa-file-spreadsheet"></i></div>
+                                <h2 class="text-2xl font-black text-slate-800 tracking-tight">Registro Risultati Individuali (Stile Excel)</h2>
+                            </div>
+                            <div class="text-slate-500 text-xs font-bold uppercase tracking-wider">Scorri orizzontalmente per visualizzare</div>
+                        </div>
+                        <div class="excel-table-container rounded-2xl border border-slate-200 shadow-inner">
+                            <table class="excel-table" id="excel-interactive-table">
+                                <thead id="excel-table-head"></thead>
+                                <tbody id="excel-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal Invio Mail -->
+    <div id="mail-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50 transition-opacity opacity-0">
+        <div class="bg-white rounded-3xl p-8 max-w-lg w-full mx-4 shadow-2xl transform scale-95 transition-transform" id="mail-modal-content">
+            <h3 class="text-2xl font-black text-gray-900 mb-2"><i class="fa-solid fa-paper-plane text-blue-600 mr-2"></i> Invia Relazione + File Excel</h3>
+            <p class="text-gray-500 text-sm mb-6 font-medium">Invia al coordinatore un'email contenente il report in testo e la tabella in allegato Excel.</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Email del Coordinatore *</label>
+                    <input type="email" id="coord-email" required placeholder="coordinatore@primoleviseregno.edu.it" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition text-base font-semibold">
+                </div>
+                <div>
+                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Oggetto *</label>
+                    <input type="text" id="coord-subject" required class="w-full px-5 py-3.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition text-base font-semibold">
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3 pt-6 border-t border-slate-100 mt-6">
+                <button onclick="closeMailModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-6 py-3 rounded-xl font-bold transition">Annulla</button>
+                <button onclick="sendCoordinatorMail()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-black shadow-lg transition" id="send-mail-btn">Invia Mail con Excel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Avviso Generico -->
+    <div id="modal-box" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-[100] transition-opacity opacity-0">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl transform scale-95 transition-transform" id="modal-content">
+            <h3 class="text-2xl font-black text-gray-800 mb-4" id="modal-title">Avviso</h3>
+            <div class="text-gray-600 mb-8 text-sm leading-relaxed font-medium" id="modal-message"></div>
+            <div class="flex justify-end">
+                <button onclick="closeModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-bold shadow-md transition">Ho Capito</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. ENDPOINT GOOGLE APPS SCRIPT ---
+        const GOOGLE_SCRIPT_COORDINATOR_URL = "https://script.google.com/macros/s/AKfycbyjb8YYqeqXKi_EX9O8YtsaDVMFffupEru3PqoGrCfGziFlAJtBtkIvXEwE2w6EFIQu/exec";
+        const GOOGLE_SCRIPT_STUDENT_URL = "https://script.google.com/macros/s/AKfycbxqN6aqwW2d5PpxZUibx2xq-vu8sxHgbWVqNpQISmcCBM6Cy5zb09kbSnBKRxTHXYyB/exec";
+
+        // --- 2. CONFIGURAZIONE FIREBASE ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyAKOJxQFdclHFx3AZfTTzr_Gq3izOXHSGY",
+            authDomain: "questionarioingresso.firebaseapp.com",
+            projectId: "questionarioingresso",
+            storageBucket: "questionarioingresso.firebasestorage.app",
+            messagingSenderId: "292368054008",
+            appId: "1:292368054008:web:26ca6406216ec3c9b5ad0d",
+            measurementId: "G-EQ6TEQ7RWG"
+        };
+
+        const actualConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : firebaseConfig;
+        const app = firebase.initializeApp(actualConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-levi-app';
+
+        let currentUser = null;
+        let localData = [];
+
+        // Setup rigoroso Firebase
+        async function initAuth() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await auth.signInWithCustomToken(__initial_auth_token);
+                } else {
+                    await auth.signInAnonymously();
+                }
+            } catch (err) {
+                console.error("Firebase Auth Error:", err);
+            }
+        }
+
+        auth.onAuthStateChanged((user) => {
+            currentUser = user;
+            if (user) {
+                document.getElementById('db-status-count').innerHTML = `<span class="text-emerald-600">Connesso e Sincronizzato <i class="fa-solid fa-cloud-check ml-1"></i></span>`;
+                startRealtimeSync();
+            } else {
+                initAuth();
+            }
+        });
+
+        initAuth();
+
+        function getQuestionnairesCollection() {
+            // Path obbligatorio di massima sicurezza per Firestore
+            return db.collection('artifacts').doc(appId).collection('public').doc('data').collection('questionnaires_2026');
+        }
+
+        function startRealtimeSync() {
+            if (!currentUser) return;
+            getQuestionnairesCollection().onSnapshot((snapshot) => {
+                localData = [];
+                snapshot.forEach(doc => { localData.push(doc.data()); });
+                if (document.getElementById('view-teacher-dashboard').classList.contains('active-view')) {
+                    updateDashboard();
+                }
+            }, (error) => {
+                console.error("Firestore Sync Error:", error);
+            });
+        }
+
+        // --- DATI DEL QUESTIONARIO (36 Domande complete ridotte a JSON compatto) ---
+        const questionsData = [
+            { id: 'q2', text: 'Da quale comune o scuola media provieni?', type: 'text', section: 'Anagrafica' },
+            { id: 'q4', text: 'Qual era il tuo voto di uscita dalle scuole medie?', type: 'radio', options: ['6', '7-8', '9-10'], section: 'Anagrafica' },
+            { id: 'q5', text: 'Come hai conosciuto l’Istituto Primo Levi?', type: 'radio', options: ['Parenti/amici', 'Ricerca on-line', 'Pubblicità', 'Docenti/scuola'], section: 'Orientamento' },
+            { id: 'q6', text: 'Quale è stato il consiglio orientativo?', type: 'radio', options: ['Tecnico', 'Professionale', 'Liceo'], section: 'Orientamento' },
+            { id: 'q7', text: 'Hai partecipato agli open day della scuola?', type: 'radio', options: ['Si, ad uno', 'Si, a più di uno', 'No, non ho trovato posto', 'No, non mi interessavano'], section: 'Orientamento' },
+            { id: 'q8', text: 'Hai partecipato allo stage organizzato in questa scuola?', type: 'radio', options: ['Si', 'No', 'Non mi interessavano'], section: 'Orientamento' },
+            { id: 'q9', text: 'Come hai trovato le presentazioni dei nostri indirizzi durante gli open day?', type: 'radio', options: ['Interessanti, chiare e comprensibili', 'Noiose e incomprensibili', 'Non saprei'], section: 'Orientamento' },
+            { id: 'q10', text: 'Cosa ti ha colpito in particolare dei nostri eventi?', type: 'text', section: 'Feedback' },
+            { id: 'q11', text: 'Cosa consigli di migliorare?', type: 'text', section: 'Feedback' },
+            { id: 'q12', text: 'Chi ha scelto l’indirizzo di studio che frequenti?', type: 'radio', options: ['Un insegnante', 'I miei genitori', 'Insieme ai genitori', 'Io stesso/a'], section: 'Motivazioni' },
+            { id: 'q13', text: 'Perché hai scelto questo indirizzo di studio?', type: 'radio', options: ['Perché consigliato', 'Opportunità lavorative', 'Passione', 'Vicino a casa', 'Mi è piaciuto l\'istituto', 'Ho seguito amici', 'Non accettato altrove'], section: 'Motivazioni' },
+            { id: 'q14', text: 'Qual è il tuo settore disciplinare preferito?', type: 'radio', options: ['Area linguistica', 'Area scientifica', 'Area umanistica', 'Area tecnico-pratica', 'Area artistico-espressiva'], section: 'Interessi' },
+            { id: 'q15', text: 'Come ti senti all’inizio di questa nuova esperienza?', type: 'radio', options: ['Entusiasta', 'Indifferente', 'Ansioso/a', 'Un po’ preoccupato/a'], section: 'Motivazioni' },
+            { id: 'q16', text: 'Quale valore ritieni più importante a scuola?', type: 'radio', options: ['Collaborazione', 'Rispetto', 'Creatività', 'Impegno'], section: 'Valori' },
+            { id: 'q17', text: 'Quale attività extrascolastica ti piacerebbe trovare?', type: 'radio', options: ['Laboratori scientifici', 'Attività sportive', 'Corsi di teatro', 'Corsi musicali', 'Niente', 'Altro'], section: 'Interessi' },
+            { id: 'q18', text: 'Ti piace leggere?', type: 'radio', options: ['Si', 'No'], section: 'Abitudini' },
+            { id: 'q19', text: 'Credi sia importante avere un diploma?', type: 'radio', options: ['Si', 'No', 'Non so'], section: 'Abitudini' },
+            { id: 'q20', text: 'Passi più tempo:', type: 'radio', options: ['Con genitori', 'Con nonni', 'Con amici', 'Da solo', 'Facendo sport'], section: 'Abitudini' },
+            { id: 'q21', text: 'Quante ore dedichi allo studio ogni giorno?', type: 'radio', options: ['Meno di 1 ora', '1-2 ore', '2-3 ore', 'Più di 3 ore'], section: 'Studio' },
+            { id: 'q22', text: 'Come valuti il tuo livello di autonomia nello studio?', type: 'radio', options: ['Molto autonomo/a', 'Abbastanza autonomo/a', 'Poco autonomo/a', 'Per niente autonomo/a'], section: 'Studio' },
+            { id: 'q23', text: 'Quale metodo di studio preferisci?', type: 'radio', options: ['Ripetizione ad alta voce', 'Studio di gruppo', 'Schemi e mappe', 'Altro'], section: 'Studio' },
+            { id: 'q24', text: 'Usi spesso il computer per studiare?', type: 'radio', options: ['Sì, sempre', 'Solo per alcune materie', 'Raramente', 'Mai'], section: 'Studio' },
+            { id: 'q25', text: 'Strumento digitale che usi di più per studiare?', type: 'radio', options: ['Smartphone', 'Tablet', 'Computer', 'Nessuno'], section: 'Studio' },
+            { id: 'q26', text: 'Come preferisci lavorare durante le lezioni?', type: 'radio', options: ['Da solo/a', 'In coppia', 'In gruppo', 'Dipende dalla materia'], section: 'Studio' },
+            { id: 'q27', text: 'Hai bisogno di supporto per lo studio?', type: 'radio', options: ['Sì, sempre', 'Qualche volta', 'Raramente', 'Mai'], section: 'Studio' },
+            { id: 'q28', text: 'Ti piace lavorare in gruppo?', type: 'radio', options: ['Sì, molto', 'Solo a volte', 'Dipende', 'Preferisco da solo'], section: 'Studio' },
+            { id: 'q29', text: 'Fratelli/sorelle al Primo Levi?', type: 'radio', options: ['Sì, uno', 'Sì, più di uno', 'No'], section: 'Personale' },
+            { id: 'q30', text: 'Quanti fratelli o sorelle hai?', type: 'radio', options: ['Nessuno', 'Uno', 'Due', 'Tre o più'], section: 'Personale' },
+            { id: 'q31', text: 'Tempo impiegato per arrivare a scuola?', type: 'radio', options: ['Meno di 10 min', '10-30 min', '30-60 min', 'Più di 1 ora'], section: 'Logistica' },
+            { id: 'q32', text: 'Come raggiungi la scuola?', type: 'radio', options: ['A piedi', 'In bicicletta', 'In auto', 'In autobus/treno'], section: 'Logistica' },
+            { id: 'q33', text: 'Pratichi Sport?', type: 'radio', options: ['Si', 'No'], section: 'Tempo Libero' },
+            { id: 'q34', text: 'Quale sport pratichi?', type: 'text', section: 'Tempo Libero' },
+            { id: 'q35', text: 'Partecipato ad attività di volontariato?', type: 'radio', options: ['Spesso', 'Qualche volta', 'Vorrei farlo', 'Mai'], section: 'Tempo Libero' },
+            { id: 'q36', text: 'Cosa ti incuriosisce di più della scuola?', type: 'radio', options: ['Materie nuove', 'Nuovi compagni', 'Professori', 'Attività extra'], section: 'Aspettative' }
+        ];
+
+        let currentStudentInfo = {};
+
+        // --- NAVIGAZIONE ---
+        function navigate(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active-view'));
+            document.getElementById(`view-${viewId}`).classList.add('active-view');
+            window.scrollTo(0,0);
+        }
+
+        function showModal(title, message) {
+            document.getElementById('modal-title').innerHTML = title;
+            document.getElementById('modal-message').innerHTML = message;
+            const modal = document.getElementById('modal-box');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
+            setTimeout(() => { modal.classList.remove('opacity-0'); modal.classList.add('opacity-100'); }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal-box');
+            modal.classList.remove('opacity-100'); modal.classList.add('opacity-0');
+            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+        }
+
+        // --- LOGICA QUESTIONARIO STUDENTE ---
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+            questionsData.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'bg-gray-50 p-6 rounded-2xl border border-slate-200 shadow-sm';
+                let html = `<p class="font-bold text-lg text-slate-800 mb-4"><span class="text-blue-600 mr-2">${index + 1}.</span> ${q.text} <span class="text-red-500">*</span></p>`;
+                if (q.type === 'radio') {
+                    html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-3">`;
+                    q.options.forEach(opt => {
+                        html += `<label class="flex items-center p-3 bg-white border border-slate-300 rounded-xl cursor-pointer hover:bg-blue-50 transition"><input type="radio" name="${q.id}" value="${opt}" required class="w-4 h-4 text-blue-600"><span class="ml-3 text-slate-700 text-sm font-semibold">${opt}</span></label>`;
+                    });
+                    html += `</div>`;
+                } else {
+                    html += `<input type="text" name="${q.id}" required placeholder="Rispondi qui..." class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">`;
+                }
+                qDiv.innerHTML = html;
+                container.appendChild(qDiv);
+                if(q.type === 'radio') qDiv.querySelectorAll('input[type="radio"]').forEach(r => r.addEventListener('change', updateProgress));
+                else qDiv.querySelector('input').addEventListener('input', updateProgress);
+            });
+        }
+
+        function updateProgress() {
+            let answered = 0;
+            questionsData.forEach(q => {
+                if(q.type === 'radio') { if(document.querySelector(`input[name="${q.id}"]:checked`)) answered++; } 
+                else { const inp = document.querySelector(`input[name="${q.id}"]`); if(inp && inp.value.trim() !== '') answered++; }
+            });
+            const pct = Math.round((answered / questionsData.length) * 100);
+            document.getElementById('progress-bar').style.width = pct + '%';
+            document.getElementById('progress-text').innerText = pct + '%';
+        }
+
+        function startQuestionnaire(e) {
+            e.preventDefault();
+            const nome = document.getElementById('stud-nome').value.trim();
+            const cognome = document.getElementById('stud-cognome').value.trim();
+            const ind = document.getElementById('stud-indirizzo').value;
+            const sez = document.getElementById('stud-sezione').value;
+            const email = document.getElementById('stud-email').value.trim();
+            
+            currentStudentInfo = { nome: nome, cognome: cognome, indirizzo: ind, classe: "1" + sez, email: email, data_compilazione: new Date().toISOString() };
+            document.getElementById('display-student-name').innerText = `${nome} ${cognome}`;
+            document.getElementById('display-student-class').innerText = currentStudentInfo.classe;
+            document.getElementById('display-student-address').innerText = ind;
+            renderQuestions(); updateProgress(); navigate('questionnaire');
+        }
+
+        // --- MOTORE DI SALVATAGGIO ED E-MAIL STUDENTE ---
+        async function submitQuestionnaire(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const answers = {};
+            for (let [key, value] of formData.entries()) { answers[key] = value; }
+            currentStudentInfo.answers = answers;
+
+            // 1. Setup Visivo Pergamena
+            document.getElementById('cert-student-name').innerText = `${currentStudentInfo.nome.toUpperCase()} ${currentStudentInfo.cognome.toUpperCase()}`;
+            document.getElementById('cert-student-address').innerText = currentStudentInfo.indirizzo;
+            document.getElementById('cert-student-class').innerText = currentStudentInfo.classe;
+            
+            // 2. Transizione immediata e Avviso
+            navigate('certificate');
+            showModal("<i class='fa-solid fa-spinner fa-spin text-blue-600'></i> Elaborazione in corso...", "Stiamo memorizzando le tue risposte e generando il certificato PDF. Potrebbe richiedere qualche secondo.");
+            const submitBtn = document.getElementById('submit-btn-student');
+            if(submitBtn) submitBtn.disabled = true;
+
+            try {
+                // 3. SALVA SU FIREBASE (Con path solido)
+                if (!currentUser) await initAuth();
+                if (!currentUser) throw new Error("Utente non autenticato al database.");
+
+                const docId = `${currentStudentInfo.cognome}_${currentStudentInfo.nome}_${Date.now()}`.replace(/\s+/g, '_');
+                await getQuestionnairesCollection().doc(docId).set(currentStudentInfo);
+                console.log("Salvato su Firebase con ID:", docId);
+
+                // 4. CREA PDF BASE64
+                const certElement = document.getElementById('certificate-print-area');
+                const opt = { margin: 10, filename: 'cert.pdf', image: { type: 'jpeg', quality: 0.95 }, html2canvas: { scale: 1.5, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } };
+                const pdfBase64Data = await html2pdf().set(opt).from(certElement).outputPdf('datauristring');
+                const base64Clean = pdfBase64Data.split(',')[1];
+
+                // 5. INVIA MAIL (Workaround Anti-CORS usando text/plain)
+                const payload = {
+                    action: "sendStudentCertificate",
+                    email: currentStudentInfo.email,
+                    nome: currentStudentInfo.nome,
+                    cognome: currentStudentInfo.cognome,
+                    pdfBase64: base64Clean
+                };
+
+                await fetch(GOOGLE_SCRIPT_STUDENT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Fondamentale per far partire la request dal browser a Google senza blocchi
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+
+                closeModal();
+                setTimeout(() => showModal("<i class='fa-solid fa-circle-check text-emerald-600 text-3xl mb-2'></i><br>Completato con Successo", "I dati sono stati registrati e la tua Pergamena PDF ufficiale è stata appena inviata al tuo indirizzo email!"), 500);
+
+            } catch (error) {
+                console.error("Errore critico in invio:", error);
+                closeModal();
+                setTimeout(() => showModal("<i class='fa-solid fa-triangle-exclamation text-amber-600 text-3xl mb-2'></i><br>Avviso", "Il tuo questionario è stato elaborato ma si è verificato un timeout di rete con il server delle email. Puoi scaricare la pergamena premendo il tasto 'Stampa' qui sotto."), 500);
+            }
+        }
+
+        // --- DASHBOARD DOCENTI ---
+        function loginTeacher() {
+            if(document.getElementById('teacher-pwd').value === 'docente2026') {
+                document.getElementById('teacher-pwd').value = '';
+                populateClassFilter();
+                updateDashboard();
+                navigate('teacher-dashboard');
+            } else {
+                showModal("Accesso Negato", "Password errata.");
+            }
+        }
+        function logoutTeacher() { navigate('home'); }
+
+        function populateClassFilter() {
+            const select = document.getElementById('dash-class-filter');
+            select.innerHTML = '<option value="ALL" class="text-gray-800">Tutto l\'Istituto</option>';
+            const classiMap = new Set();
+            localData.forEach(d => { classiMap.add(`${d.classe} ${d.indirizzo}`); });
+            Array.from(classiMap).sort().forEach(c => { select.innerHTML += `<option value="${c}" class="text-gray-800">Classe ${c}</option>`; });
+        }
+
+        // --- MOTORE DASHBOARD DOCENTE ---
+        function updateDashboard() {
+            const filterValue = document.getElementById('dash-class-filter').value;
+            let filteredData = localData;
+            if (filterValue !== 'ALL') {
+                filteredData = localData.filter(d => `${d.classe} ${d.indirizzo}` === filterValue);
+            }
+
+            document.getElementById('kpi-total').innerText = filteredData.length;
+            if (filteredData.length === 0) return;
+
+            // Stats
+            const indCounts = {}; filteredData.forEach(d => { indCounts[d.indirizzo] = (indCounts[d.indirizzo]||0)+1; });
+            document.getElementById('kpi-indirizzo').innerText = Object.keys(indCounts).sort((a,b)=>indCounts[b]-indCounts[a])[0] || "-";
+
+            const moodCounts = {}; filteredData.forEach(d => { if(d.answers['q15']) moodCounts[d.answers['q15']] = (moodCounts[d.answers['q15']]||0)+1; });
+            document.getElementById('kpi-mood').innerText = Object.keys(moodCounts).sort((a,b)=>moodCounts[b]-moodCounts[a])[0] || "-";
+
+            const autoCounts = {}; filteredData.forEach(d => { if(d.answers['q22']) autoCounts[d.answers['q22']] = (autoCounts[d.answers['q22']]||0)+1; });
+            document.getElementById('kpi-auto').innerText = Object.keys(autoCounts).sort((a,b)=>autoCounts[b]-autoCounts[a])[0] || "-";
+
+            analyzeMunicipalities(filteredData);
+            renderDeepChartsAndAnalyses(filteredData);
+            renderInteractiveExcelTable(filteredData);
+            
+            document.getElementById('ai-analysis-text').innerHTML = `
+                <p><strong>Rapporto per:</strong> ${filterValue === 'ALL' ? "Intero Istituto" : filterValue}</p>
+                <p>Il gruppo presenta un sentiment di base "${document.getElementById('kpi-mood').innerText.toLowerCase()}" con autonomia nello studio prevalente di tipo "${document.getElementById('kpi-auto').innerText.toLowerCase()}". Si suggerisce di calibrare la didattica iniziale su questi parametri chiave rilevati dai grafici sottostanti.</p>
+            `;
+        }
+
+        function analyzeMunicipalities(data) {
+            const brianzaMunicipalities = ["Seregno", "Desio", "Lissone", "Carate Brianza", "Cesano Maderno", "Meda", "Giussano", "Monza", "Bovisio Masciago", "Seveso", "Limbiate", "Cabiate", "Mariano Comense", "Muggiò", "Albiate", "Besana"];
+            const counts = {}; let outside = 0;
+            data.forEach(d => {
+                let ans = d.answers['q2'] ? d.answers['q2'].toLowerCase() : "";
+                let detected = "Altro/Non Specificato";
+                for(let m of brianzaMunicipalities) { if(ans.includes(m.toLowerCase())){ detected = m; break; } }
+                counts[detected] = (counts[detected]||0)+1;
+                if(detected.toLowerCase() !== "seregno") outside++;
+            });
+
+            const list = document.getElementById('municipality-breakdown-list'); list.innerHTML = '';
+            Object.entries(counts).sort((a,b)=>b[1]-a[1]).forEach(([m,c]) => {
+                list.innerHTML += `<div class="bg-white p-2 rounded border mb-2 flex justify-between"><b>${m}</b> <span>${c} alunni</span></div>`;
+            });
+
+            const outPct = Math.round((outside / data.length) * 100) || 0;
+            document.getElementById('transit-stress-analysis').innerText = outPct > 50 ? "Alta incidenza pendolari. Evitare carichi pesanti prima ora." : "Utenza prevalentemente locale. Minori problemi logistici.";
+        }
+
+        let chartInstances = {};
+        function renderDeepChartsAndAnalyses(data) {
+            const container = document.getElementById('dynamic-charts-container'); container.innerHTML = '';
+            questionsData.filter(q => q.type === 'radio').forEach((q, i) => {
+                const counts = {}; data.forEach(d => { if(d.answers[q.id]) counts[d.answers[q.id]] = (counts[d.answers[q.id]]||0)+1; });
+                if(Object.keys(counts).length === 0) return;
+
+                const card = document.createElement('div'); card.className = 'bg-white rounded-xl shadow p-6 mb-6 flex items-center';
+                card.innerHTML = `<div class="w-1/2"><h4 class="font-bold mb-4">${q.text}</h4><div class="h-48 relative"><canvas id="c-${q.id}"></canvas></div></div><div class="w-1/2 p-4 text-sm">${Object.entries(counts).map(([k,v]) => `<b>${k}</b>: ${v} risposte`).join('<br>')}</div>`;
+                container.appendChild(card);
+
+                const ctx = document.getElementById(`c-${q.id}`).getContext('2d');
+                if(chartInstances[`c-${q.id}`]) chartInstances[`c-${q.id}`].destroy();
+                chartInstances[`c-${q.id}`] = new Chart(ctx, { type: i%2===0?'doughnut':'pie', data: { labels: Object.keys(counts), datasets: [{ data: Object.values(counts), backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'] }] }, options: { plugins: { legend: { display: false } } } });
+            });
+        }
+
+        function renderInteractiveExcelTable(data) {
+            const thead = document.getElementById('excel-table-head'); const tbody = document.getElementById('excel-table-body');
+            let h = '<tr><th>Alunno</th><th>Classe</th><th>Indirizzo</th>' + questionsData.map(q => `<th>${q.id.toUpperCase()}</th>`).join('') + '</tr>';
+            thead.innerHTML = h;
+            tbody.innerHTML = data.map(d => `<tr><td class="font-bold">${d.nome} ${d.cognome}</td><td>${d.classe}</td><td>${d.indirizzo}</td>${questionsData.map(q => `<td>${d.answers[q.id]||'-'}</td>`).join('')}</tr>`).join('');
+        }
+
+        // --- ESPORTAZIONI DOCENTE E INVIO MAIL COORDINATORE ---
+        function openMailModal() {
+            document.getElementById('coord-subject').value = `Report Classe: ${document.getElementById('dash-class-filter').value}`;
+            const m = document.getElementById('mail-modal'); m.classList.remove('hidden'); m.classList.add('flex');
+            setTimeout(() => m.classList.remove('opacity-0'), 10);
+        }
+        function closeMailModal() {
+            const m = document.getElementById('mail-modal'); m.classList.add('opacity-0');
+            setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); }, 300);
+        }
+
+        async function sendCoordinatorMail() {
+            const email = document.getElementById('coord-email').value;
+            const subject = document.getElementById('coord-subject').value;
+            if(!email) return;
+
+            const btn = document.getElementById('send-mail-btn');
+            btn.disabled = true; btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Invio in corso...";
+
+            // Crea file Excel Base64
+            const filterValue = document.getElementById('dash-class-filter').value;
+            let filteredData = localData; if (filterValue !== 'ALL') filteredData = localData.filter(d => `${d.classe} ${d.indirizzo}` === filterValue);
+            
+            const flatData = filteredData.map(d => {
+                let row = { "Alunno": `${d.nome} ${d.cognome}`, "Classe": d.classe, "Indirizzo": d.indirizzo };
+                questionsData.forEach(q => row[q.text] = d.answers[q.id] || "");
+                return row;
+            });
+            const worksheet = XLSX.utils.json_to_sheet(flatData);
+            const workbook = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(workbook, worksheet, "Risultati");
+            const excelBase64 = XLSX.write(workbook, { bookType: 'xlsx', type: 'base64' });
+
+            const reportHtml = document.getElementById('ai-analysis-text').innerHTML;
+
+            const payload = {
+                action: "sendCoordinatorReport",
+                coordinatorEmail: email,
+                subject: subject,
+                reportHtml: reportHtml,
+                excelBase64: excelBase64
+            };
+
+            try {
+                await fetch(GOOGLE_SCRIPT_COORDINATOR_URL, {
+                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                closeMailModal();
+                showModal("<i class='fa-solid fa-check text-green-600'></i> Mail Inviata", "Il file Excel .xlsx è stato spedito all'email indicata.");
+            } catch (error) {
+                console.log(error); showModal("Errore", "Errore nell'invio della mail.");
+            }
+            btn.disabled = false; btn.innerText = "Invia Mail con Excel";
+        }
+
+        function exportToExcel() {
+            if(localData.length === 0) return;
+            const filterValue = document.getElementById('dash-class-filter').value;
+            let filteredData = localData; if (filterValue !== 'ALL') filteredData = localData.filter(d => `${d.classe} ${d.indirizzo}` === filterValue);
+            const flatData = filteredData.map(d => {
+                let row = { "Alunno": `${d.nome} ${d.cognome}`, "Classe": d.classe, "Indirizzo": d.indirizzo };
+                questionsData.forEach(q => row[q.text] = d.answers[q.id] || "");
+                return row;
+            });
+            const worksheet = XLSX.utils.json_to_sheet(flatData);
+            const workbook = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(workbook, worksheet, "Risultati");
+            XLSX.writeFile(workbook, "Risultati_PrimoLevi.xlsx");
+        }
+
+        function printCertificate() {
+            const area = document.getElementById('certificate-print-area');
+            html2pdf().set({ margin: 15, filename: `Attestato.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } }).from(area).save();
+        }
+
+        function exportToPDF() {
+            showModal("Generazione PDF", "Attendere il completamento della compilazione grafica in corso...");
+            const element = document.getElementById('report-to-print');
+            html2pdf().set({ margin: 10, filename: `Relazione_PrimoLevi.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 1.5, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(element).save().then(()=>closeModal());
+        }
+    </script>
+</body>
+</html>
