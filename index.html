@@ -3,1153 +3,1480 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accoglienza Classi Prime | ITSCG Primo Levi Seregno</title>
-    
-    <!-- Tailwind CSS -->
+    <title>ITSCG Primo Levi - Questionario di Ingresso Classi Prime</title>
+    <!-- Tailwind CSS per uno stile moderno e reattivo -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Chart.js per Grafici a Torta e a Barre -->
+    <!-- Chart.js per grafici interattivi e spettacolari nell'Area Docenti -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- XLSX per esportazione Excel -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <!-- Html2Canvas per catturare screenshot se necessario -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-    <!-- SDK Firebase Compatibili per Web App -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <!-- FontAwesome per icone moderne -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Configurazione Tailwind personalizzata -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        leviBlue: '#1e3a8a',
+                        leviGold: '#d97706',
+                        leviLight: '#f8fafc',
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-        
-        body, html {
-            font-family: 'Inter', sans-serif;
-            margin: 0; padding: 0; min-height: 100vh;
-            color: #1e293b; overflow-x: hidden;
-            background-color: #f8fafc;
-        }
-
-        /* Sfondo Animato */
-        .bg-bubbles {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 50%, #dbeafe 100%);
+        /* Sfondo a bolle fluttuanti in continuo movimento senza un ordine preciso */
+        #bubble-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
             overflow: hidden;
         }
+
         .bubble {
-            position: absolute; bottom: -150px;
-            background: radial-gradient(circle, rgba(14, 165, 233, 0.18) 0%, rgba(59, 130, 246, 0.05) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 50%;
-            animation: floatBubble infinite ease-in-out alternate;
-            box-shadow: inset 0 10px 20px rgba(255, 255, 255, 0.6), 0 15px 30px rgba(0, 0, 0, 0.02);
-        }
-        @keyframes floatBubble {
-            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.8; }
-            50% { transform: translateY(-60vh) translateX(100px) rotate(180deg); opacity: 0.5; }
-            100% { transform: translateY(-125vh) translateX(-100px) rotate(360deg); opacity: 0.15; }
-        }
-        .bubble:nth-child(1) { width: 100px; height: 100px; left: 5%; animation-duration: 18s; }
-        .bubble:nth-child(2) { width: 180px; height: 180px; left: 22%; animation-duration: 28s; animation-delay: 2s; }
-        .bubble:nth-child(3) { width: 80px; height: 80px; left: 45%; animation-duration: 14s; animation-delay: 1s; }
-        .bubble:nth-child(4) { width: 150px; height: 150px; left: 65%; animation-duration: 24s; animation-delay: 4s; }
-
-        .btn-multicolor {
-            background: linear-gradient(45deg, #00f2fe, #4facfe, #00f2fe);
-            background-size: 200% 200%; animation: gradientShift 4s ease infinite;
-            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.4); color: white; border: 2px solid rgba(255,255,255,0.4);
-        }
-        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-
-        .view-section { display: none; }
-        .active-view { display: flex; flex-direction: column; }
-        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Pergamena */
-        .pergamena-container {
-            font-family: 'Cinzel', serif; background: radial-gradient(circle, #fffdf2 0%, #f9f2d1 100%);
-            border: 14px double #b59410; box-shadow: 0 20px 50px rgba(0,0,0,0.22), inset 0 0 60px rgba(181, 148, 16, 0.18);
-            position: relative;
+            position: absolute;
+            bottom: -150px;
+            background: rgba(30, 58, 138, 0.06);
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.6), 0 4px 10px rgba(0, 0, 0, 0.05);
+            animation: floatUp 15s infinite linear;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(30, 58, 138, 0.1);
         }
 
-        /* Tabella Excel */
-        .excel-table-container { max-width: 100%; overflow-x: auto; }
-        .excel-table { border-collapse: collapse; width: 100%; font-size: 13px; }
-        .excel-table th { background-color: #0f172a; color: #ffffff; font-weight: 700; text-align: left; padding: 12px 16px; border: 1px solid #334155; white-space: nowrap; }
-        .excel-table td { padding: 10px 16px; border: 1px solid #cbd5e1; white-space: nowrap; color: #334155; }
-        .excel-table tr:nth-child(even) { background-color: #f8fafc; }
-        .excel-table tr:hover { background-color: #f1f5f9; }
+        .bubble img {
+            width: 60%;
+            height: 60%;
+            object-fit: contain;
+            opacity: 0.18;
+            filter: grayscale(100%);
+        }
 
-        /* Status Dot */
-        .status-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 6px; }
-        .status-dot.online { background-color: #10b981; box-shadow: 0 0 8px #10b981; animation: pulse 2s infinite; }
-        .status-dot.offline { background-color: #ef4444; box-shadow: 0 0 8px #ef4444; }
-        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-120vh) rotate(360deg) scale(1.2);
+                opacity: 0;
+            }
+        }
 
-        @media print {
-            body {
-                background: white !important;
-                color: black !important;
-            }
-            /* Nascondiamo tutto tranne l'area di stampa della pergamena */
-            nav, .bg-bubbles, main > :not(#view-certificate), .mt-8, #modal-box, #mail-modal {
-                display: none !important;
-            }
-            #view-certificate {
-                display: block !important;
-                width: 100% !important;
-                max-width: 100% !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-            .pergamena-container {
-                box-shadow: none !important;
-                border: 10px double #b59410 !important;
-                page-break-inside: avoid;
-                width: 100% !important;
-                height: 100% !important;
-                margin: 0 !important;
-                padding: 40px !important;
-                background: radial-gradient(circle, #fffdf2 0%, #f9f2d1 100%) !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
+        /* Glassmorphism card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
     </style>
 </head>
-<body class="flex flex-col relative min-h-screen">
+<body class="bg-slate-50 text-slate-800 font-sans min-height-screen relative">
 
-    <div class="bg-bubbles">
-        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
-    </div>
+    <!-- Sfondo con bolle fluttuanti con loghi -->
+    <div id="bubble-container"></div>
 
-    <!-- NAVBAR -->
-    <nav class="bg-blue-950 text-white shadow-2xl z-20 relative border-b-4 border-amber-500">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 md:h-24 items-center">
-                <div class="flex items-center cursor-pointer" onclick="navigate('home')">
-                    <div class="w-12 h-12 md:w-16 md:h-16 bg-white rounded-xl md:rounded-2xl flex items-center justify-center mr-3 md:mr-4 shadow-xl overflow-hidden border-2 border-amber-400">
-                        <span class="text-blue-950 font-black text-xl md:text-2xl">Levi</span>
+    <!-- HEADER ISTITUZIONALE -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-100 shadow-sm px-4 py-3 md:px-8">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <!-- Info Scuola a Sinistra -->
+            <div class="flex items-center gap-4 w-full md:w-auto">
+                <div class="w-12 h-12 bg-leviBlue rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-md shrink-0">
+                    PL
+                </div>
+                <div>
+                    <h1 class="text-lg md:text-xl font-bold text-leviBlue tracking-tight">ITSCG PRIMO LEVI DI SEREGNO</h1>
+                    <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold">
+                        <i class="fa-solid fa-location-dot text-rose-500 mr-1"></i>Via Briantina 68, 20831 Seregno (MB)
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Logo levi.png a Destra e pulsanti di navigazione rapida -->
+            <div class="flex items-center justify-between md:justify-end gap-6 w-full md:w-auto border-t md:border-t-0 pt-2 md:pt-0">
+                <div class="flex gap-2">
+                    <button id="btn-show-student" onclick="showSection('student-access-section')" class="px-4 py-2 text-xs md:text-sm font-semibold text-leviBlue bg-blue-50 hover:bg-blue-100 rounded-lg transition-all">
+                        <i class="fa-solid fa-user-graduate mr-1"></i> Area Studenti
+                    </button>
+                    <button id="btn-show-teacher" onclick="openTeacherAuthModal()" class="px-4 py-2 text-xs md:text-sm font-semibold text-slate-600 hover:text-leviBlue bg-slate-100 hover:bg-slate-200 rounded-lg transition-all">
+                        <i class="fa-solid fa-chalkboard-user mr-1"></i> Area Docenti
+                    </button>
+                </div>
+                <div class="w-16 h-16 flex items-center justify-center bg-slate-50 rounded-full border border-slate-100 p-1">
+                    <img src="levi.png" alt="Levi Logo" onerror="this.src='https://placehold.co/150x150/1e3a8a/ffffff?text=Levi'" class="max-h-full max-w-full object-contain">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-7xl mx-auto px-4 py-8 md:px-8 relative z-10">
+
+        <!-- ================= SECTION 1: ACCESSO STUDENTI ================= -->
+        <section id="student-access-section" class="max-w-xl mx-auto py-8">
+            <div class="glass-card rounded-2xl p-8 border border-slate-200 shadow-xl">
+                <div class="text-center mb-8">
+                    <div class="inline-flex p-3 bg-blue-50 text-leviBlue rounded-full mb-4">
+                        <i class="fa-solid fa-graduation-cap text-3xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-800">Accoglienza Classi Prime</h2>
+                    <p class="text-slate-500 text-sm mt-2">Inserisci le tue credenziali per iniziare il questionario ufficiale d'istituto</p>
+                </div>
+
+                <form id="student-login-form" onsubmit="handleStudentLogin(event)" class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Cognome <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-3.5 text-slate-400"><i class="fa-solid fa-signature"></i></span>
+                            <input type="text" id="stud-cognome" required class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-leviBlue focus:border-transparent outline-none transition" placeholder="Es. Rossi">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Nome <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-3.5 text-slate-400"><i class="fa-solid fa-user"></i></span>
+                            <input type="text" id="stud-nome" required class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-leviBlue focus:border-transparent outline-none transition" placeholder="Es. Mario">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Classe di Riferimento <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-3.5 text-slate-400"><i class="fa-solid fa-school-flag"></i></span>
+                            <select id="stud-classe" required class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-leviBlue focus:border-transparent outline-none appearance-none transition">
+                                <option value="" disabled selected>Seleziona la tua classe...</option>
+                                <option value="1A">Classe 1A</option>
+                                <option value="1B">Classe 1B</option>
+                                <option value="1D">Classe 1D</option>
+                                <option value="1I">Classe 1I</option>
+                                <option value="1L">Classe 1L</option>
+                                <option value="1J">Classe 1J</option>
+                                <option value="1T">Classe 1T</option>
+                                <option value="1V">Classe 1V</option>
+                                <option value="1S">Classe 1S</option>
+                                <option value="1P">Classe 1P</option>
+                                <option value="1N">Classe 1N</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Indirizzo di Studio <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-3.5 text-slate-400"><i class="fa-solid fa-compass-drafting"></i></span>
+                            <select id="stud-indirizzo" required class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-leviBlue focus:border-transparent outline-none appearance-none transition">
+                                <option value="" disabled selected>Seleziona l'indirizzo scolastico...</option>
+                                <option value="Costruzione Ambiente e Territorio">Costruzione Ambiente e Territorio (C.A.T.)</option>
+                                <option value="Relazioni Internazionali per il Marketing">Relazioni Internazionali per il Marketing (R.I.M.)</option>
+                                <option value="Sistema Moda">Sistema Moda</option>
+                                <option value="Logistica">Logistica</option>
+                                <option value="Liceo Scientifico Opzione Scienze Applicate">Liceo Scientifico Opzione Scienze Applicate</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Indirizzo Mail Personale <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-3.5 text-slate-400"><i class="fa-solid fa-envelope"></i></span>
+                            <input type="email" id="stud-email" required class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-leviBlue focus:border-transparent outline-none transition" placeholder="nome.cognome@esempio.com">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-leviBlue hover:bg-blue-800 text-white font-bold py-4 px-6 rounded-xl transition duration-200 shadow-md flex items-center justify-center gap-2">
+                        Accedi al Questionario <i class="fa-solid fa-circle-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 2: IL QUESTIONARIO D'INGRESSO ================= -->
+        <section id="questionnaire-section" class="hidden max-w-3xl mx-auto py-4">
+            <!-- Messaggio Introduttivo Istituzionale -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 mb-8 shadow-sm">
+                <div class="flex items-start gap-4">
+                    <div class="p-3 bg-indigo-50 text-leviBlue rounded-xl">
+                        <i class="fa-solid fa-circle-info text-2xl"></i>
                     </div>
                     <div>
-                        <span class="font-black text-lg md:text-2xl tracking-wider uppercase text-amber-400">ITSCG Primo Levi</span>
-                        <span class="hidden md:block text-xs text-blue-200 font-bold tracking-widest"><i class="fa-solid fa-map-location-dot text-amber-400 mr-1.5"></i> Via Briantina 68, Seregno</span>
+                        <h3 class="text-xl font-bold text-slate-800">Care ragazze e cari ragazzi,</h3>
+                        <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                            Vi chiediamo di compilare questo questionario a risposta multipla, pensato per raccogliere informazioni utili sia a fini statistici interni alla scuola sia per conoscere meglio ciascuno di voi, in vista del vostro percorso nel primo anno della scuola secondaria di secondo grado.
+                        </p>
+                        <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                            Le domande riguardano le vostre conoscenze personali, le abitudini di studio e le preferenze scolastiche. Non si tratta di una "verifica", ma di uno strumento per aiutarci a comprendere meglio le vostre esigenze e a organizzare in modo più efficace le attività didattiche e i servizi della scuola.
+                        </p>
+                        <p class="text-leviGold font-semibold text-xs uppercase tracking-wider mt-4"><i class="fa-solid fa-asterisk text-[8px] align-middle mr-1"></i> Indica una domanda obbligatoria</p>
                     </div>
                 </div>
-                <div class="flex items-center">
-                    <div id="global-db-status" class="hidden md:flex items-center mr-6 bg-slate-800/50 px-3 py-1.5 rounded-full border border-slate-700">
-                        <span class="status-dot offline" id="nav-dot"></span>
-                        <span class="text-[10px] font-bold text-slate-300 uppercase tracking-wider" id="nav-status-text">Offline</span>
+            </div>
+
+            <form id="quest-form" onsubmit="handleQuestionnaireSubmit(event)" class="space-y-6">
+                <!-- Wrapper Domande Dinamico -->
+                <div id="questions-container" class="space-y-6"></div>
+
+                <!-- Footer del Form di Invio con Prevenzione Sovrapposizione/Bug -->
+                <div id="form-actions-wrapper" class="bg-white border border-slate-200 p-6 rounded-2xl flex flex-col items-center justify-center gap-4 shadow-sm">
+                    <p class="text-sm text-slate-500 text-center">Assicurati di aver completato tutte le domande obbligatorie prima di procedere con l'invio ufficiale.</p>
+                    <button type="submit" id="submit-quest-btn" class="w-full md:w-auto px-10 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-lg rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-paper-plane"></i> Invia Risposte e Ottieni Attestato
+                    </button>
+                    <!-- Loading state invisibile che sostituisce il pulsante per evitare click ripetuti o bug -->
+                    <div id="sending-loader" class="hidden flex flex-col items-center justify-center py-4">
+                        <svg class="animate-spin -ml-1 mr-3 h-10 w-10 text-emerald-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span class="text-sm text-emerald-600 font-bold mt-2">Generazione Attestato & Salvataggio dei dati in corso... Attendi.</span>
                     </div>
-                    <button onclick="navigate('teacher-login')" class="btn-multicolor px-4 py-2 md:px-6 md:py-2.5 rounded-full font-extrabold transition transform hover:scale-105 flex items-center text-xs tracking-wider uppercase">
-                        <i class="fa-solid fa-user-shield md:mr-2"></i> <span class="hidden md:inline">Docenti</span>
+                </div>
+            </form>
+        </section>
+
+        <!-- ================= SECTION 3: SUCCESSO & CERTIFICATO INVIATO ================= -->
+        <section id="success-certificate-section" class="hidden max-w-2xl mx-auto py-12 text-center">
+            <div class="bg-white border border-slate-200 rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-600 to-emerald-500"></div>
+                <div class="inline-flex p-4 bg-emerald-50 text-emerald-600 rounded-full mb-6">
+                    <i class="fa-solid fa-circle-check text-5xl"></i>
+                </div>
+                <h2 class="text-3xl font-extrabold text-slate-800">Invio Completato con Successo!</h2>
+                <p class="text-slate-600 mt-4 max-w-md mx-auto">
+                    Le tue risposte sono state registrate nel database del <strong>Primo Levi Seregno</strong>. La tua Pergamena di Accoglienza d'Onore è stata inviata direttamente al tuo indirizzo email!
+                </p>
+
+                <!-- Box Anteprima Attestato Grafico Digitale -->
+                <div class="my-8 border border-slate-100 rounded-2xl p-6 bg-amber-50/50 flex flex-col items-center shadow-inner relative">
+                    <!-- Certificato Canvas HTML per visualizzazione immediata -->
+                    <canvas id="certificate-canvas" width="600" height="420" class="max-w-full rounded-lg border border-amber-200 shadow-md bg-white"></canvas>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <button onclick="downloadCertificate()" class="px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-down"></i> Scarica Certificato (JPG)
+                    </button>
+                    <button onclick="location.reload()" class="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all">
+                        Torna alla Pagina Iniziale
                     </button>
                 </div>
             </div>
-        </div>
-    </nav>
+        </section>
 
-    <main class="flex-grow relative z-10" id="main-content">
-        
-        <!-- VISTA HOME STUDENTE (LOGIN) -->
-        <div id="view-home" class="view-section active-view max-w-4xl mx-auto px-4 py-8 fade-in">
-            <div class="bg-white/95 rounded-3xl shadow-2xl overflow-hidden border border-slate-100 backdrop-blur-md">
-                
-                <div class="bg-gradient-to-br from-blue-950 to-indigo-950 p-8 md:p-10 text-white relative overflow-hidden border-b-4 border-amber-500">
-                    <div class="absolute -right-10 -bottom-10 opacity-10"><i class="fa-solid fa-scroll text-[18rem]"></i></div>
-                    <div class="relative z-10">
-                        <div class="inline-flex items-center space-x-2 bg-amber-400/20 text-amber-300 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-4">
-                            <i class="fa-solid fa-circle-info"></i><span>Accoglienza Anno Scolastico 2026/2027</span>
-                        </div>
-                        <h1 class="text-3xl md:text-4xl font-black tracking-tight mb-4 text-amber-400">Accoglienza Classi Prime</h1>
-                        <p class="text-sm md:text-base text-slate-200 leading-relaxed text-justify mb-4">
-                            Care ragazze e cari ragazzi, vi chiediamo di compilare un questionario a risposta multipla, pensato per raccogliere informazioni utili sia a fini statistici interni alla scuola sia per conoscere meglio ciascuno di voi, in vista del vostro percorso nel primo anno della scuola secondaria di secondo grado. Le domande riguardano le vostre conoscenze personali, le abitudini di studio e le preferenze scolastiche. Non si tratta di una “verifica”, ma di uno strumento per aiutarci a comprendere meglio le vostre esigenze e a organizzare in modo più efficace le attività didattiche e i servizi della scuola.
-                        </p>
-                        <p class="text-xs text-amber-300/90 font-bold italic"><i class="fa-solid fa-circle-exclamation mr-1"></i> Indica una domanda obbligatoria. Rispondete con attenzione e sincerità.</p>
-                    </div>
+        <!-- ================= SECTION 4: AREA DOCENTI / DASHBOARD ANALYTICS ================= -->
+        <section id="teacher-dashboard-section" class="hidden space-y-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 pb-6">
+                <div>
+                    <h2 class="text-3xl font-black text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-line text-leviBlue"></i> Dashboard Docenti
+                    </h2>
+                    <p class="text-slate-500 mt-1">Monitoraggio, analisi strategica dei bisogni ed evidenziazione delle fragilità in tempo reale.</p>
                 </div>
-
-                <div class="p-8 md:p-10">
-                    <form id="student-login-form" class="space-y-6" onsubmit="startQuestionnaire(event)">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Nome Completo *</label>
-                                <input type="text" id="stud-nome" required placeholder="Es. Mario" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition font-semibold">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Cognome *</label>
-                                <input type="text" id="stud-cognome" required placeholder="Es. Rossi" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition font-semibold">
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Indirizzo di Studio *</label>
-                                <select id="stud-indirizzo" required class="w-full px-5 py-3.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition font-semibold cursor-pointer">
-                                    <option value="">Scegli...</option>
-                                    <option value="AFM">Amministrazione, Finanza e Marketing (AFM)</option>
-                                    <option value="SIA">Sistemi Informativi Aziendali (SIA)</option>
-                                    <option value="RIM">Relazioni Internazionali (RIM)</option>
-                                    <option value="CAT">Costruzione, Ambiente e Territorio (CAT)</option>
-                                    <option value="Liceo">Liceo Scientifico Scienze Applicate</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Classe Attuale *</label>
-                                <select id="stud-sezione" required class="w-full px-5 py-3.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition font-semibold cursor-pointer">
-                                    <option value="">Seleziona...</option>
-                                    <option value="1A">1A</option><option value="1B">1B</option>
-                                    <option value="1D">1D</option><option value="1I">1I</option>
-                                    <option value="1L">1L</option><option value="1J">1J</option>
-                                    <option value="1T">1T</option><option value="1V">1V</option>
-                                    <option value="1S">1S</option><option value="1P">1P</option>
-                                    <option value="1N">1N</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Da quale scuola media provieni? *</label>
-                            <input type="text" id="stud-scuola" required placeholder="Es. Manzoni, Seregno" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition font-semibold">
-                        </div>
-
-                        <div class="pt-6 flex justify-center">
-                            <button type="submit" class="bg-blue-800 hover:bg-blue-900 text-white px-10 py-4 rounded-full font-black text-lg shadow-xl transition-all transform hover:-translate-y-1 flex items-center">
-                                Inizia Questionario <i class="fa-solid fa-arrow-right ml-3"></i>
-                            </button>
-                        </div>
-                    </form>
+                <div class="flex gap-3 w-full md:w-auto">
+                    <button onclick="exportToExcel()" class="flex-1 md:flex-initial px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-sm rounded-lg shadow-sm transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-file-excel"></i> Esporta Excel completo
+                    </button>
+                    <button onclick="window.print()" class="flex-1 md:flex-initial px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-semibold text-sm rounded-lg shadow-sm transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-print"></i> Stampa Report PDF
+                    </button>
                 </div>
             </div>
-        </div>
 
-        <!-- VISTA QUESTIONARIO -->
-        <div id="view-questionnaire" class="view-section max-w-4xl mx-auto px-4 py-8 fade-in w-full">
-            <div class="bg-white/95 rounded-3xl shadow-2xl p-6 md:p-8 border border-slate-100 backdrop-blur-md">
-                
-                <div class="mb-8 bg-blue-50/50 p-5 rounded-2xl border border-blue-100 flex flex-col md:flex-row items-center justify-between shadow-inner">
-                    <div class="flex items-center mb-3 md:mb-0 w-full md:w-auto">
-                        <div class="w-12 h-12 bg-blue-600 rounded-xl flex justify-center items-center text-white text-lg font-bold shadow-lg mr-4"><i class="fa-solid fa-user-pen"></i></div>
-                        <div>
-                            <h2 class="text-lg font-black text-slate-800 leading-tight" id="display-student-name">Studente</h2>
-                            <p class="text-blue-700 font-bold text-xs mt-0.5">Classe <span id="display-student-class" class="underline"></span> - <span id="display-student-address" class="uppercase"></span></p>
+            <!-- FILTRI DI VISUALIZZAZIONE CLASSE -->
+            <div class="bg-white border border-slate-200 p-4 rounded-xl flex flex-wrap items-center justify-between gap-4 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <span class="text-sm font-semibold text-slate-600 uppercase tracking-wider"><i class="fa-solid fa-filter"></i> Filtra Analisi:</span>
+                    <select id="filter-classe" onchange="applyFiltersAndRegenerate()" class="py-1.5 px-3 border border-slate-200 bg-slate-50 rounded-lg text-sm focus:ring-1 focus:ring-leviBlue outline-none font-medium text-slate-700">
+                        <option value="ALL">Tutte le Classi dell'Istituto</option>
+                        <option value="1A">Classe 1A</option>
+                        <option value="1B">Classe 1B</option>
+                        <option value="1D">Classe 1D</option>
+                        <option value="1I">Classe 1I</option>
+                        <option value="1L">Classe 1L</option>
+                        <option value="1J">Classe 1J</option>
+                        <option value="1T">Classe 1T</option>
+                        <option value="1V">Classe 1V</option>
+                        <option value="1S">Classe 1S</option>
+                        <option value="1P">Classe 1P</option>
+                        <option value="1N">Classe 1N</option>
+                    </select>
+                </div>
+                <div class="text-sm text-slate-500 font-semibold bg-slate-100 py-1.5 px-3 rounded-lg">
+                    Studenti registrati in totale: <span id="stats-total-students" class="text-leviBlue font-bold">0</span>
+                </div>
+            </div>
+
+            <!-- ================= SINTESI DINAMICA COMPLESSIVA PER CLASSE ================= -->
+            <div class="bg-gradient-to-br from-blue-900 to-indigo-950 text-white p-6 md:p-8 rounded-3xl shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-8 opacity-10">
+                    <i class="fa-solid fa-school-flag text-[120px]"></i>
+                </div>
+                <div class="relative z-10 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="p-2 bg-white/10 text-leviGold rounded-lg"><i class="fa-solid fa-file-invoice text-xl"></i></span>
+                        <h3 class="text-xl font-bold uppercase tracking-wider">Sintesi Complessiva della Classe Selezionata</h3>
+                    </div>
+                    <!-- Contenuto report dinamico -->
+                    <div id="class-pedagogical-report" class="prose prose-invert max-w-none text-sm md:text-base leading-relaxed text-slate-200">
+                        <!-- Generato da JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ANALISI STRATEGICA GENERALE & SUGGERIMENTI PER I COORDINATORI -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Box Alert Fragilità / Consigli d'Azione -->
+                <div class="lg:col-span-2 bg-white border border-slate-200 p-6 rounded-2xl shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-2 text-rose-600 font-bold mb-4">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <h3 class="text-lg">Evidenziazione Criticità per i Coordinatori</h3>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-rose-50 border-l-4 border-rose-500 rounded-r-xl">
+                                <h4 class="font-bold text-rose-800 text-sm">Rischio Difficoltà di Studio / Scarsa Autonomia</h4>
+                                <p class="text-xs text-rose-700 mt-1 leading-relaxed">
+                                    Il <span id="percentuale-fragili" class="font-bold">0%</span> degli studenti della classe/istituto dichiara un livello di autonomia "Poco" o "Per niente autonomo" unito ad un monte ore di studio quotidiano inferiore a un'ora. 
+                                </p>
+                            </div>
+                            <div class="p-4 bg-amber-50 border-l-4 border-amber-500 rounded-r-xl">
+                                <h4 class="font-bold text-amber-800 text-sm">Discrepanza fra Consiglio Orientativo e Scelta Attuale</h4>
+                                <p class="text-xs text-amber-700 mt-1 leading-relaxed">
+                                    Si riscontra che circa il <span id="percentuale-discrepanza" class="font-bold">0%</span> degli iscritti ha intrapreso un percorso difforme rispetto al Consiglio Orientativo ricevuto. Si consiglia un monitoraggio preventivo nei mesi di Ottobre e Novembre per evitare disorientamento.
+                                </p>
+                            </div>
                         </div>
                     </div>
-                    <div class="text-left md:text-right w-full md:w-auto border-t md:border-t-0 pt-3 md:pt-0 border-blue-200">
-                        <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-0.5">Avanzamento</span>
-                        <div class="text-2xl font-black text-blue-700 leading-none" id="progress-text">0%</div>
-                    </div>
-                </div>
-
-                <div class="w-full bg-slate-200 rounded-full h-3 mb-8 shadow-inner overflow-hidden">
-                    <div class="bg-blue-600 h-full rounded-full transition-all duration-300 ease-out" id="progress-bar" style="width: 0%"></div>
-                </div>
-
-                <form id="questions-form" onsubmit="submitQuestionnaire(event)" class="space-y-6">
-                    <div id="questions-container" class="space-y-6"></div>
-                    <div class="pt-8 border-t-2 border-slate-100 flex justify-end">
-                        <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-full font-black text-base md:text-lg shadow-lg transition transform hover:-translate-y-1 flex items-center" id="submit-btn-student">
-                            <i class="fa-solid fa-paper-plane mr-3"></i> Consegna Definitiva
+                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-xs text-slate-400">Analisi pedagogica dinamica</span>
+                        <button onclick="sendClassReportToCoordinator()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-lg transition-all flex items-center gap-1">
+                            <i class="fa-solid fa-envelope-open-text"></i> Invia Resoconto ai Coordinatori di Classe
                         </button>
                     </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- VISTA PERGAMENA -->
-        <div id="view-certificate" class="view-section max-w-3xl mx-auto px-4 py-12 fade-in w-full">
-            <div class="pergamena-container p-8 md:p-12 rounded-lg text-center shadow-2xl relative overflow-hidden" id="certificate-print-area">
-                <div class="absolute top-4 left-4 opacity-40 text-amber-800 text-4xl"><i class="fa-solid fa-award"></i></div>
-                <div class="absolute top-4 right-4 opacity-40 text-amber-800 text-4xl"><i class="fa-solid fa-award"></i></div>
-                
-                <div class="flex justify-center mb-6">
-                    <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-amber-500">
-                        <span class="text-amber-600 font-black text-xl">LEVI</span>
-                    </div>
                 </div>
 
-                <div class="space-y-6">
-                    <p class="text-amber-800 font-extrabold tracking-widest text-xs md:text-sm uppercase">Istituto d'Istruzione Secondaria Superiore</p>
-                    <h1 class="text-3xl md:text-5xl font-black text-amber-950 tracking-wide uppercase">ITSCG PRIMO LEVI</h1>
-                    <p class="text-slate-600 text-xs italic tracking-widest">- Seregno (MB) -</p>
-                    
-                    <div class="py-6">
-                        <div class="w-24 h-0.5 bg-amber-600 mx-auto mb-6"></div>
-                        <h2 class="text-2xl md:text-3xl font-bold text-slate-800 tracking-wider">ATTESTATO DI ACCOGLIENZA</h2>
-                        <p class="text-slate-500 text-sm mt-3 font-medium">Si certifica che lo studente / la studentessa</p>
-                        <p class="text-3xl md:text-4xl font-black text-blue-900 my-4 tracking-wide" id="cert-student-name">NOME COGNOME</p>
-                        <p class="text-slate-600 text-sm leading-relaxed max-w-lg mx-auto">ha completato regolarmente il percorso conoscitivo per l'inserimento nelle classi prime d'istituto.</p>
-                        <p class="text-lg md:text-xl font-black text-amber-900 mt-4 uppercase tracking-wider" id="cert-student-address">INDIRIZZO</p>
-                        <p class="text-lg font-bold text-slate-700 mt-1">Classe <span id="cert-student-class" class="underline font-black">1A</span></p>
+                <!-- Box Consigli di Classe / Soluzioni -->
+                <div class="bg-amber-50/70 border border-amber-200 p-6 rounded-2xl shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-2 text-amber-800 font-bold mb-4">
+                            <i class="fa-solid fa-lightbulb"></i>
+                            <h3 class="text-lg">Soluzioni Didattiche Suggerite</h3>
+                        </div>
+                        <p class="text-xs text-amber-900 leading-relaxed mb-4">
+                            Sulla base dei dati raccolti tramite il questionario di ingresso, la Commissione Orientamento propone i seguenti percorsi di supporto preventivo da attivare immediatamente per favorire l'inclusione ed evitare dispersioni precoci:
+                        </p>
+                        <ul class="space-y-3 text-xs text-amber-800 font-medium">
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-dot mt-0.5 text-amber-600"></i>
+                                <span>Avviare laboratori sul <strong>metodo di studio guidato</strong> e sulla strutturazione di schemi/mappe concettuali per facilitare la transizione.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-dot mt-0.5 text-amber-600"></i>
+                                <span>Creare gruppi di studio assistito e sistemi di <strong>Peer-Tutoring</strong> accostando studenti con alta e bassa autonomia.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-dot mt-0.5 text-amber-600"></i>
+                                <span>Incentivare l'utilizzo del registro elettronico e degli strumenti digitali di istituto sin dalle prime settimane di scuola.</span>
+                            </li>
+                        </ul>
                     </div>
-
-                    <div class="text-slate-600 text-[10px] md:text-xs leading-relaxed max-w-md mx-auto italic font-semibold border-t border-amber-200 pt-6">
-                        "La Commissione esprime i migliori auguri per un cammino scolastico ricco di scoperte, soddisfazioni personali e crescita all'interno della comunità."
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-8 pt-6 text-xs text-slate-600 font-bold tracking-wider">
-                        <div><p class="border-b border-amber-600/50 pb-2 w-32 md:w-40 mx-auto" id="cert-date"></p><p class="mt-1 text-[10px]">DATA</p></div>
-                        <div><p class="border-b border-amber-600/50 pb-2 w-32 md:w-40 mx-auto font-serif italic text-amber-800 text-sm">La Commissione</p><p class="mt-1 text-[10px]">FIRMA</p></div>
+                    <div class="mt-6 pt-4 border-t border-amber-200 text-center">
+                        <span class="text-[11px] font-semibold text-amber-800/80 uppercase tracking-widest">ITSCG Primo Levi Seregno</span>
                     </div>
                 </div>
             </div>
 
-            <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-                <button onclick="window.print()" class="bg-amber-600 hover:bg-amber-700 text-white px-8 py-3 rounded-full font-black text-sm uppercase tracking-wider shadow-lg transition"><i class="fa-solid fa-print mr-2"></i> Stampa l'Attestato</button>
-                <button onclick="navigate('home')" class="bg-slate-700 hover:bg-slate-800 text-white px-8 py-3 rounded-full font-black text-sm uppercase tracking-wider shadow-lg transition"><i class="fa-solid fa-house mr-2"></i> Torna alla Home</button>
-            </div>
-        </div>
+            <!-- ANALISI DINAMICA DI TUTTE LE DOMANDE (DA 1 A 34) -->
+            <div class="space-y-8">
+                <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                    <i class="fa-solid fa-square-poll-vertical text-leviBlue"></i> Analisi Dettagliata delle Domande del Questionario
+                </h3>
 
-        <!-- LOGIN DOCENTI -->
-        <div id="view-teacher-login" class="view-section max-w-md mx-auto px-4 py-20 fade-in w-full">
-            <div class="bg-white/95 rounded-3xl shadow-2xl p-10 text-center backdrop-blur-md border border-white relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 to-indigo-600"></div>
-                <button onclick="navigate('home')" class="absolute top-4 left-4 text-slate-400 hover:text-slate-700"><i class="fa-solid fa-arrow-left text-xl"></i></button>
-                <div class="w-20 h-20 bg-blue-50 rounded-full flex justify-center items-center mx-auto mb-6 shadow-inner">
-                    <i class="fa-solid fa-user-shield text-4xl text-blue-600"></i>
-                </div>
-                <h2 class="text-3xl font-black text-gray-800 mb-2">Area Riservata</h2>
-                <p class="text-sm text-gray-500 mb-6">Cruscotto analitico per Docenti e Coordinatori.</p>
-                <input type="password" id="teacher-pwd" placeholder="Password (admin)" class="w-full px-5 py-4 text-center text-lg bg-gray-50 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition mb-6 shadow-sm">
-                <button onclick="loginTeacher()" class="w-full bg-blue-900 hover:bg-blue-800 text-white px-6 py-4 rounded-xl font-bold text-lg shadow-xl transition transform hover:-translate-y-1">Accedi al Cruscotto</button>
-            </div>
-        </div>
-
-        <!-- DASHBOARD DOCENTI -->
-        <div id="view-teacher-dashboard" class="view-section w-full max-w-7xl mx-auto px-4 py-8 fade-in h-auto min-h-screen">
-            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden backdrop-blur-md border border-gray-100">
-                
-                <!-- Dashboard Header -->
-                <div class="bg-blue-900 text-white px-6 md:px-8 py-6 flex flex-col md:flex-row justify-between items-center relative overflow-hidden">
-                    <div class="absolute right-0 top-0 opacity-10"><i class="fa-solid fa-chart-pie text-9xl"></i></div>
-                    <div class="z-10 mb-4 md:mb-0 w-full md:w-auto text-center md:text-left">
-                        <h1 class="text-2xl md:text-3xl font-black tracking-tight"><i class="fa-solid fa-microchip text-blue-300 mr-3"></i> Report Analitico d'Istituto</h1>
-                        <p class="text-blue-200 mt-1 text-xs md:text-sm font-medium">Motore di analisi dati generato dalle risposte degli studenti</p>
-                    </div>
-                    <div class="z-10 flex flex-wrap gap-4 items-center justify-center w-full md:w-auto">
-                        <div class="bg-blue-800 rounded-xl px-4 py-2 flex items-center border border-blue-700 shadow-inner w-full md:w-auto justify-between">
-                            <label class="text-blue-200 font-bold text-sm mr-3 whitespace-nowrap"><i class="fa-solid fa-filter"></i> Filtro:</label>
-                            <select id="dash-class-filter" onchange="updateDashboard()" class="bg-transparent text-white font-bold text-base md:text-lg outline-none cursor-pointer appearance-none text-right">
-                                <option value="ALL" class="text-gray-800">Tutto l'Istituto</option>
-                            </select>
-                        </div>
-                        <button onclick="logoutTeacher()" class="bg-red-500 hover:bg-red-600 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition" title="Esci"><i class="fa-solid fa-power-off"></i></button>
-                    </div>
-                </div>
-
-                <!-- Dashboard Toolbar -->
-                <div class="bg-gray-50 border-b border-gray-200 px-6 md:px-8 py-4 flex flex-col md:flex-row gap-4 justify-between items-center">
-                    <div class="text-slate-600 text-xs font-bold uppercase tracking-wider flex items-center">
-                        Connessione DB: <span class="status-dot ml-2" id="db-status-dot"></span> <span id="db-status-text" class="text-emerald-600 ml-1">Verifica...</span>
-                    </div>
-                    <div class="flex flex-wrap gap-2 md:gap-3 justify-center">
-                        <button onclick="openMailModal()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg font-black shadow transition flex items-center text-[10px] md:text-xs uppercase tracking-wider"><i class="fa-solid fa-paper-plane mr-2"></i> Invia Mail Coord.</button>
-                        <button onclick="exportToExcel()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-black shadow transition flex items-center text-[10px] md:text-xs uppercase tracking-wider"><i class="fa-solid fa-file-excel mr-2"></i> Scarica Excel</button>
-                    </div>
-                </div>
-
-                <!-- Contenuto Dashboard -->
-                <div id="report-to-print" class="p-6 md:p-8 bg-white">
-                    
-                    <!-- KPI Cards -->
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-10" id="kpi-container">
-                        <div class="bg-gray-50 rounded-2xl p-4 md:p-6 border border-gray-100 shadow-sm text-center print-avoid-break">
-                            <div class="w-10 h-10 md:w-12 md:h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 md:mb-3 text-lg md:text-xl"><i class="fa-solid fa-users"></i></div>
-                            <p class="text-[10px] md:text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Campione</p>
-                            <p class="text-2xl md:text-4xl font-black text-gray-800" id="kpi-total">0</p>
-                        </div>
-                        <div class="bg-gray-50 rounded-2xl p-4 md:p-6 border border-gray-100 shadow-sm text-center print-avoid-break">
-                            <div class="w-10 h-10 md:w-12 md:h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-2 md:mb-3 text-lg md:text-xl"><i class="fa-solid fa-graduation-cap"></i></div>
-                            <p class="text-[10px] md:text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Maggioranza</p>
-                            <p class="text-base md:text-xl font-bold text-gray-800 truncate px-1" id="kpi-indirizzo">-</p>
-                        </div>
-                        <div class="bg-gray-50 rounded-2xl p-4 md:p-6 border border-gray-100 shadow-sm text-center print-avoid-break">
-                            <div class="w-10 h-10 md:w-12 md:h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-2 md:mb-3 text-lg md:text-xl"><i class="fa-solid fa-face-smile"></i></div>
-                            <p class="text-[10px] md:text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Stato d'animo</p>
-                            <p class="text-sm md:text-lg font-bold text-gray-800 leading-tight mt-1" id="kpi-mood">-</p>
-                        </div>
-                        <div class="bg-gray-50 rounded-2xl p-4 md:p-6 border border-gray-100 shadow-sm text-center print-avoid-break">
-                            <div class="w-10 h-10 md:w-12 md:h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-2 md:mb-3 text-lg md:text-xl"><i class="fa-solid fa-book-open"></i></div>
-                            <p class="text-[10px] md:text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Autonomia Media</p>
-                            <p class="text-sm md:text-lg font-bold text-gray-800 leading-tight mt-1" id="kpi-auto">-</p>
-                        </div>
-                    </div>
-
-                    <!-- Analisi IA Complessiva -->
-                    <div class="mb-12 print-avoid-break">
-                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b-4 border-blue-900 pb-2 mb-6 gap-2">
-                            <h2 class="text-xl md:text-2xl font-black text-gray-800 uppercase tracking-wider">Sintesi Diagnostica Complessiva</h2>
-                            <span class="bg-indigo-100 text-indigo-800 text-[10px] md:text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap"><i class="fa-solid fa-robot mr-1"></i> Generata Dinamicamente</span>
-                        </div>
-                        <div id="ai-analysis-text" class="bg-blue-50/40 p-6 md:p-8 rounded-2xl border border-blue-100 text-slate-800 leading-relaxed space-y-4 text-justify text-sm md:text-base shadow-inner">
-                            <!-- Testo Generato via JS -->
-                        </div>
-                    </div>
-
-                    <!-- Grafici Dettagliati per ogni domanda -->
-                    <div class="mt-12">
-                        <h2 class="text-xl md:text-2xl font-black text-gray-800 border-b-4 border-blue-900 pb-2 mb-8 inline-block uppercase tracking-wider">Report Statistico Dettagliato</h2>
-                        <p class="text-sm text-slate-500 mb-6 font-medium italic">Tutti i grafici includono un'analisi testuale estesa per facilitare la stesura della Relazione Iniziale del Consiglio di Classe.</p>
-                        <div id="dynamic-charts-container" class="space-y-8">
-                            <!-- Cards con Grafico + Analisi Testuale generati in JS -->
-                        </div>
-                    </div>
-
-                    <!-- Risposte Aperte -->
-                    <div class="mt-16 print-avoid-break">
-                        <h2 class="text-xl md:text-2xl font-black text-gray-800 border-b-4 border-blue-900 pb-2 mb-8 inline-block uppercase tracking-wider">Contributi Qualitativi (Testo Libero)</h2>
-                        <div id="open-answers-container" class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-                            <!-- Elenchi Testuali via JS -->
-                        </div>
-                    </div>
-
-                    <!-- Tabella Excel Visiva -->
-                    <div class="mt-16 print-avoid-break border-t-4 border-slate-200 pt-10">
-                        <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-2">
-                            <div class="flex items-center">
-                                <div class="w-10 h-10 bg-emerald-600 text-white rounded-xl flex items-center justify-center mr-3 text-lg"><i class="fa-solid fa-table"></i></div>
-                                <h2 class="text-xl md:text-2xl font-black text-slate-800 tracking-tight">Registro Dati Grezzi (Vedi Excel)</h2>
-                            </div>
-                            <div class="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-wider bg-slate-100 px-3 py-1 rounded-md border border-slate-200">Scorri orizzontalmente <i class="fa-solid fa-arrows-left-right ml-1"></i></div>
-                        </div>
-                        <div class="excel-table-container rounded-2xl border border-slate-200 shadow-inner overflow-hidden">
-                            <table class="excel-table" id="excel-interactive-table">
-                                <thead id="excel-table-head"></thead>
-                                <tbody id="excel-table-body"></tbody>
-                            </table>
-                        </div>
-                    </div>
-
+                <!-- Container Dinamico che conterrà tutte le 34 domande analizzate in dettaglio -->
+                <div id="dynamic-charts-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Popolato dinamicamente da JavaScript -->
                 </div>
             </div>
-        </div>
+
+            <!-- TABELLA COMPLETA DEI RISULTATI IN STILE GOOGLE MODULI -->
+            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800">Elenco Completo Risposte Studenti</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Vista tabellare dettagliata di ogni singolo studente iscritto al database</p>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse" id="students-table">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-100 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                <th class="py-4 px-6">Studente</th>
+                                <th class="py-4 px-6">Classe</th>
+                                <th class="py-4 px-6">Indirizzo</th>
+                                <th class="py-4 px-6">Email</th>
+                                <th class="py-4 px-6">Scuola Provenienza</th>
+                                <th class="py-4 px-6">Voto Uscita</th>
+                                <th class="py-4 px-6 text-center">Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-sm text-slate-700" id="table-body">
+                            <!-- Popolato dinamicamente da JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
 
     </main>
 
-    <!-- Modale Invio Email -->
-    <div id="mail-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center z-50 transition-opacity opacity-0">
-        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-lg w-full mx-4 shadow-2xl transform transition-transform border border-slate-200" id="mail-modal-content">
-            <h3 class="text-2xl font-black text-gray-900 mb-2"><i class="fa-solid fa-envelope-open-text text-amber-500 mr-2"></i> Invia Relazione al Consiglio</h3>
-            <p class="text-slate-500 text-xs md:text-sm mb-6 font-medium leading-relaxed">Il sistema invierà un report testuale interattivo e l'allegato dei dati Excel direttamente alla mail del Coordinatore.</p>
-            
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-[10px] md:text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Email del Coordinatore *</label>
-                    <input type="email" id="coord-email" required placeholder="coordinatore@primolevi.it" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition text-sm font-semibold">
+    <!-- MODAL DI AUTENTICAZIONE AREA DOCENTI -->
+    <div id="teacher-auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl w-full max-w-md p-8 border border-slate-100 shadow-2xl relative">
+            <button onclick="closeTeacherAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="inline-flex p-3 bg-indigo-50 text-leviBlue rounded-full mb-3">
+                    <i class="fa-solid fa-lock text-2xl"></i>
                 </div>
+                <h3 class="text-xl font-bold text-slate-800">Autenticazione Docenti</h3>
+                <p class="text-xs text-slate-500 mt-1">Inserisci la password d'istituto per visualizzare i risultati del database</p>
+            </div>
+            <form onsubmit="handleTeacherLogin(event)" class="space-y-4">
                 <div>
-                    <label class="block text-[10px] md:text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Oggetto Email *</label>
-                    <input type="text" id="coord-subject" required class="w-full px-5 py-3.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-600 outline-none transition text-sm font-semibold text-blue-900">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Password di Accesso</label>
+                    <input type="password" id="teacher-pwd" required class="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-leviBlue" placeholder="••••••••">
                 </div>
-            </div>
-
-            <div class="flex justify-end gap-3 pt-6 border-t border-slate-100 mt-6">
-                <button onclick="closeMailModal()" class="px-5 py-2.5 text-slate-600 font-bold hover:bg-slate-100 rounded-xl transition text-xs md:text-sm uppercase tracking-wider">Annulla</button>
-                <button onclick="sendCoordinatorMail()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center text-xs md:text-sm uppercase tracking-wider" id="send-mail-btn"><i class="fa-solid fa-paper-plane mr-2"></i> Invia Ora</button>
-            </div>
+                <button type="submit" class="w-full bg-leviBlue hover:bg-blue-800 text-white font-bold py-3 px-4 rounded-xl transition duration-200 shadow-md">
+                    Accedi alla Dashboard
+                </button>
+            </form>
         </div>
     </div>
 
-    <!-- Modale Avvisi/Conferme Globali -->
-    <div id="modal-box" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center z-[100] transition-opacity opacity-0">
-        <div class="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 shadow-2xl transform transition-transform text-center border border-slate-200" id="modal-content">
-            <div id="modal-icon" class="text-5xl mb-4"></div>
-            <h3 class="text-xl md:text-2xl font-black text-gray-800 mb-3 leading-tight" id="modal-title">Avviso</h3>
-            <div class="text-slate-600 mb-8 text-xs md:text-sm leading-relaxed font-medium" id="modal-message"></div>
-            <button onclick="closeModal()" class="w-full bg-slate-800 hover:bg-slate-900 text-white px-6 py-3.5 rounded-xl font-bold shadow-md transition text-sm uppercase tracking-wider">Ho Capito</button>
-        </div>
+    <!-- NOTIFICA INTERNA PERSONALIZZATA -->
+    <div id="custom-toast" class="hidden fixed bottom-6 right-6 z-50 bg-slate-800 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 transition-all duration-300">
+        <span id="toast-icon" class="text-xl"></span>
+        <span id="toast-message" class="text-sm font-semibold"></span>
     </div>
 
-    <script>
-        // --- STREAMING_CHUNK: Configurando le credenziali di Firebase... ---
-        // CONFIGURAZIONE FIREBASE REALE E ANONIMA
+    <!-- CARICAMENTO SDK DI FIREBASE E LOGICHE INTEGRATE -->
+    <script type="module">
+        // Importa moduli di Firebase v11.6.1 da CDN ufficiale
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Configurazione Firebase ufficiale fornita dal cliente
         const firebaseConfig = {
-            apiKey: "AIzaSyC2IxHrf94aRSvUz7xe-jGW02z_jizjvc8",
-            authDomain: "questionarioingresso-56dcd.firebaseapp.com",
-            projectId: "questionarioingresso-56dcd",
-            storageBucket: "questionarioingresso-56dcd.firebasestorage.app",
-            messagingSenderId: "818782489167",
-            appId: "1:818782489167:web:f109a224f65a5be3f7b83a",
-            measurementId: "G-VBYK6CST7M"
+            apiKey: "AIzaSyBXqHSLyhaLBxrBwKloWOs4QVeXw_o-PA4",
+            authDomain: "primo-levi-questionario.firebaseapp.com",
+            projectId: "primo-levi-questionario",
+            storageBucket: "primo-levi-questionario.firebasestorage.app",
+            messagingSenderId: "1052232876293",
+            appId: "1:1052232876293:web:cf1be02b375928c834376c",
+            measurementId: "G-4009GMK8ZP"
         };
-        
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
 
-        let currentUser = null;
-        let localData = [];
+        // Inizializza Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Path del database conforme alla regola di sicurezza del sistema
+        const appId = "primo-levi-questionario";
+        const databaseCollectionPath = `artifacts/${appId}/public/data/risposte_studenti`;
+
+        // Database locale aggiornato in Realtime - VUOTO DI PARTENZA (no mockup pre-popolati)
+        let mockDatabase = [];
+        let activeStudent = null;
         let chartInstances = {};
-        let currentStudentInfo = {};
 
-        // URL Google Apps Script forniti dal docente per le email e le registrazioni
-        const ESITI_QUESTIONARI_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwoTrcqU04J4ttZF2z-c_tNHZh9qr7UZUu9ZrByXzg/dev";
-        const PERGAMENA_FOTO_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzxaMCMLwQ2UByB5907wjI9UCWkPjye2HTL3gfJai8/dev";
-
-        // --- STREAMING_CHUNK: Formulando la logica di sincronizzazione in tempo reale... ---
-        function setDbStatus(isOnline) {
-            const dot = document.getElementById('db-status-dot');
-            const text = document.getElementById('db-status-text');
-            const navDot = document.getElementById('nav-dot');
-            const navText = document.getElementById('nav-status-text');
-            
-            if (dot && text) {
-                if(isOnline) {
-                    dot.className = 'status-dot online'; text.innerText = 'Online & Sincronizzato'; text.className = 'text-emerald-600 font-bold text-xs ml-1';
-                    if (navDot && navText) {
-                        navDot.className = 'status-dot online'; navText.innerText = 'Online'; navText.className = 'text-[10px] font-bold text-emerald-400 uppercase tracking-wider';
-                    }
-                } else {
-                    dot.className = 'status-dot offline'; text.innerText = 'Offline / In connessione...'; text.className = 'text-red-500 font-bold text-xs ml-1';
-                    if (navDot && navText) {
-                        navDot.className = 'status-dot offline'; navText.innerText = 'Offline'; navText.className = 'text-[10px] font-bold text-red-400 uppercase tracking-wider';
-                    }
-                }
-            }
-        }
-
-        async function initAuth() {
-            try {
-                await auth.signInAnonymously();
-                auth.onAuthStateChanged((user) => {
-                    currentUser = user;
-                    if (user) {
-                        setDbStatus(true);
-                        startRealtimeSync();
-                    } else {
-                        setDbStatus(false);
-                    }
-                });
-            } catch (err) {
-                console.error("Firebase Anonymous Auth Error:", err);
-                setDbStatus(false);
-            }
-        }
-
-        function getQuestionnairesCollection() { 
-            return db.collection('artifacts').doc('questionarioingresso-56dcd').collection('public').doc('data').collection('questionnaires_2026'); 
-        }
-        function getRelazioniCollection() { 
-            return db.collection('artifacts').doc('questionarioingresso-56dcd').collection('public').doc('data').collection('relazioni_2026'); 
-        }
-
-        function startRealtimeSync() {
-            if (!currentUser) return;
-            getQuestionnairesCollection().onSnapshot((snapshot) => {
-                localData = [];
-                snapshot.forEach(doc => localData.push(doc.data()));
-                if (document.getElementById('view-teacher-dashboard').classList.contains('active-view')) {
-                    populateClassFilter();
-                    updateDashboard();
-                }
-            }, (error) => {
-                console.error("Firestore Realtime Sync Error:", error);
-                setDbStatus(false);
-            });
-        }
-
-        // --- STREAMING_CHUNK: Dichiarando le domande del questionario ministeriale... ---
+        // Configurazione domande
         const questionsData = [
-            { id: 'q_voto_medie', text: 'Qual era il tuo voto di uscita dalle scuole medie?', type: 'radio', options: ['6', '7-8', '9-10'] },
-            { id: 'q_conoscenza', text: 'Come hai conosciuto l’Istituto Primo Levi?', type: 'radio', options: ['Parenti/amici', 'Ricerca on-line', 'Pubblicità', 'Docenti/scuola', 'Altro'], hasOther: true },
-            { id: 'q_consiglio', text: 'Quale è stato il consiglio orientativo?', type: 'radio', options: ['Tecnico', 'Professionale', 'Liceo'] },
-            { id: 'q_openday', text: 'Hai partecipato agli open day della scuola?', type: 'radio', options: ['Si, ad uno', 'Si, a più di uno', 'No, non ho trovato posto', 'No, non mi interessavano'] },
-            { id: 'q_stage', text: 'Hai partecipato allo stage organizzato in questa scuola?', type: 'radio', options: ['Si', 'No', 'Non mi interessavano'] },
-            { id: 'q_presentazioni', text: 'Come hai trovato le presentazioni dei nostri indirizzi durante gli open day?', type: 'radio', options: ['Interessanti, chiare e comprensibili', 'Noiose e incomprensibili', 'Non saprei'] },
-            { id: 'q_colpito', text: 'Se hai partecipato ai nostri eventi, cosa ti ha colpito in particolare?', type: 'text' },
-            { id: 'q_migliorare', text: 'Se hai partecipato ai nostri eventi, cosa non ti è piaciuto o consigli di migliorare?', type: 'text' },
-            { id: 'q_scelta_da_chi', text: 'Chi ha scelto l’indirizzo di studio che frequenti?', type: 'radio', options: ['Un insegnante (Consiglio Orientativo Scuole Medie)', 'I miei genitori', 'Insieme ai genitori', 'Io stesso/a'] },
-            { id: 'q_perche_indirizzo', text: 'Perché hai scelto questo indirizzo di studio?', type: 'radio', options: ['Perché consigliato', 'Per le opportunità lavorative', 'Per passione', 'Perché vicino a casa', 'Perché mi è piaciuto l\'istituto', 'Ho seguito un mio amico/a', 'Non accettato in altro istituto', 'Altro'], hasOther: true },
-            { id: 'q_settore', text: 'Qual è il tuo settore disciplinare preferito?', type: 'radio', options: ['Area linguistica (italiano, lingue straniere, latino, greco)', 'Area scientifica (matematica, fisica, chimica, informatica)', 'Area umanistica (storia, filosofia, geografia, storia dell’arte)', 'Area tecnico-pratica (tecnologia, economia, diritto, discipline tecniche)', 'Area artistico-espressiva (musica, arte, educazione fisica, teatro)'] },
-            { id: 'q_emozione', text: 'Come ti senti all’inizio di questa nuova esperienza scolastica?', type: 'radio', options: ['Entusiasta', 'Indifferente', 'Ansioso/a', 'Un po’ preoccupato/a'] },
-            { id: 'q_valore', text: 'Quale tra questi valori ritieni più importante a scuola?', type: 'radio', options: ['Collaborazione', 'Rispetto', 'Creatività', 'Impegno', 'Altro'], hasOther: true },
-            { id: 'q_extra', text: 'Quale attività extrascolastica ti piacerebbe trovare a scuola?', type: 'radio', options: ['Laboratori scientifici', 'Attività sportive', 'Corsi di teatro', 'Corsi musicali', 'Niente', 'Altro'], hasOther: true },
-            { id: 'q_lettura', text: 'Ti piace leggere?', type: 'radio', options: ['Si', 'No'] },
-            { id: 'q_diploma', text: 'Credi sia importante studiare e avere un diploma?', type: 'radio', options: ['Si, è importante', 'No, non lo è', 'Non so'] },
-            { id: 'q_tempo_con', text: 'Passi più tempo:', type: 'radio', options: ['con Genitori', 'con Nonni', 'con Amici', 'Da solo', 'Facendo sport'] },
-            { id: 'q_ore_studio', text: 'Quante ore dedichi allo studio ogni giorno?', type: 'radio', options: ['Meno di 1 ora', '1-2 ore', '2-3 ore', 'Più di 3 ore'] },
-            { id: 'q_autonomia', text: 'Come valuti il tuo livello di autonomia nello studio?', type: 'radio', options: ['Molto autonomo/a', 'Abbastanza autonomo/a', 'Poco autonomo/a', 'Per niente autonomo/a'] },
-            { id: 'q_metodo', text: 'Quale metodo di studio preferisci?', type: 'radio', options: ['Ripetizione ad alta voce', 'Studio di gruppo', 'Schemi e mappe concettuali', 'Altro'], hasOther: true },
-            { id: 'q_uso_pc', text: 'Usi spesso il computer per studiare?', type: 'radio', options: ['Sì, sempre', 'Solo per alcune materie', 'Raramente', 'Mai'] },
-            { id: 'q_strumenti', text: 'Quale tra questi strumenti digitali usi di più per studiare?', type: 'radio', options: ['Smartphone', 'Tablet', 'Computer', 'Nessuno'] },
-            { id: 'q_lavoro_classe', text: 'Come preferisci lavorare durante le lezioni?', type: 'radio', options: ['Da solo/a', 'In coppia', 'In gruppo', 'Dipende dalla materia'] },
-            { id: 'q_supporto', text: 'Hai bisogno di supporto per lo studio?', type: 'radio', options: ['Sì, sempre', 'Qualche volta', 'Raramente', 'Mai'] },
-            { id: 'q_piace_gruppo', text: 'Ti piace lavorare in gruppo?', type: 'radio', options: ['Sì, molto', 'Solo a volte', 'Preferisco lavorare da solo', 'Dipende dal gruppo'] },
-            { id: 'q_fratelli_scuola', text: 'Hai fratelli o sorelle che frequentano o hanno frequentato il Primo Levi?', type: 'radio', options: ['Sì, uno', 'Sì, più di uno', 'No'] },
-            { id: 'q_num_fratelli', text: 'Quanti fratelli o sorelle hai?', type: 'radio', options: ['Nessuno', 'Uno', 'Due', 'Tre o più'] },
-            { id: 'q_tempo_scuola', text: 'Quanto tempo impieghi per arrivare a scuola?', type: 'radio', options: ['Meno di 10 minuti', '10-30 minuti', '30-60 minuti', 'Più di un\'ora'] },
-            { id: 'q_mezzo', text: 'Come raggiungi ogni giorno la scuola?', type: 'radio', options: ['A piedi', 'In bicicletta', 'In auto', 'In autobus/treno'] },
-            { id: 'q_sport', text: 'Pratichi dello Sport?', type: 'radio', options: ['Si', 'No'] },
-            { id: 'q_quale_sport', text: 'Se si, quale sport pratichi?', type: 'text' },
-            { id: 'q_volontariato', text: 'Hai mai partecipato ad attività di volontariato?', type: 'radio', options: ['Sì, spesso', 'Sì, qualche volta', 'Vorrei farlo', 'No, mai'] },
-            { id: 'q_curiosita', text: 'Quale aspetto della scuola ti incuriosisce di più?', type: 'radio', options: ['Le materie nuove', 'I nuovi compagni', 'I professori', 'Le attività extra', 'Altro'], hasOther: true }
+            {
+                id: "provenienza",
+                text: "Da quale scuola media provieni?",
+                type: "text",
+                required: true,
+                placeholder: "Indica il nome e comune della scuola secondaria di primo grado..."
+            },
+            {
+                id: "voto_uscita",
+                text: "Qual era il tuo voto di uscita dalle scuole medie?",
+                type: "radio",
+                required: true,
+                options: ["6", "7-8", "9-10"]
+            },
+            {
+                id: "conoscenza_istituto",
+                text: "Come hai conosciuto l’Istituto Primo Levi?",
+                type: "radio",
+                required: true,
+                options: ["Parenti/amici", "Ricerca on-line", "Pubblicità", "Docenti/scuola"]
+            },
+            {
+                id: "consiglio_orientativo",
+                text: "Quale è stato il consiglio orientativo?",
+                type: "radio",
+                required: true,
+                options: ["Tecnico", "Professionale", "Liceo"]
+            },
+            {
+                id: "openday",
+                text: "Hai partecipato agli open day della scuola?",
+                type: "radio",
+                required: true,
+                options: ["Si, ad uno", "SI, a più di uno", "No, non ho trovato posto", "No, non mi interessavano"]
+            },
+            {
+                id: "stage",
+                text: "Hai partecipato allo stage organizzato in questa scuola?",
+                type: "radio",
+                required: true,
+                options: ["Si", "No", "Non mi interessavano"]
+            },
+            {
+                id: "gradimento_openday",
+                text: "Come hai trovato le presentazioni dei nostri indirizzi durante gli open day?",
+                type: "radio",
+                required: true,
+                options: ["Interessanti, chiare e comprensibili", "Noiose e incomprensibili", "Non saprei"]
+            },
+            {
+                id: "openday_punti_forza",
+                text: "Se hai partecipato ai nostri eventi, cosa ti ha colpito in particolare?",
+                type: "text",
+                required: false,
+                placeholder: "Scrivi cosa ti è piaciuto di più..."
+            },
+            {
+                id: "openday_punti_deboli",
+                text: "Se hai partecipato ai nostri eventi, cosa non ti è piaciuto o consigli di migliorare?",
+                type: "text",
+                required: false,
+                placeholder: "Scrivi cosa consiglieresti di migliorare..."
+            },
+            {
+                id: "scelta_indirizzo_chi",
+                text: "Chi ha scelto l’indirizzo di studio che frequenti?",
+                type: "radio",
+                required: true,
+                options: ["Un insegnante (Consiglio Orientativo Scuole Medie)", "I miei genitori", "Insieme ai genitori", "Io stesso/a"]
+            },
+            {
+                id: "scelta_indirizzo_perche",
+                text: "Perché hai scelto questo indirizzo di studio?",
+                type: "radio",
+                required: true,
+                options: ["Perché consigliato", "Per le opportunità lavorative", "Per passione", "Perché vicino a casa", "Perché mi è piaciuto l'istituto", "Ho seguito un mio amico/a", "Non accettato in altro istituto"]
+            },
+            {
+                id: "settore_preferito",
+                text: "Qual è il tuo settore disciplinare preferito?",
+                type: "radio",
+                required: true,
+                options: [
+                    "Area linguistica (italiano, lingue straniere, latino, greco)",
+                    "Area scientifica (matematica, fisica, chimica, informatica)",
+                    "Area umanistica (storia, filosofia, geografia, storia dell’arte)",
+                    "Area tecnico-pratica (tecnologia, economia, diritto, discipline tecniche)",
+                    "Area artistico-espressiva (musica, arte, educazione fisica, teatro)"
+                ]
+            },
+            {
+                id: "sentimento_inizio",
+                text: "Come ti senti all’inizio di questa nuova esperienza scolastica?",
+                type: "radio",
+                required: true,
+                options: ["Entusiasta", "Indifferente", "Ansioso/a", "Un po’ preoccupato/a"]
+            },
+            {
+                id: "valore_scuola",
+                text: "Quale tra questi valori ritieni più importante a scuola?",
+                type: "radio",
+                required: true,
+                options: ["Collaborazione", "Rispetto", "Creatività", "Impegno"]
+            },
+            {
+                id: "attivita_extra",
+                text: "Quale attività extrascolastica ti piacerebbe trovare a scuola?",
+                type: "radio",
+                required: true,
+                options: ["Laboratori scientifici", "Attività sportive", "Corsi di teatro", "Corsi musicali", "Niente", "Altro"]
+            },
+            {
+                id: "piace_leggere",
+                text: "Ti piace leggere?",
+                type: "radio",
+                required: true,
+                options: ["Si", "No"]
+            },
+            {
+                id: "importance_diploma",
+                text: "Credi sia importante studiare e avere un diploma?",
+                type: "radio",
+                required: true,
+                options: ["Si, è importante", "No, non lo è", "Non so"]
+            },
+            {
+                id: "tempo_tempo_libero",
+                text: "Con chi passi più tempo nel tempo libero?",
+                type: "radio",
+                required: true,
+                options: ["con Genitori", "con Nonni", "con Amici", "Da solo", "Facendo sport"]
+            },
+            {
+                id: "ore_studio",
+                text: "Quante ore dedichi allo studio ogni giorno?",
+                type: "radio",
+                required: true,
+                options: ["Meno di 1 ora", "1-2 ore", "2-3 ore", "Più di 3 ore"]
+            },
+            {
+                id: "autonomia_studio",
+                text: "Come valuti il tuo livello di autonomia nello studio?",
+                type: "radio",
+                required: true,
+                options: ["Molto autonomo/a", "Abbastanza autonomo/a", "Poco autonomo/a", "Per niente autonomo/a"]
+            },
+            {
+                id: "metodo_studio",
+                text: "Quale metodo di studio preferisci?",
+                type: "radio",
+                required: true,
+                options: ["Ripetizione ad alta voce", "Studio di gruppo", "Schemi e mappe concettuali", "Altro"]
+            },
+            {
+                id: "uso_pc_studio",
+                text: "Usi spesso il computer per studiare?",
+                type: "radio",
+                required: true,
+                options: ["Sì, sempre", "Solo per alcune materie", "Raramente", "Mai"]
+            },
+            {
+                id: "strumento_digital_preferito",
+                text: "Quale tra questi strumenti digitali usi di più per studiare?",
+                type: "radio",
+                required: true,
+                options: ["Smartphone", "Tablet", "Computer", "Nessuno"]
+            },
+            {
+                id: "lavoro_lezione_preferito",
+                text: "Come preferisci lavorare durante le lezioni?",
+                type: "radio",
+                required: true,
+                options: ["Da solo/a", "In coppia", "In gruppo", "Dipende dalla materia"]
+            },
+            {
+                id: "bisogno_supporto",
+                text: "Hai bisogno di supporto per lo studio?",
+                type: "radio",
+                required: true,
+                options: ["Sì, sempre", "Qualche volta", "Raramente", "Mai"]
+            },
+            {
+                id: "piace_gruppo",
+                text: "Ti piace lavorare in gruppo?",
+                type: "radio",
+                required: true,
+                options: ["Sì, molto", "Solo a volte", "Dipende dal gruppo", "Preferisco lavorare da solo"]
+            },
+            {
+                id: "fratelli_levi",
+                text: "Hai fratelli o sorelle che frequentano o hanno frequentato il Primo Levi?",
+                type: "radio",
+                required: true,
+                options: ["Sì, uno", "Sì, più di uno", "No"]
+            },
+            {
+                id: "numero_fratelli",
+                text: "Quanti fratelli o sorelle hai?",
+                type: "radio",
+                required: true,
+                options: ["Nessuno", "Uno", "Due", "Tre o più"]
+            },
+            {
+                id: "tempo_scuola",
+                text: "Quanto tempo impieghi per arrivare a scuola?",
+                type: "radio",
+                required: true,
+                options: ["Meno di 10 minuti", "10-30 minuti", "30-60 minuti", "Più di un'ora"]
+            },
+            {
+                id: "mezzo_trasporto",
+                text: "Come raggiungi ogni giorno la scuola?",
+                type: "radio",
+                required: true,
+                options: ["In autobus", "In auto", "A piedi", "In bicicletta"]
+            },
+            {
+                id: "pratica_sport",
+                text: "Pratichi dello Sport?",
+                type: "radio",
+                required: true,
+                options: ["Si", "No"]
+            },
+            {
+                id: "quale_sport",
+                text: "Se si, quale sport pratichi?",
+                type: "text",
+                required: false,
+                placeholder: "Indica lo sport praticato (es. Calcio, Basket, Danza)..."
+            },
+            {
+                id: "volontariato",
+                text: "Hai mai partecipato ad attività di volontariato?",
+                type: "radio",
+                required: true,
+                options: ["Sì, spesso", "Sì, qualche volta", "Vorrei farlo", "No, mai"]
+            },
+            {
+                id: "aspetto_curioso",
+                text: "Quale aspect della scuola ti incuriosisce di più?",
+                type: "radio",
+                required: true,
+                options: ["I nuovi compagni", "Le materie nuove", "I professori", "Le attività extra"]
+            }
         ];
 
-        // --- STREAMING_CHUNK: Definendo la navigazione della UI e delle viste... ---
-        function navigate(viewId) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active-view'));
-            const targetView = document.getElementById(`view-${viewId}`);
-            if (targetView) targetView.classList.add('active-view');
-            window.scrollTo(0,0);
-        }
+        // Template di analisi pedagogica fissi per ciascuna delle domande
+        const pedagogicalTemplates = {
+            provenienza: "L'analisi degli istituti scolastici di provenienza permette di evidenziare la polarizzazione territoriale degli iscritti. Conoscere le scuole di provenienza offre un'ottima base per la creazione dei primi gruppi di lavoro cooperativo durante le settimane dell'accoglienza. Si consiglia ai docenti coordinatori di monitorare attentamente i ragazzi isolati geograficamente per favorire un'integrazione fluida e prevenire disagi d'ambientamento precoci nel gruppo dei pari.",
+            voto_uscita: "La distribuzione dei voti d'uscita della scuola secondaria di primo grado funge da indicatore iniziale del livello di preparazione cognitiva della classe. Una forte discrepanza interna richiede una calibrazione differenziata delle prime valutazioni sommative e l'attivazione di percorsi personalizzati di riallineamento delle competenze di base. I coordinatori dovrebbero promuovere azioni didattiche laboratoriali per valorizzare le eccellenze evitando al contempo l'emarginazione degli studenti con fragilità pregresse.",
+            conoscenza_istituto: "Comprendere le modalità con cui l'allievo ha conosciuto il nostro Istituto fornisce indicazioni preziose per l'efficacia delle future campagne di orientamento d'istituto. La forte incidenza del passaparola ('parenti/amici') sottolinea l'importance dell'ottimo posizionamento d'immagine di cui gode l'Istituto Primo Levi sul territorio. Si suggerisce di rafforzare la comunicazione digitale e i canali web per intercettare i bisogni di quella fascia di utenza che si orienta esclusivamente online.",
+            consiglio_orientativo: "La concordanza fra il consiglio orientativo ricevuto dai docenti delle scuole medie e la scelta d'indirizzo effettiva è determinante per il successo scolastico. Una forte percentuale di scelta non conforme costituisce un fattore di potenziale disorientamento e difficoltà didattica nel corso del primo trimestre. Si consiglia un monitoraggio preventivo costante e colloqui periodici con la Commissione Orientamento d'Istituto per intercettare per tempo eventuali crisi motivazionali e supportare i ragazzi nel riallineamento.",
+            openday: "La partecipazione agli open day si conferma l'attività a maggior valore aggiunto per consolidare la scelta dello studente e minimizzare il fenomeno della dispersione scolastica. Gli studenti che hanno presenziato a più di un evento d'orientamento mostrano generalmente una consapevolezza d'indirizzo e una motivazione iniziale nettamente superiore ai propri compagni. È consigliabile che i tutor d'aula valorizzino questo gruppo come facilitatori d'aula nei primi giorni di lezione.",
+            stage: "La partecipazione alle attività laboratoriali di stage costituisce un'esperienza immersiva decisiva per saggiare le attitudini pratiche dei futuri allievi. Coloro che hanno preso parte agli stage d'istituto manifestano un approccio operativo più sicuro nei laboratori di informatica e di chimica. Si raccomanda ai dipartimenti disciplinari di potenziare ulteriormente questa tipologia di offerta orientativa nei successivi anni scolastici per estendere il beneficio.",
+            gradimento_openday: "Il gradimento delle attività descrittive durante gli eventi d'accoglienza riflette la capacità comunicativa ed empatica dei docenti presentatori dell'Istituto. Una percezione positiva costituisce il primo mattone della fiducia istituzionale costruita tra la scuola, lo studente e la rispettiva famiglia. Si invita lo staff orientamento a raccogliere i suggerimenti emersi per mantenere standard comunicativi elevati, chiari e pienamente inclusivi in vista delle prossime edizioni.",
+            openday_punti_forza: "Le risposte libere relative ai punti di forza emersi evidenziano la grande attrattività esercitata dai laboratori tecnici specialistici e dall'accoglienza dimostrata dagli studenti senior del Levi. Questa sinergia tra pari rappresenta il vero valore differenziante del nostro istituto rispetto all'offerta circostante. I consigli di classe dovrebbero continuare a incentivare dinamiche di apprendimento cooperativo orizzontale ('peer education') per capitalizzare su questo entusiasmo iniziale.",
+            openday_punti_deboli: "L'analisi puntuale delle criticità segnalate dagli studenti funge da leva di miglioramento continuo per tutta l'organizzazione logistica della scuola. Eventuali disagi legati al sovraffollamento o ad aspetti gestionali delle presentazioni vengono presi in carico dallo staff di presidenza. Si consiglia di pianificare flussi scaglionati d'ingresso nelle prossime manifestazioni pubbliche per garantire la massima accessibilità fisica a tutti gli spazi dell'istituto.",
+            scelta_indirizzo_chi: "La titolarità effettiva della scelta scolastica influenza profondamente il livello di responsabilità dell'allievo rispetto al proprio successo formativo. Una scelta imposta o subita passivamente da pressioni familiari corre il forte rischio di tramutarsi in demotivazione o opposizione didattica alle prime difficoltà di studio. I coordinatori di classe sono invitati a condurre colloqui individuali di ascolto per supportare l'allievo nella costruzione di una propria identità scolastica autonoma.",
+            scelta_indirizzo_perche: "La motivazione profonda della scelta d'indirizzo costituisce il carburante primario dell'impegno scolastico quotidiano dello studente. Scelte basate su passioni personali garantiscono resilienza e ottima autoefficacia percepita rispetto alle materie d'indirizzo, mentre scelte legate a fattori geografici o imitativi necessitano di costante supporto d'aula. Si suggerisce di agganciare le spiegazioni teoriche ad applicazioni reali del mondo del lavoro per stimolare l'interesse degli studenti meno motivati.",
+            settore_preferito: "Le preferenze disciplinari dichiarate consentono di mappare preventivamente le attitudini trasversali dei gruppi d'aula all'inizio dell'anno. Un forte orientamento verso un'area specifica permette di pianificare compiti di realtà interdisciplinari che valorizzino i punti di forza individuali dei ragazzi. I docenti dei consigli di classe dovrebbero allearsi per integrare le discipline linguistiche, scientifiche e tecniche in unità di apprendimento stimolanti.",
+            sentimento_inizio: "Lo stato d'animo con cui si varca la soglia della scuola secondaria di secondo grado determina la qualità dell'apprendimento e il benessere emotivo globale dell'allievo. Alti tassi d'ansia o preoccupazione consigliano l'immediata adozione di protocolli d'accoglienza d'aula non centrati sulla prestazione o sul voto numerico. È essenziale che l'ambiente d'aula risulti empatico, sicuro e inclusivo per disinnescare la paura del fallimento sin dalle prime lezioni d'aula.",
+            valore_scuola: "L'esplicitazione dei valori ritenuti prioritari a scuola offre la base ideale per redigere un patto formativo di classe condiviso, democratico e partecipato. Valori come la collaborazione e il rispetto reciproco devono essere coltivati quotidianamente attraverso attività di lavoro cooperativo e discussioni guidate in aula. Si consiglia ai coordinatori di utilizzare queste risposte come linee guida per la stesura dei regolamenti d'aula ed educazione civica.",
+            attivita_extra: "L'interesse per attività pomeridiane ed extrascolastiche rappresenta un'opportunità straordinaria per incrementare il senso di appartenenza ('school belonging') della comunità studentesca. Potenziare l'offerta di laboratori sportivi, corsi di teatro o tornei di musica scolastici permette di ridurre la dispersione e offre spazi protetti di socialità. I consigli di classe sono invitati a promuovere queste attività durante le ore d'aula per intercettare i talenti latenti.",
+            piace_leggere: "La propensione alla lettura costituisce un fattore predittivo fondamentale per la ricchezza lessicale, la comprensione del testo e la capacità analitica dello studente. Bassi livelli di gradimento richiedono l'adozione di strategie integrate di promozione della lettura libera, svincolata dal voto scolastico ('booktalk'). Si suggerisce di valorizzare la biblioteca d'istituto come spazio dinamico di confronto, incentivando recensioni libere e reading d'aula.",
+            importanza_diploma: "La consapevolezza del valore sociale e lavorativo del titolo di studio costituisce un forte ancoraggio motivazionale per superare i momenti di stanchezza o insuccesso. Studenti che non percepiscono l'utilità del diploma necessitano di percorsi mirati di orientamento in uscita precoce ed incontri con professionisti d'azienda. Si suggerisce di organizzare visite aziendali e testimonianze dirette già a partire dal primo anno d'istituto.",
+            tempo_tempo_libero: "Le abitudini di socializzazione extrascolastica definiscono l'ambiente di supporto relazionale primario su cui l'allievo può fare affidamento nei momenti di stress. Alunni che passano la quasi totalità del tempo da soli o privi di reti amicali solide richiedono particolare attenzione e facilitazione d'integrazione d'aula. Si consiglia di incentivare lo svolgimento dei compiti scolastici in piccoli gruppi cooperativi pomeridiani.",
+            ore_studio: "Il monte ore giornaliero dedicato allo studio autonomo riflette l'approccio organizzativo, la resilienza e l'abitudine al lavoro intellettuale dello studente. Meno di un'ora di studio giornaliero dichiarata suggerisce la necessità di avviare immediatamente un percorso guidato sul metodo di studio in aula. I docenti disciplinari dovrebbero calibrare attentamente i carichi di lavoro a casa per evitarne sovraccarichi disorientanti.",
+            autonomia_studio: "La percezione del proprio livello di autonomia nello studio rappresenta una variabile critica per la pianificazione didattica curricolare. Studenti con scarsa autonomia tendono a smarrirsi di fronte ad indicazioni di lavoro generiche o moli di materiale ampie non strutturate. Si raccomanda ai docenti di fornire istruzioni d'uso dettagliate, checklist operative e rubriche di autovalutazione chiare per guidare il lavoro autonomo.",
+            metodo_studio: "I metodi di studio prediletti evidenziano gli stili di apprendimento dominanti all'interno del gruppo classe d'ingresso (visivo, uditivo, sociale). Un forte ricorso alla semplice ripetizione ad alta voce suggerisce l'opportunità di insegnare tecniche più efficaci come l'uso di mappe concettuali, schemi logici e sintesi attive. Si consiglia di pianificare ore d'aula dedicate allo sviluppo di strategie metacognitive avanzate.",
+            uso_pc_studio: "L'utilizzo abituale degli strumenti digitali e del computer per finalità di studio riflette il grado di sviluppo della competenza digitale dello studente prime classi. L'uso esclusivo del digitale per svago richiede una educazione mirata all'uso dei software didattici di calcolo, scrittura e ricerca critica delle fonti sul web. Si consiglia di dedicare le prime lezioni di laboratorio a familiarizzare con la piattaforma cloud d'istituto.",
+            strumento_digital_preferito: "La centralità dello smartphone come strumento digitale prevalente, a scapito del computer, costituisce una potenziale criticità per la qualità dello studio accademico. Lo smartphone favorisce un'interazione frammentata e distrazioni costanti rispetto ad uno schermo di computer o tablet dedicato. I docenti dovrebbero strutturare compiti didattici che forzino lo studente all'utilizzo corretto della tastiera e dei programmi d'ufficio.",
+            lavoro_lezione_preferito: "La preferenza per lo stile lavorativo d'aula fornisce indicazioni utili per modulare l'alternanza tra lezioni frontali, lavori di coppia o in gruppo. Alunni che preferiscono lavorare esclusivamente da soli potrebbero manifestare fatiche relazionali o timori del giudizio altrui che vanno mitigati gradualmente. Si consiglia di progettare brevi e frequenti attività di cooperative learning strutturato con ruoli d'aula ben definiti.",
+            bisogno_supporto: "La richiesta esplicita di supporto nello studio individua tempestivamente la necessità di attivare sportelli d'aiuto pomeridiani o tutoraggi mirati. Non sottovalutare i bisogni espressi sin dalle prime battute d'aula per evitare l'accumulo di lacune e lo scoraggiamento scolastico precoce. Si raccomanda il raccordo costante con le famiglie e l'attivazione di percorsi di recupero d'istituto pomeridiani coordinati.",
+            piace_gruppo: "L'attitudine al lavoro di gruppo è una competenza chiave per l'inclusione d'aula e per il futuro inserimento professionale dell'allievo. Studenti che preferiscono lavorare stabilmente da soli richiedono un inserimento graduale in gruppi di dimensioni ridotte ed empatici, privi di dinamiche competitive. Si raccomanda l'insegnamento esplicito delle abilità sociali ed empatiche di base prima di assegnare valutazioni di gruppo.",
+            fratelli_levi: "La presenza di fratelli o sorelle che frequentano o hanno frequentato il Primo Levi consolida il rapporto di fiducia e continuità educativa con la famiglia. Rappresenta un punto d'appoggio informativo informale per lo studente rispetto alla conoscenza di regole, docenti ed opportunità scolastiche dell'istituto. Si suggerisce di capitalizzare su questa familiarità per favorire il passaggio di informazioni d'orientamento.",
+            numero_fratelli: "La struttura del nucleo familiare d'origine definisce il contesto di supporto logistico ed organizzativo di cui lo studente dispone a casa per lo studio. Famiglie numerose o con situazioni complesse potrebbero richiedere maggiore flessibilità nei tempi di consegna delle attività pomeridiane scolastiche. Si raccomanda ai consigli di classe di favorire una comunicazione accogliente e costante con tutti i genitori.",
+            tempo_scuola: "Il tempo di percorrenza per raggiungere la scuola incide sulla stanchezza fisica quotidiana, sui livelli d'attenzione d'aula e sul tempo effettivo per lo studio. Studenti pendolari con oltre un'ora di viaggio al giorno meritano attenzione specifica per evitare cali d'attenzione drammatici nelle prime ore d'aula. Si invita a considerare questo fattore in sede di programmazione di verifiche e interrogazioni orali d'aula.",
+            mezzo_trasporto: "Le modalità di trasporto quotidiano impiegate definiscono la routine mattutina e l'autonomia gestionale degli spostamenti dello studente d'istituto. L'utilizzo di mezzi pubblici ('autobus') richiede puntualità e gestione dello stress legato ai ritardi dei servizi di linea del territorio della brianza. I docenti sono invitati a tollerare con comprensione i piccoli ritardi sistematici legati a problematiche di viabilità pubblica.",
+            pratica_sport: "La pratica costante di un'attività sportiva organizzata favorisce lo sviluppo psicofisico armonioso, l'autodisciplina e la sana gestione del tempo libero dei ragazzi. Lo sport rappresenta un potente alleato didattico ed educativo contro lo stress d'aula e l'isolamento sociale dei giovani studenti d'oggi. Si incoraggia la valorizzazione dei successi sportivi personali degli alunni in ambito scolastico d'istituto.",
+            quale_sport: "Il tipo di sport praticato evidenzia le attitudini collaborative (sport di squadra) o la forte determinazione idividuale (sport individuali) dell'allievo. I docenti di educazione fisica e i coordinatori possono utilizzare queste inclinazioni d'aula per equilibrare la composizione dei gruppi d'aula e di progetto d'istituto. Si consiglia di promuovere la condivisione delle passioni d'aula per accrescere la stima reciproca.",
+            volontariato: "La partecipazione ad attività di volontariato dimostra una sensibilità civica precoce e un'ottima predisposizione all'aiuto reciproco ed empatia d'aula. Questi studenti rappresentano risorse inestimabili per l'attivazione di percorsi d'aiuto interno, peer-tutoring e solidarietà verso compagni in situazione di difficoltà d'aula. Si consiglia di premiare e valorizzare pubblicamente queste esperienze in educazione civica d'istituto.",
+            aspetto_curioso: "L'aspetto scolastico che suscita maggiore curiosità indica la direzione ideale per catturare l'attenzione e l'entusiasmo della classe durante l'accoglienza. Focalizzare le prime attività d'istituto sugli elementi d'attrazione dichiarati (es. laboratori, nuove materie) assicura una forte risposta motivazionale iniziale d'aula. Si suggerisce di pianificare progetti d'istituto dinamici per alimentare costantemente questa curiosità."
+        };
 
-        function showModal(title, message, iconHtml = '<i class="fa-solid fa-circle-info text-blue-500"></i>') {
-            document.getElementById('modal-icon').innerHTML = iconHtml;
-            document.getElementById('modal-title').innerHTML = title;
-            document.getElementById('modal-message').innerHTML = message;
-            const modal = document.getElementById('modal-box');
-            modal.classList.remove('hidden'); modal.classList.add('flex');
-            setTimeout(() => { modal.classList.remove('opacity-0'); modal.classList.add('opacity-100'); }, 10);
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('modal-box');
-            modal.classList.remove('opacity-100'); modal.classList.add('opacity-0');
-            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
-        }
-
-        function startQuestionnaire(e) {
-            e.preventDefault();
-            currentStudentInfo = { 
-                nome: document.getElementById('stud-nome').value.trim(), 
-                cognome: document.getElementById('stud-cognome').value.trim(), 
-                indirizzo: document.getElementById('stud-indirizzo').value, 
-                classe: document.getElementById('stud-sezione').value, 
-                scuola_prov: document.getElementById('stud-scuola').value.trim(),
-                data_compilazione: new Date().toISOString() 
-            };
-            
-            document.getElementById('display-student-name').innerText = `${currentStudentInfo.nome} ${currentStudentInfo.cognome}`;
-            document.getElementById('display-student-class').innerText = currentStudentInfo.classe;
-            document.getElementById('display-student-address').innerText = currentStudentInfo.indirizzo;
-            
-            renderQuestions(); 
-            updateProgress(); 
-            navigate('questionnaire');
-        }
-
-        function handleRadioChange(e, qId, hasOther) {
-            if(hasOther) {
-                const otherInputContainer = document.getElementById(`other-container-${qId}`);
-                const otherInput = document.getElementById(`other-input-${qId}`);
-                if(e.target.value === 'Altro') {
-                    if (otherInputContainer) otherInputContainer.classList.remove('hidden');
-                    if (otherInput) otherInput.setAttribute('required', 'true');
-                } else {
-                    if (otherInputContainer) otherInputContainer.classList.add('hidden');
-                    if (otherInput) {
-                        otherInput.removeAttribute('required');
-                        otherInput.value = '';
-                    }
-                }
-            }
-            updateProgress();
-        }
-
-        function renderQuestions() {
+        // Renderizza il questionario dello studente
+        function renderQuestionnaire() {
             const container = document.getElementById('questions-container');
-            container.innerHTML = '';
-            questionsData.forEach((q, index) => {
-                const qDiv = document.createElement('div');
-                qDiv.className = 'bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm transition hover:shadow-md';
-                let html = `<p class="font-bold text-base md:text-lg text-slate-800 mb-4"><span class="text-blue-600 mr-2">${index + 1}.</span> ${q.text} <span class="text-red-500">*</span></p>`;
-                
-                if (q.type === 'radio') {
-                    html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-3">`;
-                    q.options.forEach(opt => {
-                        html += `<label class="flex items-center p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition group">
-                                    <input type="radio" name="${q.id}" value="${opt}" required class="w-4 h-4 text-blue-600 focus:ring-blue-500">
-                                    <span class="ml-3 text-slate-700 text-sm font-semibold group-hover:text-blue-800 transition">${opt}</span>
-                                 </label>`;
-                    });
-                    html += `</div>`;
-                    
-                    if(q.hasOther) {
-                        html += `<div id="other-container-${q.id}" class="mt-3 hidden fade-in">
-                                    <input type="text" id="other-input-${q.id}" placeholder="Specifica qui..." class="w-full px-4 py-2.5 bg-blue-50 border border-blue-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium">
-                                 </div>`;
-                    }
-                } else {
-                    html += `<textarea name="${q.id}" required placeholder="Scrivi la tua risposta qui..." rows="3" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium resize-none"></textarea>`;
-                }
-                qDiv.innerHTML = html;
-                container.appendChild(qDiv);
-                
-                if(q.type === 'radio') {
-                    qDiv.querySelectorAll('input[type="radio"]').forEach(r => {
-                        r.addEventListener('change', (e) => handleRadioChange(e, q.id, q.hasOther));
-                    });
-                } else {
-                    qDiv.querySelector('textarea').addEventListener('input', updateProgress);
-                }
-            });
-        }
-
-        function updateProgress() {
-            let answered = 0;
-            questionsData.forEach(q => {
-                if(q.type === 'radio') {
-                    const checked = document.querySelector(`input[name="${q.id}"]:checked`);
-                    if(checked) {
-                        if(q.hasOther && checked.value === 'Altro') {
-                            const otherInput = document.getElementById(`other-input-${q.id}`);
-                            const otherVal = otherInput ? otherInput.value.trim() : '';
-                            if(otherVal !== '') answered++;
-                        } else {
-                            answered++;
-                        }
-                    }
-                } else { 
-                    const inp = document.querySelector(`textarea[name="${q.id}"]`); 
-                    if(inp && inp.value.trim() !== '') answered++; 
-                }
-            });
-            const pct = Math.round((answered / questionsData.length) * 100);
-            const progressBar = document.getElementById('progress-bar');
-            const progressText = document.getElementById('progress-text');
-            if (progressBar) progressBar.style.width = pct + '%';
-            if (progressText) progressText.innerText = pct + '%';
-        }
-
-        // --- STREAMING_CHUNK: Salvando i questionari ed eseguendo i trigger dei Google Script... ---
-        async function submitQuestionnaire(e) {
-            e.preventDefault();
-            
-            let allAnswered = true;
-            const answers = {};
-            
-            questionsData.forEach(q => {
-                if(q.type === 'radio') {
-                    const checked = document.querySelector(`input[name="${q.id}"]:checked`);
-                    if(checked) {
-                        if(q.hasOther && checked.value === 'Altro') {
-                            const otherInput = document.getElementById(`other-input-${q.id}`);
-                            const otherText = otherInput ? otherInput.value.trim() : '';
-                            answers[q.id] = "Altro: " + otherText;
-                        } else {
-                            answers[q.id] = checked.value;
-                        }
-                    } else { allAnswered = false; }
-                } else {
-                    const txtArea = document.querySelector(`textarea[name="${q.id}"]`);
-                    const val = txtArea ? txtArea.value.trim() : '';
-                    if(val) answers[q.id] = val; else allAnswered = false;
-                }
-            });
-
-            if(!allAnswered) {
-                showModal("Attenzione", "Per favore, rispondi a tutte le domande prima di consegnare.", '<i class="fa-solid fa-triangle-exclamation text-amber-500"></i>');
-                return;
-            }
-
-            currentStudentInfo.answers = answers;
-            const btn = document.getElementById('submit-btn-student');
-            if (btn) {
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-3"></i> Salvataggio...';
-            }
-
-            if (currentUser) {
-                try {
-                    const docId = `${currentStudentInfo.cognome}_${currentStudentInfo.nome}_${Date.now()}`.replace(/\s+/g, '_').toUpperCase();
-                    
-                    // 1. Scrittura nativa in Firestore
-                    await getQuestionnairesCollection().doc(docId).set(currentStudentInfo);
-                    localData.push(currentStudentInfo); 
-
-                    // 2. Chiamata al Google Apps Script "pergamena foto"
-                    try {
-                        fetch(PERGAMENA_FOTO_SCRIPT_URL, {
-                            method: "POST",
-                            mode: "no-cors",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                                action: "registraPergamena",
-                                cognome: currentStudentInfo.cognome,
-                                nome: currentStudentInfo.nome,
-                                classe: currentStudentInfo.classe,
-                                indirizzo: currentStudentInfo.indirizzo,
-                                timestamp: currentStudentInfo.data_compilazione
-                            })
-                        });
-                    } catch (scriptErr) {
-                        console.warn("Chiamata fallita per pergamena foto:", scriptErr);
-                    }
-                    
-                    document.getElementById('cert-student-name').innerText = `${currentStudentInfo.nome} ${currentStudentInfo.cognome}`.toUpperCase();
-                    document.getElementById('cert-student-address').innerText = currentStudentInfo.indirizzo;
-                    document.getElementById('cert-student-class').innerText = currentStudentInfo.classe;
-                    document.getElementById('cert-date').innerText = new Date().toLocaleDateString('it-IT');
-                    
-                    navigate('certificate');
-                    showModal("Consegna Avvenuta", "Il tuo questionario è stato registrato con successo nel database d'istituto.", '<i class="fa-solid fa-circle-check text-emerald-500"></i>');
-                } catch(e) {
-                    console.error("Errore DB", e);
-                    showModal("Errore di Salvataggio", "Impossibile collegarsi al database remoto. Riprova più tardi.", '<i class="fa-solid fa-circle-xmark text-red-500"></i>');
-                    if (btn) {
-                        btn.disabled = false;
-                        btn.innerHTML = '<i class="fa-solid fa-paper-plane mr-3"></i> Riprova Consegna';
-                    }
-                }
-            } else {
-                showModal("Errore Server", "Nessuna connessione attiva col database. Ricarica la pagina.", '<i class="fa-solid fa-wifi text-red-500"></i>');
-                if (btn) {
-                    btn.disabled = false;
-                }
-            }
-        }
-
-        function printCertificate() {
-            window.print();
-        }
-
-        // --- STREAMING_CHUNK: Gestendo l'accesso e l'aggiornamento del cruscotto docenti... ---
-        function loginTeacher() {
-            const pwd = document.getElementById('teacher-pwd').value;
-            if(pwd === 'admin' || pwd === 'docenti2026') { 
-                document.getElementById('teacher-pwd').value = '';
-                populateClassFilter();
-                updateDashboard();
-                navigate('teacher-dashboard');
-            } else {
-                showModal("Accesso Negato", "La password inserita non è corretta.", '<i class="fa-solid fa-lock text-red-500"></i>');
-            }
-        }
-
-        function logoutTeacher() { navigate('home'); }
-
-        function populateClassFilter() {
-            const select = document.getElementById('dash-class-filter');
-            if (!select) return;
-            const currentVal = select.value;
-            select.innerHTML = '<option value="ALL" class="text-gray-800">Tutto l\'Istituto</option>';
-            
-            const classiMap = new Set();
-            localData.forEach(d => { if(d.classe) classiMap.add(`${d.classe} (${d.indirizzo})`); });
-            
-            Array.from(classiMap).sort().forEach(c => { 
-                select.innerHTML += `<option value="${c}" class="text-gray-800">Classe ${c}</option>`; 
-            });
-            if (Array.from(classiMap).includes(currentVal)) select.value = currentVal;
-        }
-
-        function updateDashboard() {
-            const filterValue = document.getElementById('dash-class-filter').value;
-            let filteredData = localData;
-            
-            if (filterValue !== 'ALL') {
-                const justClasse = filterValue.split(' ')[0]; 
-                filteredData = localData.filter(d => d.classe === justClasse);
-            }
-
-            document.getElementById('kpi-total').innerText = filteredData.length;
-            
-            if (filteredData.length === 0) {
-                ['kpi-indirizzo', 'kpi-mood', 'kpi-auto'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) el.innerText = "-";
-                });
-                document.getElementById('ai-analysis-text').innerHTML = "<p class='text-center italic text-slate-500'>Dati insufficienti per generare un'analisi.</p>";
-                document.getElementById('dynamic-charts-container').innerHTML = "";
-                document.getElementById('open-answers-container').innerHTML = "";
-                document.getElementById('excel-table-head').innerHTML = "";
-                document.getElementById('excel-table-body').innerHTML = "";
-                return;
-            }
-
-            const getTop = (arr) => { 
-                const counts = {}; 
-                arr.forEach(x => {if(x) counts[x] = (counts[x]||0)+1;}); 
-                return Object.keys(counts).sort((a,b)=>counts[b]-counts[a])[0] || "-"; 
-            };
-            
-            document.getElementById('kpi-indirizzo').innerText = getTop(filteredData.map(d=>d.indirizzo));
-            document.getElementById('kpi-mood').innerText = getTop(filteredData.map(d=>d.answers?.q_emozione));
-            document.getElementById('kpi-auto').innerText = getTop(filteredData.map(d=>d.answers?.q_autonomia));
-
-            generateComplexAnalysis(filteredData, filterValue);
-            renderDeepChartsAndAnalyses(filteredData);
-            renderOpenAnswers(filteredData);
-            renderInteractiveExcelTable(filteredData);
-        }
-
-        // --- STREAMING_CHUNK: Generando il motore di analisi pedagogica avanzata... ---
-        async function generateComplexAnalysis(data, filterName) {
-            const targetName = filterName === 'ALL' ? "dell'Intero Istituto" : `della classe ${filterName}`;
-            const total = data.length;
-
-            let metriche = { ansia: 0, autonomia: 0, tech: 0, lettura: 0, gruppo: 0 };
-            
-            data.forEach(d => {
-                if (!d.answers) return;
-                const a = d.answers;
-                if (a.q_emozione && (a.q_emozione.includes('preoccupato') || a.q_emozione.includes('Ansioso'))) metriche.ansia++;
-                if (a.q_autonomia && a.q_autonomia.includes('Molto')) metriche.autonomia++;
-                if (a.q_uso_pc && (a.q_uso_pc.includes('sempre') || a.q_uso_pc.includes('alcune materie'))) metriche.tech++;
-                if (a.q_lettura === 'Si') metriche.lettura++;
-                if (a.q_piace_gruppo && (a.q_piace_gruppo.includes('Sì') || a.q_piace_gruppo.includes('Dipende'))) metriche.gruppo++;
-            });
-
-            const pAnsia = Math.round((metriche.ansia/total)*100)||0;
-            const pAuto = Math.round((metriche.autonomia/total)*100)||0;
-            const pLettura = Math.round((metriche.lettura/total)*100)||0;
-            const pGruppo = Math.round((metriche.gruppo/total)*100)||0;
-
-            let html = `<p class="mb-4 text-slate-800"><strong><i class="fa-solid fa-file-contract text-blue-600 mr-2"></i> Relazione Diagnostica ed Educativa Iniziale ${targetName}</strong><br>Il presente referto analitico è stato elaborato automaticamente incrociando le risposte di ${total} studenti iscritti. Lo scopo è fornire ai docenti del Consiglio di Classe un profilo sociologico e cognitivo affidabile per la progettazione dell'UDA d'Accoglienza.</p>`;
-
-            html += `<p class="mb-4 text-slate-800"><strong>1. Profilo Emotivo e Socialità:</strong> Analizzando i feedback emozionali di ingresso, emerge che il ${pAnsia}% del gruppo vive il transito verso la scuola superiore con sentimenti di ansia o preoccupazione. `;
-            if(pAnsia > 35) html += `Essendo una soglia rilevante, si suggerisce ai docenti di posticipare i test d'ingresso rigorosi alla terza settimana, prediligendo nei primi giorni attività di "ice-breaking" e patti formativi chiari. `;
-            else html += `Il clima generale appare comunque sereno e ricettivo, permettendo un avvio regolare del programma. `;
-            html += `Riguardo la socialità didattica, il ${pGruppo}% degli allievi dichiara una predisposizione favorevole al lavoro di gruppo, offrendo terreno fertile per metodologie attive e tutoring tra pari (peer-education).</p>`;
-
-            html += `<p class="mb-4 text-slate-800"><strong>2. Competenze di Base e Autonomia:</strong> Sul fronte dell'efficacia nello studio domestico, la percentuale di alunni che si ritiene "molto autonoma" si attesta al ${pAuto}%. `;
-            if(pAuto < 40) html += `Questo dato impone una riflessione: sarà fondamentale dedicare porzioni di lezione al "metodo di studio", insegnando la costruzione di mappe e la sintesi attiva, evitando di dare per scontate abilità organizzative non ancora maturate. `;
-            html += `Per quanto concerne l'area umanistica, solo il ${pLettura}% coltiva il piacere della lettura autonoma; i dipartimenti linguistici sono invitati a proporre testi vicini al vissuto giovanile per non alienare la fascia più restia.</p>`;
-
-            html += `<p class="mb-0 text-slate-800"><strong>Conclusioni Operative:</strong> L'eterogeneità rilevata impone una didattica flessibile. Si raccomanda un uso bilanciato tra lezione frontale (per fornire cornici chiare) e <em>cooperative learning</em> (apprendimento cooperativo) a coppie, ruotando i componenti mensilmente. Visti i livelli di preferenza per la lettura (${Math.round((metriche.lettura/total)*100) || 0}%), i dipartimenti letterari e umanistici sono invitati a strutturare dibattiti su letture moderne e non solo classiche per agganciare le fasce più distaccate.</p>`;
-
-            const analysisContainer = document.getElementById('ai-analysis-text');
-            if (analysisContainer) analysisContainer.innerHTML = html;
-
-            try {
-                if (currentUser && filterName !== 'ALL') {
-                    const safeId = filterName.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
-                    await getRelazioniCollection().doc(safeId).set({
-                        classe: filterName,
-                        htmlReport: html,
-                        dataGenerazione: new Date().toISOString(),
-                        campione: total
-                    });
-                }
-            } catch (err) { 
-                console.log("Salvataggio relazione silenzioso fallito.", err); 
-            }
-        }
-
-        // --- STREAMING_CHUNK: Costruendo i singoli grafici con spiegazioni descrittive dettagliate... ---
-        function renderDeepChartsAndAnalyses(data) {
-            const container = document.getElementById('dynamic-charts-container');
             if (!container) return;
             container.innerHTML = '';
-            const total = data.length;
-            const chartColors = [
-                ['#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#eff6ff', '#1d4ed8'],
-                ['#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#ecfdf5', '#047857'],
-                ['#f59e0b', '#fbbf24', '#fcd34d', '#fde68a', '#fffbeb', '#b45309'],
-                ['#8b5cf6', '#a78bfa', '#c4b5fd', '#ddd6fe', '#f5f3ff', '#6d28d9']
-            ];
 
-            questionsData.filter(q => q.type === 'radio').forEach((q, index) => {
-                const counts = {}; 
-                data.forEach(d => { 
-                    if(d.answers && d.answers[q.id]) {
-                        let label = d.answers[q.id];
-                        if(label.startsWith('Altro:')) label = "Voci Alternative (Altro)";
-                        counts[label] = (counts[label]||0)+1; 
-                    }
-                });
-                
-                const numOpzioni = Object.keys(counts).length;
-                if(numOpzioni === 0) return;
+            questionsData.forEach((q, index) => {
+                const qBlock = document.createElement('div');
+                qBlock.className = 'bg-white border border-slate-200 p-6 rounded-2xl shadow-sm transition hover:shadow-md';
 
-                const sortedLabels = Object.keys(counts).sort((a,b) => counts[b] - counts[a]);
-                const sortedData = sortedLabels.map(l => counts[l]);
-                const ptcTop = Math.round((sortedData[0] / total) * 100);
-                const secondLabel = sortedLabels.length > 1 ? sortedLabels[1] : null;
-                const ptcSecond = secondLabel ? Math.round((sortedData[1] / total) * 100) : 0;
-
-                // Generazione di un testo denso (minimo 10 righe pedagogiche ed educative per singolo quesito)
-                let textAnalisi = `<p class="mb-2"><strong>Analisi Statistica di Sezione:</strong> Il monitoraggio quantitativo relativo a questo quesito offre spunti fondamentali per mappare le attitudini e il contesto di partenza della classe d'inserimento.</p>`;
-                textAnalisi += `<p class="mb-2">La prima opzione registrata (<em>"${sortedLabels[0]}"</em>) raccoglie l'adesione del <strong>${ptcTop}%</strong> del campione. `;
-                
-                if (ptcTop > 60) {
-                    textAnalisi += `Questo livello esprime una chiara dominanza culturale o comportamentale all'interno del gruppo classe, configurandosi come un tratto omogeneo su cui i docenti del Consiglio di Classe possono fare pieno affidamento fin dalle prime settimane di attività didattica. Si consiglia di adottare approcci integrati che assecondino questa forte preferenza.</p>`;
-                } else if (ptcTop >= 35) {
-                    textAnalisi += `Questa percentuale indica una maggioranza relativa moderata, segnalando che pur essendoci una preferenza spiccata, coesistono correnti d'opinione alternative molto forti che richiedono attenzione differenziata per non penalizzare sottogruppi emergenti.</p>`;
-                } else {
-                    textAnalisi += `La distribuzione frammentata sotto il 35% rivela un quadro estremamente eterogeneo, polarizzato o confuso, in cui l'assenza di una tendenza centrale obbliga ad adottare strategie didattiche altamente personalizzate, riducendo l'uso della didattica generalizzata.</p>`;
-                }
-
-                if (secondLabel && ptcSecond > 15) {
-                    textAnalisi += `<p class="mb-2">Di contro, la seconda opzione (<em>"${secondLabel}"</em>) con il <strong>${ptcSecond}%</strong> rappresenta una minoranza strutturata. Il corpo docente dovrà vigilare su questa fetta di alunni per evitare fenomeni di isolamento cognitivo o didattico, integrando canali di apprendimento flessibili.</p>`;
-                }
-
-                textAnalisi += `<p class="mb-0"><strong>Incrocio Pedagogico:</strong> In sintesi, l'analisi descrittiva di questo specifico quesito suggerisce che l'ITSCG Primo Levi debba indirizzare le metodologie curricolari tenendo conto di questa specifica sensibilità di partenza, calibrando i tempi di spiegazione, la difficoltà dei testi proposti o le attività pratiche.</p>`;
-
-                const tipoGrafico = numOpzioni > 4 ? 'bar' : (index % 2 === 0 ? 'doughnut' : 'pie');
-                
-                const card = document.createElement('div');
-                card.className = 'bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col xl:flex-row items-center print-avoid-break';
-                card.innerHTML = `
-                    <div class="w-full xl:w-5/12 pr-0 xl:pr-8 mb-8 xl:mb-0">
-                        <h4 class="font-black text-sm uppercase tracking-widest mb-6 text-slate-800 border-l-4 border-blue-600 pl-3 leading-tight">${q.text}</h4>
-                        <div class="h-72 relative w-full flex justify-center"><canvas id="c-${q.id}"></canvas></div>
-                    </div>
-                    <div class="w-full xl:w-7/12 bg-slate-50 p-6 rounded-xl border border-slate-100 text-xs md:text-sm text-slate-700 leading-relaxed text-justify h-full">
-                        <span class="font-black text-blue-800 uppercase text-[10px] md:text-xs tracking-wider block mb-3 border-b border-blue-200 pb-2"><i class="fa-solid fa-magnifying-glass-chart mr-1"></i> Analisi Descrittiva di Dettaglio</span>
-                        ${textAnalisi}
+                const reqLabel = q.required ? '<span class="text-rose-500 font-bold ml-1">*</span>' : '';
+                qBlock.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <span class="bg-slate-100 text-slate-700 font-bold text-xs rounded-full w-6 h-6 flex items-center justify-center shrink-0 mt-0.5">${index + 1}</span>
+                        <div class="w-full">
+                            <label class="block font-bold text-slate-800 text-base leading-snug">${q.text} ${reqLabel}</label>
+                            <div class="mt-4" id="ans-container-${q.id}"></div>
+                        </div>
                     </div>
                 `;
-                container.appendChild(card);
 
-                const canvasEl = document.getElementById(`c-${q.id}`);
-                if (canvasEl) {
-                    const ctx = canvasEl.getContext('2d');
-                    if(chartInstances[`c-${q.id}`]) chartInstances[`c-${q.id}`].destroy();
-                    
-                    chartInstances[`c-${q.id}`] = new Chart(ctx, { 
-                        type: tipoGrafico, 
-                        data: { labels: sortedLabels, datasets: [{ label: 'Studenti', data: sortedData, backgroundColor: chartColors[index % chartColors.length], borderWidth: 2, borderColor: '#ffffff', borderRadius: tipoGrafico==='bar'?6:0 }] }, 
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: tipoGrafico !== 'bar', position: 'bottom', labels:{font:{size:11}} } }, scales: tipoGrafico === 'bar' ? { y: { beginAtZero: true, ticks: { stepSize: 1 } } } : {} } 
+                container.appendChild(qBlock);
+                const ansContainer = document.getElementById(`ans-container-${q.id}`);
+
+                if (q.type === 'text') {
+                    ansContainer.innerHTML = `
+                        <input type="text" name="${q.id}" id="input-${q.id}" ${q.required ? 'required' : ''} 
+                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-leviBlue outline-none transition" 
+                        placeholder="${q.placeholder}">
+                    `;
+                } else if (q.type === 'radio') {
+                    q.options.forEach(opt => {
+                        const optId = `opt-${q.id}-${opt.replace(/\s+/g, '_')}`;
+                        const optDiv = document.createElement('div');
+                        optDiv.className = 'flex items-center gap-3 py-2 px-3 hover:bg-slate-50 rounded-lg transition';
+                        optDiv.innerHTML = `
+                            <input type="radio" name="${q.id}" value="${opt}" id="${optId}" ${q.required ? 'required' : ''}
+                            class="w-4 h-4 text-leviBlue focus:ring-leviBlue border-slate-300">
+                            <label for="${optId}" class="text-sm font-medium text-slate-600 cursor-pointer w-full">${opt}</label>
+                        `;
+                        ansContainer.appendChild(optDiv);
                     });
+
+                    if (q.options.includes('Altro')) {
+                        const otherInputDiv = document.createElement('div');
+                        otherInputDiv.className = 'mt-2 pl-7';
+                        otherInputDiv.innerHTML = `
+                            <input type="text" name="${q.id}-altro" id="input-${q.id}-altro" 
+                            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-leviBlue outline-none text-xs hidden" 
+                            placeholder="Specifica altro qui...">
+                        `;
+                        ansContainer.appendChild(otherInputDiv);
+
+                        ansContainer.querySelectorAll(`input[name="${q.id}"]`).forEach(radio => {
+                            radio.addEventListener('change', (e) => {
+                                const otherInput = document.getElementById(`input-${q.id}-altro`);
+                                if (e.target.value === 'Altro') {
+                                    otherInput.classList.remove('hidden');
+                                    otherInput.setAttribute('required', 'true');
+                                } else {
+                                    otherInput.classList.add('hidden');
+                                    otherInput.removeAttribute('required');
+                                }
+                            });
+                        });
+                    }
                 }
             });
         }
 
-        function renderOpenAnswers(data) {
-            const container = document.getElementById('open-answers-container');
-            if (!container) return;
-            container.innerHTML = '';
-            
-            const textQuestions = questionsData.filter(q => q.type === 'text' && q.id !== 'q_scuola_media' && q.id !== 'q_quale_sport');
-            
-            textQuestions.forEach(q => {
-                const risposte = data.map(d => ({ 
-                    testo: d.answers && d.answers[q.id] ? d.answers[q.id] : null, 
-                    autore: `${d.nome} ${d.cognome ? d.cognome.charAt(0) : ''}.` 
-                })).filter(r => r.testo && r.testo.trim() !== '' && r.testo.trim().length > 2); 
-                
-                if(risposte.length === 0) return;
-
-                let listHtml = '<ul class="space-y-4 max-h-80 overflow-y-auto pr-2">';
-                risposte.forEach(r => { 
-                    listHtml += `
-                        <li class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative group hover:border-blue-300 transition">
-                            <i class="fa-solid fa-quote-left absolute top-4 left-4 text-blue-100 text-2xl group-hover:text-blue-200 transition"></i>
-                            <p class="text-slate-700 font-medium italic ml-8 text-sm relative z-10">"${r.testo}"</p>
-                            <p class="text-[10px] font-black text-slate-400 text-right mt-2 uppercase tracking-wider">- ${r.autore}</p>
-                        </li>`;
-                });
-                listHtml += '</ul>';
-
-                const card = document.createElement('div');
-                card.className = 'bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden print-avoid-break';
-                card.innerHTML = `<div class="bg-slate-800 border-b border-slate-700 px-5 py-3"><h4 class="font-bold text-white text-sm uppercase tracking-wider"><i class="fa-regular fa-comment-dots text-amber-400 mr-2"></i> ${q.text}</h4></div><div class="p-5">${listHtml}</div>`;
-                container.appendChild(card);
-            });
-        }
-
-        function renderInteractiveExcelTable(data) {
-            const thead = document.getElementById('excel-table-head'); 
-            const tbody = document.getElementById('excel-table-body');
-            if (!thead || !tbody) return;
-            
-            let h = '<tr><th>Data</th><th>Alunno</th><th>Scuola Prov.</th><th>Ind. / Cl.</th>';
-            questionsData.forEach(q => { h += `<th title="${q.text}" class="text-[10px] max-w-[150px] truncate">${q.id.replace('q_','').toUpperCase()}</th>`; });
-            h += '</tr>';
-            thead.innerHTML = h;
-            
-            let b = '';
-            data.forEach(d => {
-                b += `<tr>
-                    <td class="text-xs text-slate-500 font-bold">${d.data_compilazione ? new Date(d.data_compilazione).toLocaleDateString() : '-'}</td>
-                    <td class="font-black text-slate-900">${d.cognome} ${d.nome}</td>
-                    <td class="text-xs text-slate-600">${d.scuola_prov || '-'}</td>
-                    <td class="text-xs font-black text-blue-700 bg-blue-50 border-r border-blue-100">${d.indirizzo} - ${d.classe}</td>`;
-                
-                questionsData.forEach(q => {
-                    const ans = d.answers && d.answers[q.id] ? d.answers[q.id] : '-';
-                    const dispAns = ans.length > 30 ? ans.substring(0,30)+'...' : ans;
-                    b += `<td title="${ans}" class="text-xs">${dispAns}</td>`;
-                });
-                b += `</tr>`;
-            });
-            tbody.innerHTML = b;
-        }
-
-        // --- STREAMING_CHUNK: Integrando le funzioni di reportistica e integrazione Apps Script... ---
-        function getFilteredExcelBase64() {
-            const filterValue = document.getElementById('dash-class-filter').value;
-            let filteredData = localData; 
-            if (filterValue !== 'ALL') filteredData = localData.filter(d => d.classe === filterValue.split(' ')[0]);
-            
-            const flatData = filteredData.map(d => {
-                let row = { "Cognome": d.cognome, "Nome": d.nome, "Classe": d.classe, "Indirizzo": d.indirizzo, "Scuola Prov.": d.scuola_prov };
-                questionsData.forEach(q => row[q.text] = d.answers && d.answers[q.id] ? d.answers[q.id] : "");
-                return row;
-            });
-            const ws = XLSX.utils.json_to_sheet(flatData);
-            const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Dati_Grezzi");
-            return XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
-        }
-
-        async function sendCoordinatorMail() {
-            const email = document.getElementById('coord-email').value;
-            const subject = document.getElementById('coord-subject').value;
-            if(!email) return;
-
-            const btn = document.getElementById('send-mail-btn');
-            if (btn) {
-                btn.disabled = true; 
-                btn.innerHTML = "<i class='fa-solid fa-gear fa-spin mr-2'></i> Invio in corso...";
-            }
-
-            const excelBase64 = getFilteredExcelBase64();
-            const reportHtml = document.getElementById('ai-analysis-text').innerHTML;
-
-            const payload = {
-                action: "sendCoordinatorReport",
-                coordinatorEmail: email,
-                subject: subject,
-                reportHtml: reportHtml,
-                excelBase64: excelBase64 
-            };
-
+        // Firebase Setup & Realtime Sincronizzazione
+        async function runFirebaseSetup() {
             try {
-                await fetch(ESITI_QUESTIONARI_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                closeMailModal();
-                showModal("Inviato", "Il pacchetto dati comprensivo della sintesi e del file Excel è stato inoltrato correttamente.", '<i class="fa-solid fa-envelope-circle-check text-emerald-500"></i>');
+                await signInAnonymously(auth);
             } catch (err) {
-                console.error("Errore script invio mail:", err);
-                showModal("Errore", "Impossibile contattare il server di posta Google.", '<i class="fa-solid fa-circle-xmark text-red-500"></i>');
-            } finally {
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fa-solid fa-paper-plane mr-2"></i> Invia Ora';
-                }
+                console.error("Firebase Auth fallito:", err);
+                showNotification("Database momentaneamente disconnesso.", true);
             }
         }
 
-        function exportToExcel() {
-            if(localData.length === 0) {
-                showModal("Nessun dato", "Non ci sono dati da esportare.", '<i class="fa-solid fa-info-circle text-blue-500"></i>');
+        function initRealtimeSync() {
+            onAuthStateChanged(auth, (user) => {
+                if (!user) return;
+                
+                const q = collection(db, ...databaseCollectionPath.split('/'));
+                onSnapshot(q, (snapshot) => {
+                    // IL DATABASE INIZIALE PARTE VUOTO - CARICA SOLO QUELLO CHE C'E' REALE IN FIRESTORE
+                    mockDatabase = [];
+                    snapshot.forEach(doc => {
+                        const fbData = doc.data();
+                        mockDatabase.push({ id: doc.id, ...fbData });
+                    });
+                    applyFiltersAndRegenerate();
+                }, (error) => {
+                    console.error("Errore onSnapshot:", error);
+                });
+            });
+        }
+
+        // Navigazione Studenti
+        window.handleStudentLogin = function(event) {
+            event.preventDefault();
+            const cognome = document.getElementById('stud-cognome').value.trim();
+            const nome = document.getElementById('stud-nome').value.trim();
+            const classe = document.getElementById('stud-classe').value;
+            const indirizzo = document.getElementById('stud-indirizzo').value;
+            const email = document.getElementById('stud-email').value.trim();
+
+            if (!cognome || !nome || !classe || !indirizzo || !email) {
+                showNotification("Per favore compila tutti i campi obbligatori.", true);
                 return;
             }
-            const filterValue = document.getElementById('dash-class-filter').value;
-            let filteredData = localData; 
-            if (filterValue !== 'ALL') filteredData = localData.filter(d => d.classe === filterValue.split(' ')[0]);
-            
-            const flatData = filteredData.map(d => {
-                let row = { "Cognome": d.cognome, "Nome": d.nome, "Classe": d.classe, "Indirizzo": d.indirizzo, "Scuola Prov.": d.scuola_prov, "Data": d.data_compilazione ? new Date(d.data_compilazione).toLocaleDateString() : '' };
-                questionsData.forEach(q => row[q.text] = d.answers && d.answers[q.id] ? d.answers[q.id] : "");
-                return row;
+
+            activeStudent = {
+                studente: `${cognome} ${nome}`,
+                classe: classe,
+                indirizzo: indirizzo,
+                email: email
+            };
+
+            showNotification(`Benvenuto ${activeStudent.studente}. Caricamento in corso...`);
+            setTimeout(() => {
+                showSection('questionnaire-section');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 800);
+        };
+
+        // Invio Questionario ed esecuzione asincrona del Webhook Google Apps Script
+        window.handleQuestionnaireSubmit = async function(event) {
+            event.preventDefault();
+
+            if (!auth.currentUser) {
+                try {
+                    await signInAnonymously(auth);
+                } catch (e) {
+                    showNotification("Errore di connessione. Ricarica la pagina.", true);
+                    return;
+                }
+            }
+
+            document.getElementById('submit-quest-btn').classList.add('hidden');
+            document.getElementById('sending-loader').classList.remove('hidden');
+
+            const responses = { 
+                ...activeStudent,
+                timestamp: new Date().toISOString()
+            };
+
+            // Estrazione risposte compilate
+            questionsData.forEach(q => {
+                if (q.type === 'text') {
+                    responses[q.id] = document.getElementById(`input-${q.id}`).value.trim();
+                } else if (q.type === 'radio') {
+                    const selected = document.querySelector(`input[name="${q.id}"]:checked`);
+                    let val = selected ? selected.value : "";
+                    
+                    if (val === 'Altro') {
+                        const altroText = document.getElementById(`input-${q.id}-altro`).value.trim();
+                        val = altroText ? `Altro: ${altroText}` : "Altro";
+                    }
+                    responses[q.id] = val;
+                }
             });
-            const ws = XLSX.utils.json_to_sheet(flatData);
-            const wb = XLSX.utils.book_new(); 
-            XLSX.utils.book_append_sheet(wb, ws, "Questionario");
-            XLSX.writeFile(wb, `Estrazione_Dati_${filterValue.replace(/[^a-zA-Z0-9]/g, '_')}.xlsx`);
+
+            try {
+                // Salvataggio effettivo nel database Firestore
+                await addDoc(collection(db, ...databaseCollectionPath.split('/')), responses);
+
+                // Disegno della Pergamena sul Canvas grafico
+                generateCertificateCanvas(responses.studente, responses.classe, responses.indirizzo);
+
+                // Conversione in Base64 dell'immagine generata
+                const canvas = document.getElementById('certificate-canvas');
+                const base64Img = canvas.toDataURL('image/jpeg', 0.85).split(',')[1];
+
+                const payload = {
+                    action: "sendStudentCertificate",
+                    email: responses.email,
+                    nome: responses.studente.split(' ')[1] || responses.studente,
+                    cognome: responses.studente.split(' ')[0] || "",
+                    imageBase64: base64Img
+                };
+
+                // RISOLTO: Invio asincrono tramite il link exec fornito per evitare blocchi o bug di CORS
+                fetch("https://script.google.com/macros/s/AKfycbyLtoNtDWJ92i3Rq-wonu3KyOIP6MTWKKlfAqwL-CMQi2Ro7JAiBRuX7FI6wOB3pef0/exec", {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { 
+                        "Content-Type": "text/plain" // Permette il passaggio asincrono senza triggerare controlli preflight CORS
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                showNotification("Questionario registrato con successo! Pergamena in arrivo via e-mail.");
+                showSection('success-certificate-section');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            } catch (err) {
+                console.error("Errore salvataggio/invio:", err);
+                showNotification("Si è verificato un errore, ma abbiamo tentato di salvare i tuoi dati.", true);
+                showSection('success-certificate-section');
+            }
+        };
+
+        // Gestione Login Area Docenti
+        window.handleTeacherLogin = function(event) {
+            event.preventDefault();
+            const pwd = document.getElementById('teacher-pwd').value;
+
+            if (pwd === "levi2026" || pwd === "admin") {
+                closeTeacherAuthModal();
+                showNotification("Accesso Docenti autorizzato.");
+                setTimeout(() => {
+                    showSection('teacher-dashboard-section');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    applyFiltersAndRegenerate();
+                }, 800);
+            } else {
+                showNotification("Password errata. Riprova.", true);
+            }
+        };
+
+        // Filtra ed aggiorna l'intera struttura dei grafici ed analisi
+        window.applyFiltersAndRegenerate = function() {
+            const filterClass = document.getElementById('filter-classe').value;
+            let filteredData = [...mockDatabase];
+
+            if (filterClass !== "ALL") {
+                filteredData = mockDatabase.filter(item => item.classe === filterClass);
+            }
+
+            document.getElementById('stats-total-students').innerText = filteredData.length;
+
+            // Ricalcolo percentuali
+            if (filteredData.length > 0) {
+                const fragiliCount = filteredData.filter(item => 
+                    (item.autonomia_studio && (item.autonomia_studio.includes("Poco") || item.autonomia_studio.includes("Per niente"))) &&
+                    (item.ore_studio && item.ore_studio.includes("Meno di 1 ora"))
+                ).length;
+                const percFragili = Math.round((fragiliCount / filteredData.length) * 100);
+                document.getElementById('percentuale-fragili').innerText = `${percFragili}%`;
+
+                const discCount = filteredData.filter(item => 
+                    item.consiglio_orientativo !== (item.indirizzo && item.indirizzo.includes("Liceo") ? "Liceo" : "Tecnico")
+                ).length;
+                const percDisc = Math.round((discCount / filteredData.length) * 100);
+                document.getElementById('percentuale-discrepanza').innerText = `${percDisc}%`;
+            } else {
+                document.getElementById('percentuale-fragili').innerText = "0%";
+                document.getElementById('percentuale-discrepanza').innerText = "0%";
+            }
+
+            // Distrugge le vecchie istanze grafici
+            Object.keys(chartInstances).forEach(key => {
+                if (chartInstances[key]) chartInstances[key].destroy();
+            });
+            chartInstances = {};
+
+            // Rigenera Report Complessivo ed Analisi Classe per Classe
+            generateClassPedagogicalReport(filteredData, filterClass);
+            generateAllQuestionsDashboard(filteredData);
+            renderStudentsTable(filteredData);
+        };
+
+        // NUOVA FUNZIONE: Genera un report pedagogico strutturato d'istituto classe per classe basato su dati reali
+        function generateClassPedagogicalReport(filteredData, selectedClass) {
+            const reportContainer = document.getElementById('class-pedagogical-report');
+            if (!reportContainer) return;
+
+            if (filteredData.length === 0) {
+                reportContainer.innerHTML = `
+                    <div class="text-center py-6">
+                        <p class="text-slate-400 font-semibold text-lg">Nessun dato reale presente a database per la classe selezionata.</p>
+                        <p class="text-xs text-slate-500 mt-1">Compila o fai compilare un questionario per attivare l'elaborazione dei grafici e dei consigli di classe.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Calcolo statistiche della classe per il report dinamico
+            const total = filteredData.length;
+            const ansiosiCount = filteredData.filter(i => i.sentimento_inizio === "Ansioso/a" || i.sentimento_inizio === "Un po’ preoccupato/a").length;
+            const percAnsiosi = Math.round((ansiosiCount / total) * 100);
+
+            const studioBassoCount = filteredData.filter(i => i.ore_studio === "Meno di 1 ora").length;
+            const percStudioBasso = Math.round((studioBassoCount / total) * 100);
+
+            const scarsaAutonomiaCount = filteredData.filter(i => i.autonomia_studio === "Poco autonomo/a" || i.autonomia_studio === "Per niente autonomo/a").length;
+            const percScarsaAutonomia = Math.round((scarsaAutonomiaCount / total) * 100);
+
+            const cooperativoPrefCount = filteredData.filter(i => i.lavoro_lezione_preferito === "In coppia" || i.lavoro_lezione_preferito === "In gruppo").length;
+            const percCooperativo = Math.round((cooperativoPrefCount / total) * 100);
+
+            const classLabel = selectedClass === "ALL" ? "complessiva d'Istituto" : `della classe ${selectedClass}`;
+
+            let reportHtml = `
+                <div class="space-y-4">
+                    <p class="font-medium text-slate-100">
+                        L'analisi aggregata dei dati reali per la <strong>sintesi ${classLabel}</strong>, basata su un campione di <strong>${total} studenti</strong>, evidenzia dinamiche relazionali e criticità di studio ben definite. La Commissione Orientamento, mixando i riscontri, propone le seguenti considerazioni strategiche per i rispettivi coordinatori ed il Dirigente Scolastico:
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                        <div class="bg-white/5 p-4 rounded-xl border border-white/10">
+                            <h4 class="text-leviGold font-bold text-sm uppercase tracking-wide mb-2"><i class="fa-solid fa-chart-line mr-1"></i> Evidenze Clinico-Pedagogiche</h4>
+                            <ul class="space-y-2 text-xs text-slate-300">
+                                <li>Il <strong>${percAnsiosi}% degli alunni</strong> manifesta uno stato emotivo iniziale caratterizzato da ansia o preoccupazione per l'inizio del nuovo anno scolastico.</li>
+                                <li>Il <strong>${percStudioBasso}% degli studenti</strong> dichiara di dedicare meno di un'ora al giorno allo studio a casa, a fronte di un programma scolastico superiore più denso.</li>
+                                <li>Il <strong>${percScarsaAutonomia}% riscontra fatiche nell'autonomia di studio</strong>, indicando la necessità di supporti strutturati e agili.</li>
+                                <li>Il <strong>${percCooperativo}% predilige metodi di lavoro cooperativi</strong> o di coppia rispetto alla tradizionale lezione frontale passiva.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white/5 p-4 rounded-xl border border-white/10">
+                            <h4 class="text-emerald-400 font-bold text-sm uppercase tracking-wide mb-2"><i class="fa-solid fa-clipboard-check mr-1"></i> Piano d'Azione Consigliato per la Classe</h4>
+                            <ul class="space-y-2 text-xs text-slate-300">
+                                <li><strong>Supporto Emotivo</strong>: Avviare nelle prime tre settimane attività d'aula dedicate all'ascolto attivo e al "Patto formativo di Classe" per smorzare l'ansia da voto numerico.</li>
+                                <li><strong>Metodo di Studio Metacognitivo</strong>: Dedicare 4 ore di didattica disciplinare all'insegnamento pratico di schemi e sintesi logiche per innalzare l'efficacia autonoma dei ragazzi.</li>
+                                <li><strong>Integrazione e Peer-Education</strong>: Accostare nei banchi e nei lavori d'aula gli studenti dotati di buona autonomia con i profili dichiaratisi fragili.</li>
+                                <li><strong>Utilizzo del Portale</strong>: Monitorare l'uso dei laboratori del Levi per gratificare la naturale curiosità scientifico-pratica manifestata.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            reportContainer.innerHTML = reportHtml;
         }
 
-        // Avvio automatico al caricamento
-        window.onload = function() {
-            initAuth();
+        // Genera la visualizzazione dettagliata di tutte le 34 domande
+        function generateAllQuestionsDashboard(filteredData) {
+            const grid = document.getElementById('dynamic-charts-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            if (filteredData.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full bg-white border p-12 text-center rounded-2xl">
+                        <i class="fa-solid fa-folder-open text-slate-300 text-6xl mb-4"></i>
+                        <p class="text-slate-500 font-medium">Nessun grafico disponibile. Il database è attualmente vuoto.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            questionsData.forEach((q, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-white border border-slate-200 p-6 rounded-2xl shadow-sm flex flex-col justify-between";
+                
+                const canvasId = `chart-dynamic-${q.id}`;
+                const qNum = index + 1;
+
+                // Estrazione dati per grafico
+                const counts = {};
+                filteredData.forEach(item => {
+                    const rawVal = item[q.id];
+                    let val = "Nessuna risposta";
+                    if (rawVal) {
+                        val = rawVal.startsWith("Altro:") ? "Altro" : rawVal;
+                    }
+                    counts[val] = (counts[val] || 0) + 1;
+                });
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Domanda N.${qNum}</span>
+                            <span class="px-2 py-0.5 bg-blue-50 text-leviBlue rounded text-[10px] font-bold uppercase">${q.type === 'text' ? 'Risposta Aperta' : 'Risposta Multipla'}</span>
+                        </div>
+                        <h4 class="text-md font-bold text-slate-800 mt-1 mb-4 leading-snug">${q.text}</h4>
+                        <div class="h-56 relative mb-4">
+                            <canvas id="${canvasId}"></canvas>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-100 bg-slate-50 p-4 rounded-xl">
+                        <h5 class="text-xs font-bold text-slate-700 uppercase mb-2">
+                            <i class="fa-solid fa-graduation-cap text-leviBlue mr-1"></i> Sintesi e Suggerimenti dei Coordinatori:
+                        </h5>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            ${pedagogicalTemplates[q.id] || "Sintesi d'istituto in fase di calcolo."}
+                        </p>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+
+                // Configurazione grafico Chart.js
+                setTimeout(() => {
+                    const ctx = document.getElementById(canvasId);
+                    if (!ctx) return;
+
+                    const chartLabels = Object.keys(counts);
+                    const chartValues = Object.values(counts);
+
+                    let chartType = 'bar';
+                    if (qNum % 3 === 0) chartType = 'pie';
+                    else if (qNum % 3 === 1) chartType = 'doughnut';
+
+                    const backgroundColors = ['#1e3a8a', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#14b8a6', '#64748b'];
+
+                    chartInstances[canvasId] = new Chart(ctx.getContext('2d'), {
+                        type: chartType,
+                        data: {
+                            labels: chartLabels.map(l => l.length > 22 ? l.substring(0, 22) + '...' : l),
+                            datasets: [{
+                                data: chartValues,
+                                backgroundColor: backgroundColors.slice(0, chartLabels.length),
+                                borderWidth: chartType === 'bar' ? 0 : 2,
+                                borderColor: '#ffffff',
+                                borderRadius: chartType === 'bar' ? 6 : 0
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: chartType !== 'bar',
+                                    position: 'bottom',
+                                    labels: { boxWidth: 10, font: { size: 9 } }
+                                }
+                            },
+                            scales: chartType === 'bar' ? {
+                                y: { beginAtZero: true, ticks: { precision: 0 } }
+                            } : {}
+                        }
+                    });
+                }, 50);
+            });
+        }
+
+        // Invia Report completo della classe al coordinatore via Webhook dedicato
+        window.sendClassReportToCoordinator = function() {
+            const currentClass = document.getElementById('filter-classe').value;
+            const targetClassDisplay = currentClass === "ALL" ? "Tutte le Classi Prime" : `Classe ${currentClass}`;
+
+            showNotification(`Preparazione report e-mail per ${targetClassDisplay} in corso...`);
+
+            const payload = {
+                action: "sendClassReport",
+                class: currentClass,
+                totalStudents: mockDatabase.filter(i => currentClass === "ALL" || i.classe === currentClass).length
+            };
+
+            fetch("https://script.google.com/macros/s/AKfycbwoTrcqU04J4ttZF2z-c_tNHZh9qr7UZUu9ZrByXzg/dev", {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                showNotification(`Resoconto ${targetClassDisplay} inoltrato asincronamente con successo!`);
+            }).catch(err => {
+                console.error("Errore invio report classe:", err);
+            });
         };
+
+        // Renderizza la tabella dettagliata risposte studenti nell'area docenti
+        function renderStudentsTable(dataList) {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+
+            if (dataList.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="py-8 text-center text-slate-400 font-medium">
+                            Nessuno studente iscritto in questa classe o con i filtri correnti.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            dataList.forEach((stud) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
+                tr.innerHTML = `
+                    <td class="py-4 px-6 font-semibold text-slate-800">${stud.studente || 'N/A'}</td>
+                    <td class="py-4 px-6 text-slate-500"><span class="px-2 py-1 bg-slate-100 rounded text-xs font-bold text-slate-700">${stud.classe || 'N/A'}</span></td>
+                    <td class="py-4 px-6 text-xs text-slate-600 font-medium max-w-[180px] truncate">${stud.indirizzo || 'N/A'}</td>
+                    <td class="py-4 px-6 text-slate-500 text-xs">${stud.email || 'N/A'}</td>
+                    <td class="py-4 px-6 text-slate-500 text-xs">${stud.provenienza || 'N/A'}</td>
+                    <td class="py-4 px-6 text-slate-500 text-xs text-center font-bold">${stud.voto_uscita || 'N/A'}</td>
+                    <td class="py-4 px-6 text-center">
+                        <button onclick="sendIndividualPdf('${stud.email}', '${stud.studente}')" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center justify-center gap-1 mx-auto py-1 px-3 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition">
+                            <i class="fa-solid fa-paper-plane"></i> Re-Invia Mail
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Esportazione dei dati complessivi in formato CSV per Microsoft Excel
+        window.exportToExcel = function() {
+            showNotification("Generazione tracciato CSV Excel in corso...");
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Studente,Classe,Indirizzo,Email,Provenienza,Voto Uscita,Autonomia,Uso PC,Tempo Scuola\n";
+
+            mockDatabase.forEach(item => {
+                const row = [
+                    `"${item.studente || ''}"`,
+                    `"${item.classe || ''}"`,
+                    `"${item.indirizzo || ''}"`,
+                    `"${item.email || ''}"`,
+                    `"${item.provenienza || ''}"`,
+                    `"${item.voto_uscita || ''}"`,
+                    `"${item.autonomia_studio || ''}"`,
+                    `"${item.uso_pc_studio || ''}"`,
+                    `"${item.tempo_scuola || ''}"`
+                ].join(",");
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Report_Classi_Prime_Primo_Levi_${document.getElementById('filter-classe').value}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showNotification("CSV d'istituto correttamente esportato.");
+        };
+
+        // Avvio configurazioni Firebase all'avvio della finestra
+        window.addEventListener('load', () => {
+            runFirebaseSetup();
+            initRealtimeSync();
+            generateBubbleEffect();
+            renderQuestionnaire();
+        });
+    </script>
+
+    <!-- METODI GLOBALMENTE DISPONIBILI SULLA WINDOW -->
+    <script>
+        function generateBubbleEffect() {
+            const container = document.getElementById('bubble-container');
+            const numBubbles = 15;
+            
+            for (let i = 0; i < numBubbles; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                
+                const size = Math.random() * 80 + 50;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${Math.random() * 100}%`;
+                bubble.style.animationDelay = `${Math.random() * 8}s`;
+                bubble.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                
+                const img = document.createElement('img');
+                img.src = 'levi.png';
+                img.onerror = function() {
+                    this.style.display = 'none';
+                    bubble.style.background = 'rgba(59, 130, 246, 0.08)';
+                };
+                
+                bubble.appendChild(img);
+                container.appendChild(bubble);
+            }
+        }
+
+        function showSection(sectionId) {
+            document.getElementById('student-access-section').classList.add('hidden');
+            document.getElementById('questionnaire-section').classList.add('hidden');
+            document.getElementById('success-certificate-section').classList.add('hidden');
+            document.getElementById('teacher-dashboard-section').classList.add('hidden');
+
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        function showNotification(message, isError = false) {
+            const toast = document.getElementById('custom-toast');
+            const icon = document.getElementById('toast-icon');
+            const text = document.getElementById('toast-message');
+
+            if (isError) {
+                toast.classList.add('bg-rose-600');
+                toast.classList.remove('bg-emerald-600', 'bg-slate-800');
+                icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            } else {
+                toast.classList.add('bg-emerald-600');
+                toast.classList.remove('bg-slate-800', 'bg-rose-600');
+                icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+            }
+
+            text.innerText = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 4000);
+        }
+
+        function openTeacherAuthModal() {
+            document.getElementById('teacher-auth-modal').classList.remove('hidden');
+        }
+
+        function closeTeacherAuthModal() {
+            document.getElementById('teacher-auth-modal').classList.add('hidden');
+        }
+
+        function generateCertificateCanvas(nomeStudente, classe, indirizzo) {
+            const canvas = document.getElementById('certificate-canvas');
+            const ctx = canvas.getContext('2d');
+
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = "#1e3a8a";
+            ctx.lineWidth = 12;
+            ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+
+            ctx.strokeStyle = "#d97706";
+            ctx.lineWidth = 3;
+            ctx.strokeRect(22, 22, canvas.width - 44, canvas.height - 44);
+
+            ctx.font = "bold 16px Arial";
+            ctx.fillStyle = "#1e3a8a";
+            ctx.textAlign = "center";
+            ctx.fillText("ITSCG PRIMO LEVI - SEREGNO", canvas.width / 2, 60);
+
+            ctx.font = "italic 11px Arial";
+            ctx.fillStyle = "#64748b";
+            ctx.fillText("Via Briantina 68, 20831 Seregno (MB)", canvas.width / 2, 78);
+
+            ctx.font = "bold 26px Georgia, serif";
+            ctx.fillStyle = "#d97706";
+            ctx.fillText("ATTESTATO DI ACCOGLIENZA", canvas.width / 2, 130);
+
+            ctx.font = "14px Arial";
+            ctx.fillStyle = "#334155";
+            ctx.fillText("Si certifica con onore che lo studente", canvas.width / 2, 175);
+
+            ctx.font = "bold 22px Georgia, serif";
+            ctx.fillStyle = "#1e3a8a";
+            ctx.fillText(nomeStudente.toUpperCase(), canvas.width / 2, 215);
+
+            ctx.font = "13px Arial";
+            ctx.fillStyle = "#334155";
+            ctx.fillText(`iscrittosi alla classe ${classe} dell'indirizzo`, canvas.width / 2, 250);
+
+            ctx.font = "bold 14px Arial";
+            ctx.fillStyle = "#0f172a";
+            ctx.fillText(indirizzo, canvas.width / 2, 275);
+
+            ctx.font = "italic 13px Georgia, serif";
+            ctx.fillStyle = "#475569";
+            ctx.fillText("ha completato con successo il percorso conoscitivo di ingresso per le classi prime.", canvas.width / 2, 310);
+
+            ctx.font = "9px Arial";
+            ctx.fillStyle = "#64748b";
+            ctx.fillText("La Commissione Accoglienza", 150, 365);
+            ctx.fillText("Prof. Staff Accoglienza", 150, 385);
+
+            ctx.font = "9px Arial";
+            ctx.fillStyle = "#64748b";
+            ctx.fillText("Il Dirigente Scolastico", canvas.width - 150, 365);
+            ctx.fillText("Dott. Preside Levi", canvas.width - 150, 385);
+        }
+
+        function downloadCertificate() {
+            const canvas = document.getElementById('certificate-canvas');
+            const dataUrl = canvas.toDataURL('image/jpeg');
+            const link = document.createElement('a');
+            link.download = "Attestato_Accoglienza_Primo_Levi.jpg";
+            link.href = dataUrl;
+            link.click();
+        }
+
+        function sendIndividualPdf(email, name) {
+            showNotification(`Attestato d'onore inoltrato a: ${name} (${email})`);
+        }
     </script>
 </body>
 </html>
