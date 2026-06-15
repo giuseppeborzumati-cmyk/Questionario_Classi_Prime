@@ -145,7 +145,7 @@
         <!-- ================= SECTION 1: ACCESSO STUDENTI ================= -->
         <section id="student-access-section" class="max-w-xl mx-auto py-8">
             <div class="glass-card rounded-2xl p-8 border border-slate-200 shadow-xl">
-                <div class="text-center mb-8">
+                <div class="text-center mb-6">
                     <div class="inline-flex p-3 bg-blue-50 text-leviBlue rounded-full mb-4">
                         <i class="fa-solid fa-graduation-cap text-3xl"></i>
                     </div>
@@ -207,11 +207,12 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Indirizzo Mail Personale <span class="text-red-500">*</span></label>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2 font-medium">Indirizzo Mail Personale (Facoltativo)</label>
                         <div class="relative">
                             <span class="absolute left-3 top-3.5 text-slate-400"><i class="fa-solid fa-envelope"></i></span>
-                            <input type="email" id="stud-email" required class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-leviBlue focus:border-transparent outline-none transition" placeholder="nome.cognome@esempio.com">
+                            <input type="email" id="stud-email" class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-leviBlue focus:border-transparent outline-none transition" placeholder="nome.cognome@esempio.com">
                         </div>
+                        <p class="text-xs text-slate-500 mt-1.5"><i class="fa-solid fa-circle-info text-leviBlue mr-1"></i> L'e-mail inserita verrà utilizzata esclusivamente per l'invio della Pergamena PDF.</p>
                     </div>
 
                     <button type="submit" class="w-full bg-leviBlue hover:bg-blue-800 text-white font-bold py-4 px-6 rounded-xl transition duration-200 shadow-md flex items-center justify-center gap-2">
@@ -234,7 +235,7 @@
                             Vi chiediamo di compilare questo questionario a risposta multipla, pensato per raccogliere informazioni utili sia a fini statistici interni alla scuola sia per conoscere meglio ciascuno di voi, in vista del vostro percorso nel primo anno della scuola secondaria di secondo grado.
                         </p>
                         <p class="text-slate-600 text-sm mt-2 leading-relaxed">
-                            Le domande riguardano le vostre conoscenze personali, le abitudini di studio e le preferenze scolastiche. Non si tratta di una "verifica", ma di uno strumento per aiutarci a comprendere meglio le vostre esigenze e a organizzare in modo più efficace le attività didattiche e i servizi della scuola.
+                            Le domande riguardano le vostre conoscenze personali, le abitudini di studio e le preferenze scolastiche. Non si tratta di una "verifica", ma di uno strumento per aiutarci a comprendere meglio l'esigenze di ciascuno e ad organizzare in modo più efficace la vita d'aula al Primo Levi.
                         </p>
                         <p class="text-leviGold font-semibold text-xs uppercase tracking-wider mt-4"><i class="fa-solid fa-asterisk text-[8px] align-middle mr-1"></i> Indica una domanda obbligatoria</p>
                     </div>
@@ -268,8 +269,8 @@
                     <i class="fa-solid fa-circle-check text-5xl"></i>
                 </div>
                 <h2 class="text-3xl font-extrabold text-slate-800">Invio Completato con Successo!</h2>
-                <p class="text-slate-600 mt-4 max-w-md mx-auto">
-                    Le tue risposte sono state registrate nel database del <strong>Primo Levi Seregno</strong>. La tua Pergamena di Accoglienza ufficiale in formato PDF ti è stata inviata via mail.
+                <p id="success-message-text" class="text-slate-600 mt-4 max-w-md mx-auto">
+                    Le tue risposte sono state registrate nel database del <strong>Primo Levi Seregno</strong>.
                 </p>
 
                 <!-- Box Anteprima Attestato Grafico Digitale -->
@@ -419,7 +420,7 @@
                 </div>
             </div>
 
-            <!-- ANALISI DINAMICA DI TUTTE LE DOMANDE (DA 1 A 34 + PERSONALIZZATE) -->
+            <!-- ANALISI DINAMICA DI TUTTE LE DOMANDE (DA 1 A 35 + PERSONALIZZATE) -->
             <div class="space-y-8">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-2">
                     <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
@@ -450,8 +451,10 @@
                                 <th class="py-4 px-6">Classe</th>
                                 <th class="py-4 px-6">Indirizzo</th>
                                 <th class="py-4 px-6">Email</th>
+                                <th class="py-4 px-6 text-center">Stato Pergamena</th>
                                 <th class="py-4 px-6">Scuola Provenienza</th>
                                 <th class="py-4 px-6">Voto Uscita</th>
+                                <th class="py-4 px-6 text-center">Azioni</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 text-sm text-slate-700" id="table-body">
@@ -525,9 +528,43 @@
         </div>
     </div>
 
+    <!-- ================= MODAL INVIA PERGAMENA ALUNNO (DA LATO DOCENTE) ================= -->
+    <div id="teacher-send-email-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-3xl w-full max-w-md p-8 border border-slate-100 shadow-2xl relative">
+            <button onclick="closeTeacherSendEmailModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="inline-flex p-3 bg-indigo-50 text-leviBlue rounded-full mb-3">
+                    <i class="fa-solid fa-envelope text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800">Invia Pergamena PDF</h3>
+                <p class="text-xs text-slate-500 mt-1">Conferma o inserisci manualmente l'e-mail per l'invio della pergamena.</p>
+            </div>
+            <form id="teacher-send-email-form" onsubmit="handleTeacherSendEmail(event)" class="space-y-4">
+                <input type="hidden" id="teacher-send-student-id">
+                <input type="hidden" id="teacher-send-student-name">
+                <input type="hidden" id="teacher-send-student-class">
+                <input type="hidden" id="teacher-send-student-course">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Studente</label>
+                    <input type="text" id="teacher-send-student-display" disabled class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-slate-500 font-bold">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">E-mail di Destinazione</label>
+                    <input type="email" id="teacher-send-email-input" required class="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-leviBlue" placeholder="nome.cognome@leviseregno.edu.it">
+                    <p class="text-[10px] text-slate-400 mt-1">Compilata automaticamente se lo studente non l'ha inserita all'accesso.</p>
+                </div>
+                <button type="submit" id="btn-teacher-send-submit" class="w-full bg-leviBlue hover:bg-blue-800 text-white font-bold py-3 px-4 rounded-xl transition duration-200 shadow-md flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Spedisci Pergamena PDF
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- MODAL DI CONFERMA RESET DATABASE -->
     <div id="reset-confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
-        <div class="bg-white rounded-2xl w-full max-w-sm p-6 border border-slate-100 shadow-2xl">
+        <div class="bg-white rounded-2xl w-full max-sm p-6 border border-slate-100 shadow-2xl">
             <div class="text-center mb-4">
                 <div class="inline-flex p-3 bg-rose-50 text-rose-600 rounded-full mb-2">
                     <i class="fa-solid fa-trash-can text-2xl"></i>
@@ -581,7 +618,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, getDocs, writeBatch, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Configurazione Firebase ufficiale
         const firebaseConfig = {
@@ -620,8 +657,8 @@
             { id: "openday_punti_deboli", text: "Se hai partecipato ai nostri eventi, cosa non ti è piaciuto o consigli di migliorare?", type: "text", required: false, placeholder: "Cosa consiglieresti di migliorare..." },
             { id: "scelta_indirizzo_chi", text: "Chi ha scelto l’indirizzo di studio che frequenti?", type: "radio", required: true, options: ["Un insegnante (Consiglio Orientativo Scuole Medie)", "I miei genitori", "Insieme ai genitori", "Io stesso/a"] },
             { id: "scelta_indirizzo_perche", text: "Perché hai scelto questo indirizzo di studio?", type: "radio", required: true, options: ["Perché consigliato", "Per le opportunità lavorative", "Per passione", "Perché vicino a casa", "Perché mi è piaciuto l'istituto", "Ho seguito un mio amico/a", "Non accettato in altro istituto"] },
-            { id: "giusta_preparazione", text: "Credi di aver avuto la giusta preparazione dalla scuola di provenienza per affrontare l'indirizzo di studi scelto?", type: "radio", required: true, options: ["Sì", "Temo di no", "Non lo so", "Altro"] },
-            { id: "settore_preferito", text: "Qual è il tuo settore disciplinare preferito?", type: "radio", required: true, options: ["Area linguistica (italiano, lingue straniere, latino, greco)", "Area scientifica (matematica, fisica, chimica, informatica)", "Area umanistica (storia, filosofia, geografia, storia dell’arte)", "Area tecnico-pratica (tecnologia, economia, diritto, discipline tecniche)", "Area artistico-espressiva (musica, arte, educazione fisica, teatro)"] },
+            { id: "giusta_preparazione", text: "Credi di aver avuto la giusta preparazione dalla scuola di provenienza per affrontare l'indirizzo di studi scelto?", type: "radio", required: true, options: ["Sì", "Temo di no", "Non lo so"] },
+            { id: "settore_preferito", text: "Qual è il tuo settore disciplinare preferito?", type: "radio", required: true, options: ["Area linguistica (italiano, lingue straniere, latino, greco)", "Area scientifica (matematica, fisica, chimica, informatica)", "Area umanistica (storia, filosofia, geografia, storia dell’arte)", "Area tecnico-pratica (tecnologia, economia, diritto, discipline techniques)", "Area artistico-espressiva (musica, arte, educazione fisica, teatro)"] },
             { id: "sentimento_inizio", text: "Come ti senti all’inizio di questa nuova esperienza scolastica?", type: "radio", required: true, options: ["Entusiasta", "Indifferente", "Ansioso/a", "Un po’ preoccupato/a"] },
             { id: "valore_scuola", text: "Quale tra questi valori ritieni più importante a scuola?", type: "radio", required: true, options: ["Collaborazione", "Rispetto", "Creatività", "Impegno"] },
             { id: "attivita_extra", text: "Quale attività extrascolastica ti piacerebbe trovare a scuola?", type: "radio", required: true, options: ["Laboratori scientifici", "Attività sportive", "Corsi di teatro", "Corsi musicali", "Niente", "Altro"] },
@@ -643,46 +680,8 @@
             { id: "pratica_sport", text: "Pratichi dello Sport?", type: "radio", required: true, options: ["Si", "No"] },
             { id: "quale_sport", text: "Se si, quale sport pratichi?", type: "text", required: false, placeholder: "Indica lo sport praticato..." },
             { id: "volontariato", text: "Hai mai partecipato ad attività di volontariato?", type: "radio", required: true, options: ["Sì, spesso", "Sì, qualche volta", "Vorrei farlo", "No, mai"] },
-            { id: "aspetto_curioso", text: "Quale aspetto della scuola ti incuriosisce di più?", type: "radio", required: true, options: ["I nuovi compagni", "Le materie nuove", "I professori", "Le attività extra"] }
+            { id: "aspect_curioso", text: "Quale aspetto della scuola ti incuriosisce di più?", type: "radio", required: true, options: ["I nuovi compagni", "Le materie nuove", "I professori", "Le attività extra"] }
         ];
-
-        const pedagogicalTemplates = {
-            provenienza: "L'analisi degli istituti scolastici di provenienza evidenzia la polarizzazione territoriale degli iscritti. Conoscere le scuole di provenienza offre un'ottima base per la creazione dei primi gruppi di lavoro cooperativo. Si consiglia di facilitare attivamente l'integrazione degli allievi provenienti da contesti isolati.",
-            voto_uscita: "La distribuzione dei voti d'uscita funge da indicatore iniziale del livello di preparazione della classe. Una forte discrepanza richiede una calibrazione differenziata delle prime valutazioni sommative e l'attivazione di percorsi personalizzati di riallineamento delle competenze di base.",
-            conoscenza_istituto: "Comprendere le modalità con cui l'allievo ha conosciuto il nostro Istituto fornisce indicazioni preziose per le future campagne di orientamento. La forte incidenza del passaparola sottolinea l'importanza dell'ottimo posizionamento di cui gode l'ITSCG Primo Levi sul territorio.",
-            consiglio_orientativo: "La concordanza fra il consiglio orientativo ricevuto alle medie e la scelta d'indirizzo effettiva è determinante per il successo scolastico. Monitorare i casi di forte discrepanza aiuterà a prevenire cali motivazionali legati ad aspettative didattiche disattese.",
-            openday: "La partecipazione agli open day si confirma l'attività a maggior valore aggiunto per consolidare la scelta dello studente. Gli studenti che hanno presenziato a più di un evento d'orientamento mostrano generalmente una consapevolezza e una motivazione d'aula superiori.",
-            stage: "La partecipazione allo stage d'istituto costituisce un'esperienza immersiva decisiva per saggiare le attitudini pratiche dei futuri allievi. Coloro che hanno preso parte allo stage manifestano un approccio operativo più sicuro nei laboratori d'istituto.",
-            gradimento_openday: "Il gradimento delle presentazioni descrittive riflette la capacità comunicativa ed empatica dei docenti presentatori dell'Istituto. Una percezione positiva costituisce il primo pilastro della fiducia tra la scuola, lo studente e la rispettiva famiglia.",
-            openday_punti_forza: "Le risposte libere sui punti di forza evidenziano la grande attrattività esercitata dai laboratori tecnici specialistici e dall'accoglienza dimostrata dagli studenti senior del Levi. Si raccomanda d'incentivare dinamiche d'apprendimento orizzontale.",
-            openday_punti_deboli: "L'analisi delle criticità logiche o gestionali segnalate dagli studenti funge da leva di miglioramento continuo per tutta l'organizzazione logistica della scuola, ottimizzando i flussi d'ingresso e le presentazioni nelle future edizioni.",
-            scelta_indirizzo_chi: "La titolarità della scelta scolastica influenza il livello di responsabilità dell'allievo rispetto al proprio successo formativo. Una scelta imposta o subita passivamente corre il forte rischio di tramutarsi in demotivazione alle prime difficoltà scolastiche.",
-            scelta_indirizzo_perche: "La motivazione profonda della scelta d'indirizzo costituisce il carburante primario dell'impegno dello studente. Scelte basate su passioni garantiscono resilienza, mentre scelte legate a fattori geografici o imitativi necessitano di costante supporto d'aula.",
-            giusta_preparazione: "Il giudizio in merito alla preparazione ricevuta dalla scuola secondaria di primo grado rappresenta un indicatore fondamentale della percezione di autoefficacia degli allievi. Alti tassi di 'Temo di no' richiedono un'immediata azione di riallineamento delle competenze di base e corsi di recupero d'istituto mirati nelle materie d'indirizzo per colmare i divari iniziali.",
-            settore_preferito: "Le preferenze disciplinari consentono di mappare preventivamente le attitudini trasversali dei gruppi d'aula. Si suggerisce di pianificare compiti di realtà interdisciplinari che valorizzino i punti di forza individuali dei ragazzi d'aula.",
-            sentimento_inizio: "Lo stato d'animo con cui si varca la soglia determina la qualità dell'apprendimento d'inizio anno. Alti tassi d'ansia consigliano l'immediata adozione di protocolli d'accoglienza d'aula non incentrati esclusivamente sulla prestazione scolastica.",
-            valore_scuola: "L'esplicitazione dei valori ritenuti prioritari a scuola offre la base ideale per redigere un patto formativo di classe condiviso. Valori come la collaborazione e il rispetto reciproco devono essere coltivati quotidianamente in aula.",
-            attivita_extra: "L'interesse per attività pomeridiane rappresenta un'opportunità straordinaria per incrementare il senso di appartenenza scolastica. Potenziare l'offerta pomeridiana sportiva o musicale riduce efficacemente la dispersione.",
-            piace_leggere: "La propensione alla lettura costituisce un fattore predittivo fondamentalmente utile per la ricchezza lessicale e la comprensione. Bassi livelli di gradimento richiedono l'adozione di strategie integrate di promozione della lettura libera d'aula.",
-            importance_diploma: "La consapevolezza del valore sociale e lavorativo del diploma costituisce un forte ancoraggio motivazionale. Per gli studenti scettici, i docenti dovrebbero organizzare testimonianze aziendali dirette sin dal primo anno d'istituto.",
-            tempo_tempo_libero: "Le abitudini extrascolastiche definiscono l'ambiente di supporto relazionale primario dell'allievo. Alunni che tendono all'isolamento pomeridiano richiedono particolare attenzione e facilitazione d'integrazione durante le ore d'aula.",
-            ore_studio: "Il monte ore quotidiano dedicato allo studio autonomo riflette l'approccio organizzativo dello studente. Un basso monte ore dichiarato suggerisce la necessità di avviare immediatamente laboratori pratici sul metodo di studio d'aula.",
-            autonomia_studio: "La percezione del proprio livello di autonomia nello studio rappresenta una variabile critica. Studenti con scarsa autonomia tendono a smarrirsi se privi di checklist operative chiare e rubriche di autovalutazione d'aula.",
-            metodo_studio: "I metodi di studio prediletti evidenziano gli stili di apprendimento dominanti. Un forte ricorso alla ripetizione mnemonica ad alta voce suggerisce l'opportunità d'insegnare tecniche metacognitive più efficaci e moderne.",
-            uso_pc_studio: "L'utilizzo abituale degli strumenti digitali per finalità di studio costituisce una risorsa fondamentale. I docenti possono pianificare compiti digitali o ricerche sul web educando ad un uso critico e consapevole della tecnologia.",
-            strumento_digital_preferito: "La centralità dello smartphone come strumento digitale prevalente per lo studio costituisce una potenziale criticità organizzativa. I docenti dovrebbero strutturare attività d'aula che incentivino l'uso del computer.",
-            lavoro_lezione_preferito: "La preferenza per lo stile lavorativo fornisce indicazioni utili per modulare l'alternanza didattica d'aula. Si consiglia di alternare lezioni frontali brevi a lavori di coppia strutturati per consolidare le relazioni d'aula.",
-            bisogno_supporto: "La richiesta esplicita di supporto nello studio individua la necessità di attivare sportelli d'aiuto pomeridiani sin dalle prime settimane di scuola per evitare l'accumulo di lacune e lo scolaggiamento scolastico.",
-            piace_gruppo: "L'attitudine al lavoro di gruppo è una competenza chiave per l'inclusione d'aula. Alunni che preferiscono lavorare da soli richiedono un inserimento graduale in gruppi di dimensioni ridotte ed empatici.",
-            fratelli_levi: "La presenza di fratelli o sorelle che frequentano o hanno frequentato il Primo Levi consolida il rapporto di fiducia ed offre allo studente un punto d'appoggio informativo informale in merito alle dinamiche d'istituto.",
-            numero_fratelli: "La struttura del nucleo familiare definisce il contesto di supporto logistico ed organizzativo pomeridiano. Famiglie numerose o con situazioni complesse potrebbero richiedere maggiore flessibilità nei tempi di consegna curricolari delle attività.",
-            tempo_scuola: "Il tempo di percorrenza per raggiungere via Briantina incide sulla stanchezza fisica quotidiana dell'allievo. I pendolari con oltre un'ora di viaggio al giorno meritano attenzione specifica in sede di pianificazione.",
-            mezzo_trasporto: "Le modalità di spostamento impiegate definiscono la routine mattutina. L'utilizzo di autobus di linea o treni brianzoli allena l'autonomia, ma richiede tolleranza in caso di ritardi sistematici dei servizi locali.",
-            pratica_sport: "La pratica costante di uno sport favorisce lo sviluppo psicofisico armonioso, l'autodisciplina e lo scarico dello stress d'aula. Si incoraggia la valorizzazione dei successi sportivi personali degli alunni.",
-            quale_sport: "Il tipo di sport praticato evidenzia le inclinazioni collaborative o individuali d'aula. I coordinatori e docenti di educazione fisica possono utilizzare queste doti per equilibrare le composizioni dei gruppi d'aula.",
-            volontariato: "La partecipazione ad attività di volontariato dimostra una sensibilità civica precoce. Questi studenti rappresentano risorse inestimabili per facilitare dinamiche d'aiuto interno e tutoraggio d'aula tra pari.",
-            aspetto_curioso: "L'aspetto scolastico che suscita maggiore curiosità indica la direzione ideale per catturare l'attenzione e l'entusiasmo d'aula, riducendo l'ansia del passaggio di grado scolastico nei primi giorni d'accoglienza."
-        };
 
         const apiKey = "AQ.Ab8RN6I_37n3NTIKWIYEuwx1gEezbCjRjKnviseijb2PpBGQug";
 
@@ -784,13 +783,13 @@
                     reflection = `In merito alle attività laboratoriali di stage, il ${topPct}% della classe ha risposto "${topVal}" e il ${lowPct}% "${lowVal}". Coloro che hanno preso parte agli stage estivi o invernali organizzati dal Primo Levi mostrano generalmente un inserimento più rapido nei laboratori specialistici. Per il Consiglio di Classe, è prioritario affiancare gli studenti che non hanno svolto lo stage a compagni già familiari con le attrezzature scientifiche o tecnologiche d'istituto.`;
                     break;
                 case "gradimento_openday":
-                    reflection = `Il giudizio sulle presentazioni degli indirizzi rivela che il ${topPct}% degli alunni le ha trovate "${topVal}". Solo il ${lowPct}% ha espresso un parere di tipo "${lowVal}". Questo alto tasso di gradimento conferma l'ottimo lavoro comunicativo svolto dai docenti orientatori. I coordinatori possono capitalizzare su questa percezione positiva iniziale per mantenere alte le aspettative formative degli alunni, consolidando il senso di fiducia e accoglienza istituzionale.`;
+                    reflection = `Il giudizio sulle presentazioni degli indirizzi rivela che il ${topPct}% degli alunni le ha trovate "${topVal}". Solo il ${lowPct}% ha espresso un parere di tipo "${lowVal}". Questo alto tasso di gradimento conferma l'ottimo lavoro comunicativo svolto dai docenti orientatori. I coordinatori potrano capitalizzare su questa percezione positiva iniziale per mantenere alte le aspettative formative degli alunni, consolidando il senso di fiducia e accoglienza istituzionale.`;
                     break;
                 case "openday_punti_forza":
                     reflection = `Le risposte libere sui punti di forza mostrano che l'aspetto più apprezzato dagli studenti riguarda "${topVal}" (${topPct}%). Questo riscontro indica che la disponibilità dei laboratori o l'empatia dimostrata dai docenti senior rappresenta il vero valore differenziante del nostro istituto. Si consiglia di pianificare brevi richiami a questi aspetti d'eccellenza durante le lezioni del primo mese per rafforzare costantemente il senso di appartenenza scolastica.`;
                     break;
                 case "openday_punti_deboli":
-                    reflection = `Relativamente agli aspetti da migliorare emersi dalle risposte libere, la classe indica l'opzione "${topVal}" (${topPct}%). Questa preziosa segnalazione di miglioramento logistico viene acquisita per ottimizzare l'organizzazione dei futuri eventi. I docenti possono cogliere l'occasione per rassicurare gli studenti sul fatto che l'istituto è in continuo ascolto delle loro necessità, stimolando una cultura d'aula collaborativa.`;
+                    reflection = `Relativamente agli aspetti da migliorare emersi dagli studenti, la classe indica l'opzione "${topVal}" (${topPct}%). Questa preziosa segnalazione di miglioramento logistico viene acquisita per ottimizzare l'organizzazione dei futuri eventi. I docenti possono cogliere l'occasione per rassicurare gli studenti sul fatto che l'istituto è in continuo ascolto delle loro necessità, stimolando una cultura d'aula collaborativa.`;
                     break;
                 case "scelta_indirizzo_chi":
                     reflection = `La scelta dell'indirizzo è stata presa prevalentemente da "${topVal}" (${topPct}%), a fronte di un ${lowPct}% in cui ha inciso "${lowVal}". Una scelta vissuta in prima persona dallo studente garantisce alti livelli di motivazione intrinseca e resilienza di fronte alle prime difficoltà. Qualora la scelta sia stata prevalentemente indotta dai genitori o da consigli esterni, i docenti coordinatori dovranno monitorare con cura la tenuta motivazionale d'aula.`;
@@ -802,11 +801,11 @@
                     reflection = `La percezione della preparazione pregressa rivela che il ${topPct}% degli allievi ritiene di aver ricevuto una formazione "${topVal}". Al contrario, il ${lowPct}% dichiara "${lowVal}". Per il consiglio di classe, un tasso elevato di incertezza o risposte negative impone l'adozione immediata di attività di ripasso e test diagnostici non valutativi d'ingresso per calibrare le richieste didattiche e colmare tempestivamente i divari conoscitivi.`;
                     break;
                 case "settore_preferito":
-                    reflection = `L'area disciplinare prediletta dalla classe è "${topVal}" (${topPct}%), superando l'opzione "${lowVal}" (${lowPct}%). Questa mappa d'aula consente di prevedere quali insegnamenti riscontreranno un favore naturale e quali richiederanno uno sforzo di mediazione didattica maggiore da parte dei docenti. Si suggerisce di pianificare unità di apprendimento interdisciplinari.`;
+                    reflection = `L'area disciplinare prediletta dalla classe è "${topVal}" (${topPct}%), superando l'opzione "${lowVal}" (${lowPct}%). Questa mappa d'aula consente di prevedere quali insegnamenti riscontreranno un favore naturale e quali richiedono uno sforzo di mediazione didattica maggiore da parte dei docenti. Si suggerisce di pianificare unità di apprendimento interdisciplinari.`;
                     break;
                 case "sentimento_inizio":
                     const emotionalTone = topVal === "Entusiasta" ? "estremamente positivo" : "caratterizzato da timore e preoccupazione";
-                    reflection = `Il clima emotivo d'inizio anno si rivela ${emotionalTone}, con un ${topPct}% di studenti che si dichiarano "${topVal}". Il fatto che il ${lowPct}% provi "${lowVal}" consiglia l'adozione immediata di strategie di accoglienza destrutturate. É fondamentale favorire la creazione di un gruppo classe coeso ed empatico prima di focalizzarsi strettamente sulle prestazioni disciplinari, per disinnescare l'ansia.`;
+                    reflection = `Il clima emotivo d'inizio anno si rivela ${emotionalTone}, con un ${topPct}% di studenti che se dichiarano "${topVal}". Il fatto che il ${lowPct}% provi "${lowVal}" consiglia l'adozione immediata di strategie di accoglienza destrutturate. É fondamentale favorire la creazione di un gruppo classe coeso ed empatico prima di focalizzarsi strettamente sulle prestazioni disciplinari, per disinnescare l'ansia.`;
                     break;
                 case "valore_scuola":
                     reflection = `Il valore reputato prioritario tra i banchi è "${topVal}" (${topPct}%), rispetto a "${lowVal}" (${lowPct}%). Questa distribuzione di valori offre una base eccezionale per la stesura guidata del regolamento di classe. I docenti possono far leva su questo orientamento valoriale comune per promuovere dinamiche di solidarietà, rispetto reciproco e impegno civico.`;
@@ -848,10 +847,10 @@
                     reflection = `Il gradimento del lavoro di gruppo si attesta su "${topVal}" per il ${topPct}% degli studenti, mentre il ${lowPct}% dichiara "${lowVal}". Per valorizzare questa propensione sociale, si suggerisce di strutturare brevi compiti cooperativi in aula, assegnando ruoli precisi e concordati per evitare dinamiche di disimpegno e facilitare l'inclusione di tutti i membri.`;
                     break;
                 case "fratelli_levi":
-                    reflection = `La presenza di fratelli o sorelle che frequentano o hanno frequentato l'ITSCG Primo Levi interessa il ${topPct}% degli alunni ("${topVal}"), a fronte di un ${lowPct}% che ha risposto "${lowVal}". Questa familiarità informale rappresenta un eccellente fattore di raccordo e continuità educativa con la scuola, offrendo allo studente punti di riferimento già consolidati.`;
+                    reflection = `La presenza di fratelli o sorelle che frequentano o hanno frequentato l'ITSCG Primo Levi interessa il ${topPct}% degli alunni ("${topVal}"), a fronte di un ${lowPct}% che ha risposto "${lowVal}". Questa familiarità informale rappresenta un eccellente raccordo e continuità educativa con la scuola, offrendo allo studente punti di riferimento già consolidati.`;
                     break;
                 case "numero_fratelli":
-                    reflection = `Il ${topPct}% degli studenti dichiara di avere "${topVal}" fratelli o sorelle, rispetto al ${lowPct}% che risponde "${lowVal}". Comprendere il contesto familiare di provenienza arricchisce il quadro conoscitivo dei docenti in merito ai tempi di vita pomeridiano dei ragazzi. Si consiglia ai coordinatori di mantenere un dialogo accogliente ed aperto con le famiglie.`;
+                    reflection = `Il ${topPct}% degli studenti dichiara di avere "${topVal}" fratelli o sorelle, rispetto al ${lowPct}% che risponde "${lowVal}". Comprendere il contesto familiare di provenienza arricchisce il quadro cognitivo dei docenti in merito ai tempi di vita pomeridiano dei ragazzi. Si consiglia ai coordinatori di mantenere un dialogo accogliente ed aperto con le famiglie.`;
                     break;
                 case "tempo_scuola":
                     reflection = `Il tempo di viaggio per raggiungere l'istituto in via Briantina si attesta su "${topVal}" per il ${topPct}% della classe, mentre il ${lowPct}% impiega "${lowVal}". I tempi di pendolarismo prolungati incidono sulla stanchezza fisica quotidiana, sul livello d'attenzione d'aula delle prime ore e sulle ore di studio pomeridiano rimaste. Si consiglia di tener conto di questo fattore.`;
@@ -875,6 +874,31 @@
                     reflection = `L'analisi quantitativa reale per questa domanda indica una distribuzione incentrata su "${topVal}" con il ${topPct}%, seguita da "${lowVal}" con il ${lowPct}%. Si raccomanda ai docenti di monitorare costantemente le dinamiche d'aula e di strutturare percorsi personalizzati volti a mitigare le fragilità evidenziate, valorizzando le eccellenze.`;
             }
             return reflection;
+        }
+
+        // Genera automaticamente un indirizzo mail d'Istituto valido nome.cognome@leviseregno.edu.it
+        function generateDefaultSchoolEmail(fullName) {
+            if (!fullName) return "";
+            const parts = fullName.trim().toLowerCase().split(/\s+/);
+            if (parts.length >= 2) {
+                const nome = parts[parts.length - 1].normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
+                const cognome = parts.slice(0, parts.length - 1).join(".").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9.]/g, "");
+                return `${nome}.${cognome}@leviseregno.edu.it`;
+            }
+            return `${parts[0] || 'studente'}@leviseregno.edu.it`;
+        }
+
+        // Auto-adatta la larghezza delle colonne del foglio di calcolo Excel
+        function XforceColumnWidths(ws) {
+            const cols = [];
+            for (let cell in ws) {
+                if (cell[0] === '!') continue;
+                const colIdx = cell.replace(/[0-9]/g, '');
+                const val = ws[cell].v ? String(ws[cell].v) : "";
+                const colNum = XLSX.utils.char_to_cc(colIdx);
+                cols[colNum] = Math.max(cols[colNum] || 10, val.length + 2);
+            }
+            ws['!cols'] = cols.map(w => ({ wch: w }));
         }
 
         function renderQuestionnaire() {
@@ -926,7 +950,7 @@
                         otherInputDiv.className = 'mt-2 pl-7';
                         otherInputDiv.innerHTML = `
                             <input type="text" name="${q.id}-altro" id="input-${q.id}-altro" 
-                            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-leviBlue focus:border-transparent outline-none text-xs hidden" 
+                            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-leviBlue focus:border-transparent outline-none text-xs hidden" 
                             placeholder="Specifica altro qui...">
                         `;
                         ansContainer.appendChild(otherInputDiv);
@@ -1073,7 +1097,7 @@
                             ${percAnsiosi > 20 ? '<li><strong>Circle Time</strong>: Da attuare nelle prime ore settimanali per allentare lo stato ansioso e favorire l\'accettazione del gruppo classe.</li>' : ''}
                             ${percScarsaAutonomia > 20 ? '<li><strong>Flipped Classroom (Classe Capovolta)</strong>: Proporre brevi letture o video a casa e dedicare l\'orario d\'aula per esercitarsi in modo guidato, innalzando gradualmente l\'autonomia.</li>' : ''}
                             ${percSportivi > 40 ? '<li><strong>Apprendimento Cooperativo (Cooperative Learning)</strong>: Sfruttare l\'attitudine della classe allo sport e al gioco di squadra per strutturare lavori a gruppi competitivi/collaborativi d\'aula.</li>' : ''}
-                            <li><strong>Scaffolding (Apprendimento Impalcato)</strong>: Fornire checklist di lavoro precise, schemi d\'aiuto pre-compilati e rubriche trasparenti per disinnescare l'incertezza formativa.</li>
+                            <li><strong>Scaffolding (Apprendimento Impalcato)</strong>: Fornire checklist d'aiuto precise, schemi d\'aiuto pre-compilati e rubriche trasparenti per disinnescare l'incertezza formativa.</li>
                         </ul>
                     </div>
                 </div>
@@ -1252,7 +1276,7 @@
             if (dataList.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" class="py-8 text-center text-slate-400 font-medium">
+                        <td colspan="8" class="py-8 text-center text-slate-400 font-medium">
                             Nessuno studente iscritto in questa classe o con i filtri correnti.
                         </td>
                     </tr>
@@ -1263,20 +1287,32 @@
             dataList.forEach((stud) => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
+                
+                // Stato Pergamena Grafico badge
+                const statoBadge = stud.pergamenaInviata === "Sì" 
+                    ? `<span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-bold border border-emerald-200"><i class="fa-solid fa-circle-check mr-1"></i> Inviato</span>`
+                    : `<span class="px-2.5 py-1 bg-amber-50 text-amber-700 rounded-full text-xs font-bold border border-amber-200"><i class="fa-solid fa-circle-minus mr-1"></i> Non Inviato</span>`;
+
                 tr.innerHTML = `
                     <td class="py-4 px-6 font-semibold text-slate-800">${stud.studente || 'N/A'}</td>
                     <td class="py-4 px-6 text-slate-500"><span class="px-2 py-1 bg-slate-100 rounded text-xs font-bold text-slate-700">${stud.classe || 'N/A'}</span></td>
                     <td class="py-4 px-6 text-xs text-slate-600 font-medium max-w-[180px] truncate">${stud.indirizzo || 'N/A'}</td>
-                    <td class="py-4 px-6 text-slate-500 text-xs">${stud.email || 'N/A'}</td>
+                    <td class="py-4 px-6 text-slate-500 text-xs">${stud.email || '<span class="text-slate-400 italic">Nessuna</span>'}</td>
+                    <td class="py-4 px-6 text-center">${statoBadge}</td>
                     <td class="py-4 px-6 text-slate-500 text-xs">${stud.provenienza || 'N/A'}</td>
                     <td class="py-4 px-6 text-slate-500 text-xs text-center font-bold">${stud.voto_uscita || 'N/A'}</td>
+                    <td class="py-4 px-6 text-center">
+                        <button onclick="openTeacherSendEmailModal('${stud.email || ''}', '${stud.studente}', '${stud.classe}', '${stud.indirizzo}', '${stud.id}')" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center justify-center gap-1 mx-auto py-1 px-3 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition">
+                            <i class="fa-solid fa-paper-plane"></i> Invia Pergamena
+                        </button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        // Metodo per il caricamento dinamico e invio asincrono del tracciato Excel reale
-        window.handleSendClassExcelReport = function(event) {
+        // Metodo per il caricamento dinamico e invio asincrono del tracciato Excel reale al coordinatore
+        function handleSendClassExcelReport(event) {
             event.preventDefault();
             const coordName = document.getElementById('coord-name').value.trim();
             const coordEmail = document.getElementById('coord-email').value.trim();
@@ -1303,6 +1339,7 @@
                         "Classe": item.classe || "N/A",
                         "Indirizzo": item.indirizzo || "N/A",
                         "Email": item.email || "N/A",
+                        "Pergamena Inviata": item.pergamenaInviata || "No",
                         "Voto d'Uscita": item.voto_uscita || "N/A",
                         "Scuola di Provenienza": item.provenienza || "N/A",
                         "Autonomia": item.autonomia_studio || "N/A",
@@ -1324,6 +1361,7 @@
 
                 const wb = XLSX.utils.book_new();
                 const ws = XLSX.utils.json_to_sheet(flatExcelRows);
+                XforceColumnWidths(ws);
                 XLSX.utils.book_append_sheet(wb, ws, `Studenti Classe ${filterClass}`);
 
                 const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
@@ -1336,8 +1374,8 @@
                     excelBase64: wbout
                 };
 
-                // Link dello script fornito dall'utente per l'invio del report Excel al coordinatore
-                fetch("https://script.google.com/macros/s/AKfycbz6UZTDU2VLL53eq1SAqO_x_Uk52kFTY4B2td2ZPRMEgdecB2Mu-UpTQ7VcMpBZDBbb1w/exec", {
+                // Link dello script aggiornato per l'invio del report Excel al coordinatore
+                fetch("https://script.google.com/macros/s/AKfycbwNOQYs4m6sLYiQ1OQdqCA5T9igHLdftT-pRjPuriRtMiKsKMtAkr1OCUjkmsvBbHa0/exec", {
                     method: "POST",
                     mode: "no-cors",
                     headers: { "Content-Type": "text/plain" },
@@ -1354,10 +1392,10 @@
                 btn.disabled = false;
                 btn.innerHTML = `Invia Report Excel via Email`;
             }
-        };
+        }
 
         // Gestione della creazione dinamica delle domande personalizzate
-        window.handleCreateCustomQuestion = async function(event) {
+        async function handleCreateCustomQuestion(event) {
             event.preventDefault();
             const text = document.getElementById('custom-q-text').value.trim();
             const type = document.getElementById('custom-q-type').value;
@@ -1390,39 +1428,29 @@
                 console.error("Errore creazione domanda:", err);
                 showNotification("Errore durante il salvataggio della domanda.", true);
             }
-        };
+        }
 
-        window.toggleCustomQOptions = function() {
-            const type = document.getElementById('custom-q-type').value;
-            const container = document.getElementById('custom-q-options-container');
-            if (type === 'radio') {
-                container.classList.remove('hidden');
-                document.getElementById('custom-q-options').setAttribute('required', 'true');
-            } else {
-                container.classList.add('hidden');
-                document.getElementById('custom-q-options').removeAttribute('required');
+        async function executeDatabaseReset() {
+            closeResetConfirmModal();
+            showNotification("Cancellazione in corso...");
+            try {
+                const q = collection(db, ...databaseCollectionPath.split('/'));
+                const snapshot = await getDocs(q);
+                const batch = writeBatch(db);
+                snapshot.docs.forEach(doc => {
+                    batch.delete(doc.ref);
+                });
+                await batch.commit();
+                mockDatabase = [];
+                applyFiltersAndRegenerate();
+                showNotification("Database Firestore svuotato con successo!");
+            } catch (err) {
+                console.error("Errore svuotamento db:", err);
+                showNotification("Errore durante lo svuotamento del database.", true);
             }
-        };
+        }
 
-        window.openQuestionCreatorModal = function() {
-            document.getElementById('question-creator-modal').classList.remove('hidden');
-        };
-
-        window.closeQuestionCreatorModal = function() {
-            document.getElementById('question-creator-modal').classList.add('hidden');
-            document.getElementById('custom-q-text').value = "";
-            document.getElementById('custom-q-options').value = "";
-        };
-
-        window.openClassReportModal = function() {
-            document.getElementById('coordinator-report-modal').classList.remove('hidden');
-        };
-
-        window.closeClassReportModal = function() {
-            document.getElementById('coordinator-report-modal').classList.add('hidden');
-        };
-
-        window.handleStudentLogin = function(event) {
+        function handleStudentLogin(event) {
             event.preventDefault();
             const cognome = document.getElementById('stud-cognome').value.trim();
             const nome = document.getElementById('stud-nome').value.trim();
@@ -1430,8 +1458,8 @@
             const indirizzo = document.getElementById('stud-indirizzo').value;
             const email = document.getElementById('stud-email').value.trim();
 
-            if (!cognome || !nome || !classe || !indirizzo || !email) {
-                showNotification("Per favore compila tutti i campi obbligatori.", true);
+            if (!cognome || !nome || !classe || !indirizzo) {
+                showNotification("Per favore compila tutti i campi obbligatori d'accesso.", true);
                 return;
             }
 
@@ -1439,7 +1467,7 @@
                 studente: `${cognome} ${nome}`,
                 classe: classe,
                 indirizzo: indirizzo,
-                email: email
+                email: email || "" // Email facoltativa
             };
 
             showNotification(`Benvenuto ${activeStudent.studente}. Apertura questionario...`);
@@ -1447,9 +1475,9 @@
                 showSection('questionnaire-section');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }, 800);
-        };
+        }
 
-        window.handleQuestionnaireSubmit = async function(event) {
+        async function handleQuestionnaireSubmit(event) {
             event.preventDefault();
 
             if (!auth.currentUser) {
@@ -1466,7 +1494,8 @@
 
             const responses = { 
                 ...activeStudent,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
+                pergamenaInviata: "No" // Stato di partenza
             };
 
             const allQuestions = getAllQuestions();
@@ -1488,6 +1517,11 @@
                 }
             });
 
+            // Se lo studente ha inserito la mail, l'invio è automatico
+            if (responses.email && responses.email.trim() !== "") {
+                responses.pergamenaInviata = "Sì";
+            }
+
             try {
                 // 1. Salva su Firebase
                 await addDoc(collection(db, ...databaseCollectionPath.split('/')), responses);
@@ -1495,51 +1529,60 @@
                 // 2. Genera Canvas Pergamena
                 generateCertificateCanvas(responses.studente, responses.classe, responses.indirizzo);
                 
-                // 3. Genera PDF da Canvas
-                const canvas = document.getElementById('certificate-canvas');
-                const imgData = canvas.toDataURL('image/jpeg', 1.0);
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF({
-                    orientation: 'landscape',
-                    unit: 'px',
-                    format: [canvas.width, canvas.height]
-                });
-                pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
-                
-                // Estrazione Base64 puro del PDF
-                const pdfBase64String = pdf.output('datauristring').split(',')[1];
-                
-                const firstSpace = responses.studente.indexOf(' ');
-                const cognomeStr = firstSpace > 0 ? responses.studente.substring(0, firstSpace) : responses.studente;
-                const nomeStr = firstSpace > 0 ? responses.studente.substring(firstSpace + 1) : "";
+                // 3. Se l'e-mail è presente, procediamo all'invio automatico asincrono del PDF della Pergamena
+                if (responses.email && responses.email.trim() !== "") {
+                    document.getElementById('success-message-text').innerText = `Le tue risposte sono state registrate nel database del Primo Levi Seregno. La tua Pergamena di Accoglienza ufficiale in formato PDF è in corso di invio alla mail: ${responses.email}`;
 
-                const payload = {
-                    email: responses.email,
-                    nome: nomeStr,
-                    cognome: cognomeStr,
-                    pdfBase64: pdfBase64String
-                };
+                    // Genera PDF da Canvas
+                    const canvas = document.getElementById('certificate-canvas');
+                    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF({
+                        orientation: 'landscape',
+                        unit: 'px',
+                        format: [canvas.width, canvas.height]
+                    });
+                    pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
+                    
+                    // Estrazione Base64 puro del PDF
+                    const pdfBase64String = pdf.output('datauristring').split(',')[1];
+                    
+                    const firstSpace = responses.studente.indexOf(' ');
+                    const cognomeStr = firstSpace > 0 ? responses.studente.substring(0, firstSpace) : responses.studente;
+                    const nomeStr = firstSpace > 0 ? responses.studente.substring(firstSpace + 1) : "";
 
-                // Link dello script fornito dall'utente per l'invio della pergamena PDF dello studente
-                fetch("https://script.google.com/macros/s/AKfycbw1AC88Uxv59rQTB6VKUnAHWp3pbzVUdsLkcFiGiPp9GWGaSVsE-KTs71KQqHhKAgcc/exec", {
-                    method: "POST",
-                    mode: "no-cors",
-                    headers: { "Content-Type": "text/plain" },
-                    body: JSON.stringify(payload)
-                });
-                
-                showNotification("Questionario registrato con successo! La Pergamena è stata inviata via mail.");
+                    const payload = {
+                        email: responses.email,
+                        nome: nomeStr,
+                        cognome: cognomeStr,
+                        pdfBase64: pdfBase64String
+                    };
+
+                    // Chiamata Webhook verso lo script per inviare la pergamena PDF allo studente (NUOVO URL CORRETTO)
+                    fetch("https://script.google.com/macros/s/AKfycbwsFdNXO-gGcxgBezWnU2JPMjAJYMNKrPF6Z8cXR742ZxP4w6cacrmUfLIrv3FCHGAE/exec", {
+                        method: "POST",
+                        mode: "no-cors",
+                        headers: { "Content-Type": "text/plain" },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    showNotification("Questionario inviato! La Pergamena è in corso di invio sulla mail.");
+                } else {
+                    document.getElementById('success-message-text').innerText = "Le tue risposte sono state registrate nel database del Primo Levi Seregno. Puoi scaricare la tua Pergamena d'Accoglienza direttamente cliccando sul pulsante qui sotto.";
+                    showNotification("Questionario registrato con successo! Scarica l'attestato qui sotto.");
+                }
+
                 showSection('success-certificate-section');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
 
             } catch (err) {
                 console.error("Errore salvataggio:", err);
-                showNotification("Errore salvataggio. Dati offline.", true);
+                showNotification("Errore salvataggio. Dati registrati offline.", true);
                 showSection('success-certificate-section');
             }
-        };
+        }
 
-        window.handleTeacherLogin = function(event) {
+        function handleTeacherLogin(event) {
             event.preventDefault();
             const pwd = document.getElementById('teacher-pwd').value;
 
@@ -1554,9 +1597,101 @@
             } else {
                 showNotification("Password errata. Riprova.", true);
             }
-        };
+        }
 
-        window.applyFiltersAndRegenerate = function() {
+        // Apre il modale per l'invio manuale della pergamena PDF ai coordinatori o allievi
+        function openTeacherSendEmailModal(email, studente, classe, indirizzo, id) {
+            document.getElementById('teacher-send-student-id').value = id;
+            document.getElementById('teacher-send-student-name').value = studente;
+            document.getElementById('teacher-send-student-class').value = classe;
+            document.getElementById('teacher-send-student-course').value = indirizzo;
+            document.getElementById('teacher-send-student-display').value = studente;
+            
+            // Se la mail non esiste, la preimpostiamo automaticamente come nome.cognome@leviseregno.edu.it
+            if (!email || email.trim() === "" || email === "Non inserita") {
+                document.getElementById('teacher-send-email-input').value = generateDefaultSchoolEmail(studente);
+            } else {
+                document.getElementById('teacher-send-email-input').value = email;
+            }
+            
+            document.getElementById('teacher-send-email-modal').classList.remove('hidden');
+        }
+
+        function closeTeacherSendEmailModal() {
+            document.getElementById('teacher-send-email-modal').classList.add('hidden');
+        }
+
+        // Gestisce l'invio asincrono del PDF generato lato docente tramite Webhook
+        async function handleTeacherSendEmail(event) {
+            event.preventDefault();
+            const id = document.getElementById('teacher-send-student-id').value;
+            const email = document.getElementById('teacher-send-email-input').value.trim();
+            const name = document.getElementById('teacher-send-student-name').value;
+            const classe = document.getElementById('teacher-send-student-class').value;
+            const indirizzo = document.getElementById('teacher-send-student-course').value;
+            
+            const btn = document.getElementById('btn-teacher-send-submit');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Spedizione...`;
+
+            // Rigenera canvas
+            generateCertificateCanvas(name, classe, indirizzo);
+            
+            // Genera PDF da Canvas
+            const canvas = document.getElementById('certificate-canvas');
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({
+                orientation: 'landscape',
+                unit: 'px',
+                format: [canvas.width, canvas.height]
+            });
+            pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
+            
+            const pdfBase64String = pdf.output('datauristring').split(',')[1];
+            
+            const firstSpace = name.indexOf(' ');
+            const cognomeStr = firstSpace > 0 ? name.substring(0, firstSpace) : name;
+            const nomeStr = firstSpace > 0 ? name.substring(firstSpace + 1) : "";
+
+            const payload = {
+                email: email,
+                nome: nomeStr,
+                cognome: cognomeStr,
+                pdfBase64: pdfBase64String
+            };
+
+            try {
+                // Invia la pergamena PDF allo studente (Webhook corretto)
+                await fetch("https://script.google.com/macros/s/AKfycbwsFdNXO-gGcxgBezWnU2JPMjAJYMNKrPF6Z8cXR742ZxP4w6cacrmUfLIrv3FCHGAE/exec", {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "text/plain" },
+                    body: JSON.stringify(payload)
+                });
+
+                // Aggiorna istantaneamente Firebase Firestore per impostare lo stato su "Sì" e salvare la mail
+                if (id) {
+                    const docRef = doc(db, ...databaseCollectionPath.split('/'), id);
+                    await updateDoc(docRef, { 
+                        pergamenaInviata: "Sì",
+                        email: email
+                    });
+                }
+
+                showNotification(`Pergamena PDF inviata correttamente all'indirizzo: ${email}`);
+                closeTeacherSendEmailModal();
+
+            } catch (err) {
+                console.error("Errore durante l'invio o l'aggiornamento dello stato:", err);
+                showNotification("Errore di spedizione.", true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Spedisci Pergamena PDF`;
+            }
+        }
+
+        function applyFiltersAndRegenerate() {
             const filterClass = document.getElementById('filter-classe').value;
             let filteredData = [...mockDatabase];
 
@@ -1593,21 +1728,21 @@
             generateClassPedagogicalReport(filteredData, filterClass);
             generateAllQuestionsDashboard(filteredData);
             renderStudentsTable(filteredData);
-        };
+        }
 
-        window.injectDemoData = function() {
+        function injectDemoData() {
             const demoPool = [
-                { studente: "Rossi Mario", classe: "1A", indirizzo: "Liceo Scientifico Opzione Scienze Applicate", email: "mario.rossi@email.it", provenienza: "Scuola Media Seregno Centro", voto_uscita: "9-10", conoscenza_istituto: "Docenti/scuola", consiglio_orientativo: "Liceo", openday: "SI, a più di uno", stage: "Si", gradimento_openday: "Interessanti, chiare e comprensibili", openday_punti_forza: "I laboratori ben tenuti", openday_punti_deboli: "Nulla", scelta_indirizzo_chi: "Io stesso/a", scelta_indirizzo_perche: "Per passione", giusta_preparazione: "Sì", settore_preferito: "Area scientifica (matematica, fisica, chimica, informatica)", sentimento_inizio: "Entusiasta", valore_scuola: "Impegno", attivita_extra: "Laboratori scientifici", piace_leggere: "Si", importance_diploma: "Si, è importante", tempo_tempo_libero: "con Amici", ore_studio: "2-3 ore", autonomia_studio: "Molto autonomo/a", metodo_studio: "Schemi e mappe concettuali", uso_pc_studio: "Sì, sempre", strumento_digital_preferito: "Computer", lavoro_lezione_preferito: "In gruppo", bisogno_supporto: "Mai", piace_gruppo: "Sì, molto", fratelli_levi: "No", numero_fratelli: "Uno", tempo_scuola: "10-30 minuti", mezzo_trasporto: "A piedi", pratica_sport: "Si", quale_sport: "Basket", volontariato: "Sì, qualche volta", aspetto_curioso: "Le materie nuove" },
-                { studente: "Bianchi Giulia", classe: "1A", indirizzo: "Liceo Scientifico Opzione Scienze Applicate", email: "giulia.b@email.it", provenienza: "I.C. Don Milani", voto_uscita: "7-8", conoscenza_istituto: "Parenti/amici", consiglio_orientativo: "Tecnico", openday: "Si, ad uno", stage: "No", gradimento_openday: "Interessanti, chiare e comprensibili", openday_punti_forza: "L'aula di robotica", openday_punti_deboli: "Troppe persone", scelta_indirizzo_chi: "Insieme ai genitori", scelta_indirizzo_perche: "Per le opportunità lavorative", giusta_preparazione: "Temo di no", settore_preferito: "Area tecnico-pratica (tecnologia, economia, diritto, discipline techniques)", sentimento_inizio: "Un po’ preoccupato/a", valore_scuola: "Rispetto", attivita_extra: "Attività sportive", piace_leggere: "No", importance_diploma: "Si, è importante", tempo_tempo_libero: "Facendo sport", ore_studio: "1-2 ore", autonomia_studio: "Abbastanza autonomo/a", metodo_studio: "Ripetizione ad alta voce", uso_pc_studio: "Solo per alcune materie", strumento_digital_preferito: "Smartphone", lavoro_lezione_preferito: "In coppia", bisogno_supporto: "Qualche volta", piace_gruppo: "Solo a volte", fratelli_levi: "Sì, uno", numero_fratelli: "Due", tempo_scuola: "30-60 minuti", mezzo_trasporto: "In autobus", pratica_sport: "Si", quale_sport: "Pallavolo", volontariato: "No, mai", aspect_curioso: "I nuovi compagni" },
-                { studente: "Colombo Luca", classe: "1L", indirizzo: "Logistica", email: "luca.colombo@email.it", provenienza: "Scuola Media Seregno Sud", voto_uscita: "6", conoscenza_istituto: "Ricerca on-line", consiglio_orientativo: "Tecnico", openday: "No, non ho trovato posto", stage: "No", gradimento_openday: "Non saprei", openday_punti_forza: "", openday_punti_deboli: "", scelta_indirizzo_chi: "I miei genitori", scelta_indirizzo_perche: "Perché vicino a casa", giusta_preparazione: "Non lo so", settore_preferito: "Area tecnico-pratica (tecnologia, economia, diritto, discipline techniques)", sentimento_inizio: "Ansioso/a", valore_scuola: "Collaborazione", attivita_extra: "Corsi musicali", piace_leggere: "No", importance_diploma: "Si, è importante", tempo_tempo_libero: "con Genitori", ore_studio: "Meno di 1 ora", autonomia_studio: "Poco autonomo/a", metodo_studio: "Studio di gruppo", uso_pc_studio: "Raramente", strumento_digital_preferito: "Smartphone", lavoro_lezione_preferito: "Dipende dalla materia", bisogno_supporto: "Sì, sempre", piace_gruppo: "Dipende dal gruppo", fratelli_levi: "Sì, più di uno", numero_fratelli: "Tre o più", tempo_scuola: "Plus di un'ora", mezzo_trasporto: "In autobus", pratica_sport: "No", quale_sport: "", volontariato: "Vorrei farlo", aspect_curioso: "Le attività extra" },
-                { studente: "Gatti Francesca", classe: "1L", indirizzo: "Logistica", email: "fra.gatti@email.it", provenienza: "I.C. Seregno Ovest", voto_uscita: "7-8", conoscenza_istituto: "Pubblicità", consiglio_orientativo: "Tecnico", openday: "SI, a più di uno", stage: "Si", gradimento_openday: "Interessanti, chiare e comprensibili", openday_punti_forza: "L'accoglienza", openday_punti_deboli: "Il freddo nei corridoi", scelta_indirizzo_chi: "Insieme ai genitori", scelta_indirizzo_perche: "Perché consigliato", giusta_preparazione: "Sì", settore_preferito: "Area linguistica (italiano, lingue straniere, latino, greco)", sentimento_inizio: "Entusiasta", valore_scuola: "Rispetto", attivita_extra: "Corsi musicali", piace_leggere: "Si", importance_diploma: "Si, è importante", tempo_tempo_libero: "con Amici", ore_studio: "2-3 ore", autonomia_studio: "Abbastanza autonomo/a", metodo_studio: "Schemi e mappe concettuali", uso_pc_studio: "Solo per alcune materie", strumento_digital_preferito: "Computer", lavoro_lezione_preferito: "In gruppo", bisogno_supporto: "Qualche volta", piace_gruppo: "Sì, molto", fratelli_levi: "No", numero_fratelli: "Uno", tempo_scuola: "10-30 minuti", mezzo_trasporto: "A piedi", pratica_sport: "Si", quale_sport: "Tennis", volontariato: "Sì, spesso", aspect_curioso: "I nuovi compagni" }
+                { studente: "Rossi Mario", classe: "1A", indirizzo: "Liceo Scientifico Opzione Scienze Applicate", email: "mario.rossi@email.it", pergamenaInviata: "Sì", provenienza: "Scuola Media Seregno Centro", voto_uscita: "9-10", conoscenza_istituto: "Docenti/scuola", consiglio_orientativo: "Liceo", openday: "SI, a più di uno", stage: "Si", gradimento_openday: "Interessanti, chiare e comprensibili", openday_punti_forza: "I laboratori ben tenuti", openday_punti_deboli: "Nulla", scelta_indirizzo_chi: "Io stesso/a", scelta_indirizzo_perche: "Per passione", giusta_preparazione: "Sì", settore_preferito: "Area scientifica (matematica, fisica, chimica, informatica)", sentimento_inizio: "Entusiasta", valore_scuola: "Impegno", attivita_extra: "Laboratori scientifici", piace_leggere: "Si", importance_diploma: "Si, è importante", tempo_tempo_libero: "con Amici", ore_studio: "2-3 ore", autonomia_studio: "Molto autonomo/a", metodo_studio: "Schemi e mappe concettuali", uso_pc_studio: "Sì, sempre", strumento_digital_preferito: "Computer", lavoro_lezione_preferito: "In gruppo", bisogno_supporto: "Mai", piace_gruppo: "Sì, molto", fratelli_levi: "No", numero_fratelli: "Uno", tempo_scuola: "10-30 minuti", mezzo_trasporto: "A piedi", pratica_sport: "Si", quale_sport: "Basket", volontariato: "Sì, qualche volta", aspetto_curioso: "Le materie nuove" },
+                { studente: "Bianchi Giulia", classe: "1A", indirizzo: "Liceo Scientifico Opzione Scienze Applicate", email: "", pergamenaInviata: "No", provenienza: "I.C. Don Milani", voto_uscita: "7-8", conoscenza_istituto: "Parenti/amici", consiglio_orientativo: "Tecnico", openday: "Si, ad uno", stage: "No", gradimento_openday: "Interessanti, chiare e comprensibili", openday_punti_forza: "L'aula di robotica", openday_punti_deboli: "Troppe persone", scelta_indirizzo_chi: "Insieme ai genitori", scelta_indirizzo_perche: "Per le opportunità lavorative", giusta_preparazione: "Temo di no", settore_preferito: "Area tecnico-pratica (tecnologia, economia, diritto, discipline techniques)", sentimento_inizio: "Un po’ preoccupato/a", valore_scuola: "Rispetto", attivita_extra: "Attività sportive", piace_leggere: "No", importance_diploma: "Si, è importante", tempo_tempo_libero: "Facendo sport", ore_studio: "1-2 ore", autonomia_studio: "Abbastanza autonomo/a", metodo_studio: "Ripetizione ad alta voce", uso_pc_studio: "Solo per alcune materie", strumento_digital_preferito: "Smartphone", lavoro_lezione_preferito: "In coppia", bisogno_supporto: "Qualche volta", piace_gruppo: "Solo a volte", fratelli_levi: "Sì, uno", numero_fratelli: "Due", tempo_scuola: "30-60 minuti", mezzo_trasporto: "In autobus", pratica_sport: "Si", quale_sport: "Pallavolo", volontariato: "No, mai", aspect_curioso: "I nuovi compagni" },
+                { studente: "Colombo Luca", classe: "1L", indirizzo: "Logistica", email: "cluca@email.it", pergamenaInviata: "Sì", provenienza: "Scuola Media Seregno Sud", voto_uscita: "6", conoscenza_istituto: "Ricerca on-line", consiglio_orientativo: "Tecnico", openday: "No, non ho trovato posto", stage: "No", gradimento_openday: "Non saprei", openday_punti_forza: "", openday_punti_deboli: "", scelta_indirizzo_chi: "I miei genitori", scelta_indirizzo_perche: "Perché vicino a casa", giusta_preparazione: "Non lo so", settore_preferito: "Area tecnico-pratica (tecnologia, economia, diritto, discipline techniques)", sentimento_inizio: "Ansioso/a", valore_scuola: "Collaborazione", attivita_extra: "Corsi musicali", piace_leggere: "No", importance_diploma: "Si, è importante", tempo_tempo_libero: "con Genitori", ore_studio: "Meno di 1 ora", autonomia_studio: "Poco autonomo/a", metodo_studio: "Studio di gruppo", uso_pc_studio: "Raramente", strumento_digital_preferito: "Smartphone", lavoro_lezione_preferito: "Dipende dalla materia", bisogno_supporto: "Sì, sempre", piace_gruppo: "Dipende dal gruppo", fratelli_levi: "Sì, più di uno", numero_fratelli: "Tre o più", tempo_scuola: "Plus di un'ora", mezzo_trasporto: "In autobus", pratica_sport: "No", quale_sport: "", volontariato: "Vorrei farlo", aspect_curioso: "Le attività extra" },
+                { studente: "Gatti Francesca", classe: "1L", indirizzo: "Logistica", email: "", pergamenaInviata: "No", provenienza: "I.C. Seregno Ovest", voto_uscita: "7-8", conoscenza_istituto: "Pubblicità", consiglio_orientativo: "Tecnico", openday: "SI, a più di uno", stage: "Si", gradimento_openday: "Interessanti, chiare e comprensibili", openday_punti_forza: "L'accoglienza", openday_punti_deboli: "Il freddo nei corridoi", scelta_indirizzo_chi: "Insieme ai genitori", scelta_indirizzo_perche: "Perché consigliato", giusta_preparazione: "Sì", settore_preferito: "Area linguistica (italiano, lingue straniere, latino, greco)", sentimento_inizio: "Entusiasta", valore_scuola: "Rispetto", attivita_extra: "Corsi musicali", piace_leggere: "Si", importance_diploma: "Si, è importante", tempo_tempo_libero: "con Amici", ore_studio: "2-3 ore", autonomia_studio: "Abbastanza autonomo/a", metodo_studio: "Schemi e mappe concettuali", uso_pc_studio: "Solo per alcune materie", strumento_digital_preferito: "Computer", lavoro_lezione_preferito: "In gruppo", bisogno_supporto: "Qualche volta", piace_gruppo: "Sì, molto", fratelli_levi: "No", numero_fratelli: "Uno", tempo_scuola: "10-30 minuti", mezzo_trasporto: "A piedi", pratica_sport: "Si", quale_sport: "Tennis", volontariato: "Sì, spesso", aspect_curioso: "I nuovi compagni" }
             ];
             mockDatabase = demoPool;
             applyFiltersAndRegenerate();
             showNotification("Dati dimostrativi iniettati con successo nel pannello d'analisi.");
-        };
+        }
 
-        window.triggerGeminiDeepAnalysis = async function() {
+        async function triggerGeminiDeepAnalysis() {
             const filterClass = document.getElementById('filter-classe').value;
             let filteredData = [...mockDatabase];
 
@@ -1669,32 +1804,14 @@ Genera una riflessione pedagogica personale e concreta (non generica o banale) d
             });
 
             showNotification("Tutte le riflessioni pedagogiche reali sono state elaborate da Gemini!");
-        };
-
-        window.executeDatabaseReset = async function() {
-            closeResetConfirmModal();
-            showNotification("Cancellazione in corso...");
-            try {
-                const q = collection(db, ...databaseCollectionPath.split('/'));
-                const snapshot = await getDocs(q);
-                const batch = writeBatch(db);
-                snapshot.docs.forEach(doc => {
-                    batch.delete(doc.ref);
-                });
-                await batch.commit();
-                mockDatabase = [];
-                applyFiltersAndRegenerate();
-                showNotification("Database Firestore svuotato con successo!");
-            } catch (err) {
-                console.error("Errore svuotamento db:", err);
-                showNotification("Errore durante lo svuotamento del database.", true);
-            }
-        };
+        }
 
         function initApp() {
             runFirebaseSetup();
             initRealtimeSync();
-            generateBubbleEffect();
+            if (window.generateBubbleEffect) {
+                window.generateBubbleEffect();
+            }
             renderQuestionnaire();
         }
 
@@ -1705,6 +1822,7 @@ Genera una riflessione pedagogica personale e concreta (non generica o banale) d
         window.generateAllQuestionsDashboard = generateAllQuestionsDashboard;
         window.renderStudentsTable = renderStudentsTable;
 
+        window.handleStudentLogin = handleStudentLogin;
         window.handleQuestionnaireSubmit = handleQuestionnaireSubmit;
         window.handleTeacherLogin = handleTeacherLogin;
         window.applyFiltersAndRegenerate = applyFiltersAndRegenerate;
@@ -1713,6 +1831,10 @@ Genera una riflessione pedagogica personale e concreta (non generica o banale) d
         window.executeDatabaseReset = executeDatabaseReset;
         window.handleSendClassExcelReport = handleSendClassExcelReport;
         window.handleCreateCustomQuestion = handleCreateCustomQuestion;
+        
+        window.openTeacherSendEmailModal = openTeacherSendEmailModal;
+        window.closeTeacherSendEmailModal = closeTeacherSendEmailModal;
+        window.handleTeacherSendEmail = handleTeacherSendEmail;
 
         if (document.readyState === 'complete' || document.readyState === 'interactive') {
             initApp();
@@ -1845,7 +1967,7 @@ Genera una riflessione pedagogica personale e concreta (non generica o banale) d
             ctx.font = "9px Arial";
             ctx.fillStyle = "#64748b";
             ctx.fillText("La Commissione Accoglienza", 150, 365);
-            ctx.fillText("Prof. Staff Accoglienza", 150, 385);
+            ctx.fillText("Staff Accoglienza", 150, 385);
 
             ctx.font = "9px Arial";
             ctx.fillStyle = "#64748b";
