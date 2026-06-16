@@ -6,13 +6,13 @@
     <title>ITSCG Primo Levi - Questionario di Ingresso Classi Prime</title>
     <!-- Tailwind CSS per uno stile moderno e reattivo -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js per grafici interattivi e spettacolari nell'Area Docenti -->
+    <!-- Chart.js per grafici interattivi -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- FontAwesome per icone moderne -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Libreria jsPDF per convertire dinamicamente la Pergamena in PDF lato client -->
+    <!-- Libreria jsPDF per convertire dinamicamente la Pergamena in PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- Libreria SheetJS per generare file Excel .xlsx reali direttamente dal portale -->
+    <!-- Libreria SheetJS per generare file Excel in download locale -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     
     <script>
@@ -30,7 +30,7 @@
     </script>
 
     <style>
-        /* Sfondo a bolle fluttuanti in continuo movimento senza un ordine preciso */
+        /* Sfondo a bolle fluttuanti */
         #bubble-container {
             position: fixed;
             top: 0;
@@ -65,43 +65,21 @@
         }
 
         @keyframes floatUp {
-            0% {
-                transform: translateY(0) rotate(0deg) scale(0.8);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.8;
-            }
-            90% {
-                opacity: 0.8;
-            }
-            100% {
-                transform: translateY(-120vh) rotate(360deg) scale(1.2);
-                opacity: 0;
-            }
+            0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-120vh) rotate(360deg) scale(1.2); opacity: 0; }
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.92);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(226, 232, 240, 0.8);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
         }
-
-        /* Effetto Shimmer per il caricamento dell'analisi IA */
-        .shimmer {
-            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
-            background-size: 200% 100%;
-            animation: loading-shimmer 1.5s infinite;
-        }
-
-        @keyframes loading-shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-height-screen relative">
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen relative flex flex-col justify-between">
 
     <!-- Sfondo con bolle fluttuanti con loghi -->
     <div id="bubble-container"></div>
@@ -109,11 +87,8 @@
     <!-- HEADER ISTITUZIONALE -->
     <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-100 shadow-sm px-4 py-3 md:px-8">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-            <!-- Info Scuola a Sinistra -->
             <div class="flex items-center gap-4 w-full md:w-auto">
-                <div class="w-12 h-12 bg-leviBlue rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-md shrink-0">
-                    PL
-                </div>
+                <div class="w-12 h-12 bg-leviBlue rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-md shrink-0">PL</div>
                 <div>
                     <h1 class="text-lg md:text-xl font-bold text-leviBlue tracking-tight">ITSCG PRIMO LEVI DI SEREGNO</h1>
                     <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold">
@@ -122,13 +97,12 @@
                 </div>
             </div>
             
-            <!-- Logo levi.png a Destra e pulsanti di navigazione rapida -->
             <div class="flex items-center justify-between md:justify-end gap-6 w-full md:w-auto border-t md:border-t-0 pt-2 md:pt-0">
                 <div class="flex gap-2">
-                    <button id="btn-show-student" onclick="showSection('student-access-section')" class="px-4 py-2 text-xs md:text-sm font-semibold text-leviBlue bg-blue-50 hover:bg-blue-100 rounded-lg transition-all">
+                    <button onclick="showSection('student-access-section')" class="px-4 py-2 text-xs md:text-sm font-semibold text-leviBlue bg-blue-50 hover:bg-blue-100 rounded-lg transition-all">
                         <i class="fa-solid fa-user-graduate mr-1"></i> Area Studenti
                     </button>
-                    <button id="btn-show-teacher" onclick="openTeacherAuthModal()" class="px-4 py-2 text-xs md:text-sm font-semibold text-slate-600 hover:text-leviBlue bg-slate-100 hover:bg-slate-200 rounded-lg transition-all">
+                    <button onclick="openTeacherAuthModal()" class="px-4 py-2 text-xs md:text-sm font-semibold text-slate-600 hover:text-leviBlue bg-slate-100 hover:bg-slate-200 rounded-lg transition-all">
                         <i class="fa-solid fa-chalkboard-user mr-1"></i> Area Docenti
                     </button>
                 </div>
@@ -140,17 +114,17 @@
     </header>
 
     <!-- MAIN CONTENT -->
-    <main class="max-w-7xl mx-auto px-4 py-8 md:px-8 relative z-10">
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8 md:px-8 relative z-10">
 
-        <!-- ================= SECTION 1: ACCESSO STUDENTI ================= -->
+        <!-- ================= SEZIONE 1: ACCESSO STUDENTI ================= -->
         <section id="student-access-section" class="max-w-xl mx-auto py-8">
             <div class="glass-card rounded-2xl p-8 border border-slate-200 shadow-xl">
                 <div class="text-center mb-6">
                     <div class="inline-flex p-3 bg-blue-50 text-leviBlue rounded-full mb-4">
-                        <i class="fa-solid fa-graduation-cap text-3xl"></i>
+                        <i class="fa-solid fa-user-clock text-3xl"></i>
                     </div>
                     <h2 class="text-2xl font-bold text-slate-800">Accoglienza Classi Prime</h2>
-                    <p class="text-slate-500 text-sm mt-2">Inserisci le tue credenziali per iniziare il questionario ufficiale d'istituto</p>
+                    <p class="text-slate-500 text-sm mt-2">Compila i campi d'accesso per iniziare il questionario orientativo.</p>
                 </div>
 
                 <form id="student-login-form" onsubmit="handleStudentLogin(event)" class="space-y-5">
@@ -174,7 +148,7 @@
                         <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Classe di Riferimento <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <span class="absolute left-3 top-3.5 text-slate-400"><i class="fa-solid fa-school-flag"></i></span>
-                            <select id="stud-classe" required class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-leviBlue focus:border-transparent outline-none appearance-none transition">
+                            <select id="stud-classe" required class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-leviBlue focus:border-transparent outline-none cursor-pointer transition">
                                 <option value="" disabled selected>Seleziona la tua classe...</option>
                                 <option value="1A">Classe 1A</option>
                                 <option value="1B">Classe 1B</option>
@@ -187,6 +161,7 @@
                                 <option value="1S">Classe 1S</option>
                                 <option value="1P">Classe 1P</option>
                                 <option value="1N">Classe 1N</option>
+                                <option value="5A">Classe 5A (Test Script)</option>
                             </select>
                         </div>
                     </div>
@@ -212,30 +187,27 @@
                             <span class="absolute left-3 top-3.5 text-slate-400"><i class="fa-solid fa-envelope"></i></span>
                             <input type="email" id="stud-email" class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-leviBlue focus:border-transparent outline-none transition" placeholder="nome.cognome@esempio.com">
                         </div>
-                        <p class="text-xs text-slate-500 mt-1.5"><i class="fa-solid fa-circle-info text-leviBlue mr-1"></i> L'e-mail inserita verrà utilizzata esclusivamente per l'invio della Pergamena PDF.</p>
+                        <p class="text-xs text-slate-500 mt-1.5"><i class="fa-solid fa-circle-info text-leviBlue mr-1"></i> L'e-mail verrà utilizzata per inviare la pergamena di partecipazione in formato PDF.</p>
                     </div>
 
                     <button type="submit" class="w-full bg-leviBlue hover:bg-blue-800 text-white font-bold py-4 px-6 rounded-xl transition duration-200 shadow-md flex items-center justify-center gap-2">
-                        Accedi al Questionario <i class="fa-solid fa-circle-arrow-right"></i>
+                        Inizia il Questionario <i class="fa-solid fa-circle-arrow-right"></i>
                     </button>
                 </form>
             </div>
         </section>
 
-        <!-- ================= SECTION 2: IL QUESTIONARIO D'INGRESSO ================= -->
+        <!-- ================= SEZIONE 2: IL QUESTIONARIO D'INGRESSO ================= -->
         <section id="questionnaire-section" class="hidden max-w-3xl mx-auto py-4">
             <div class="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 mb-8 shadow-sm">
                 <div class="flex items-start gap-4">
-                    <div class="p-3 bg-indigo-50 text-leviBlue rounded-xl">
+                    <div class="p-3 bg-indigo-50 text-leviBlue rounded-xl shrink-0">
                         <i class="fa-solid fa-circle-info text-2xl"></i>
                     </div>
                     <div>
                         <h3 class="text-xl font-bold text-slate-800">Care ragazze e cari ragazzi,</h3>
                         <p class="text-slate-600 text-sm mt-2 leading-relaxed">
-                            Vi chiediamo di compilare questo questionario a risposta multipla, pensato per raccogliere informazioni utili sia a fini statistici interni alla scuola sia per conoscere meglio ciascuno di voi, in vista del vostro percorso nel primo anno della scuola secondaria di secondo grado.
-                        </p>
-                        <p class="text-slate-600 text-sm mt-2 leading-relaxed">
-                            Le domande riguardano le vostre conoscenze personali, le abitudini di studio e le preferenze scolastiche. Non si tratta di una "verifica", ma di uno strumento per aiutarci a comprendere meglio l'esigenze di ciascuno e ad organizzare in modo più efficace la vita d'aula al Primo Levi.
+                            Vi chiediamo di compilare questo questionario a risposta multipla, pensato per raccogliere informazioni utili sia a fini statistici interni alla scuola sia per conoscere meglio ciascuno di voi.
                         </p>
                         <p class="text-leviGold font-semibold text-xs uppercase tracking-wider mt-4"><i class="fa-solid fa-asterisk text-[8px] align-middle mr-1"></i> Indica una domanda obbligatoria</p>
                     </div>
@@ -246,32 +218,30 @@
                 <div id="questions-container" class="space-y-6"></div>
 
                 <div id="form-actions-wrapper" class="bg-white border border-slate-200 p-6 rounded-2xl flex flex-col items-center justify-center gap-4 shadow-sm">
-                    <p class="text-sm text-slate-500 text-center">Assicurati di aver completato tutte le domande obbligatorie prima di procedere con l'invio ufficiale.</p>
+                    <p class="text-sm text-slate-500 text-center">Assicurati di aver risposto a tutti i quesiti obbligatori prima di trasmettere il modulo.</p>
                     <button type="submit" id="submit-quest-btn" class="w-full md:w-auto px-10 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-lg rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-3">
                         <i class="fa-solid fa-paper-plane"></i> Invia Risposte e Ottieni Attestato
                     </button>
                     <div id="sending-loader" class="hidden flex flex-col items-center justify-center py-4">
-                        <svg class="animate-spin -ml-1 mr-3 h-10 w-10 text-emerald-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <svg class="animate-spin h-10 w-10 text-emerald-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        <span class="text-sm text-emerald-600 font-bold mt-2">Generazione Attestato PDF & Salvataggio in corso...</span>
+                        <span class="text-sm text-emerald-600 font-bold mt-2">Salvataggio risposte e compilazione Pergamena PDF...</span>
                     </div>
                 </div>
             </form>
         </section>
 
-        <!-- ================= SECTION 3: SUCCESSO & CERTIFICATO INVIATO ================= -->
+        <!-- ================= SEZIONE 3: SUCCESSO E CERTIFICATO ================= -->
         <section id="success-certificate-section" class="hidden max-w-2xl mx-auto py-12 text-center">
             <div class="bg-white border border-slate-200 rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-600 to-emerald-500"></div>
                 <div class="inline-flex p-4 bg-emerald-50 text-emerald-600 rounded-full mb-6">
                     <i class="fa-solid fa-circle-check text-5xl"></i>
                 </div>
-                <h2 class="text-3xl font-extrabold text-slate-800">Invio Completato con Successo!</h2>
-                <p id="success-message-text" class="text-slate-600 mt-4 max-w-md mx-auto">
-                    Le tue risposte sono state registrate nel database del <strong>Primo Levi Seregno</strong>.
-                </p>
+                <h2 class="text-3xl font-extrabold text-slate-800">Questionario Salvato!</h2>
+                <p id="success-message-text" class="text-slate-600 mt-4 max-w-md mx-auto"></p>
 
                 <!-- Box Anteprima Attestato Grafico Digitale -->
                 <div class="my-8 border border-slate-100 rounded-2xl p-6 bg-amber-50/50 flex flex-col items-center shadow-inner relative">
@@ -289,7 +259,7 @@
             </div>
         </section>
 
-        <!-- ================= SECTION 4: AREA DOCENTI / DASHBOARD ANALYTICS ================= -->
+        <!-- ================= SEZIONE 4: AREA DOCENTI / DASHBOARD ANALYTICS ================= -->
         <section id="teacher-dashboard-section" class="hidden space-y-8">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 pb-6">
                 <div>
@@ -304,9 +274,6 @@
                     </button>
                     <button onclick="openQuestionCreatorModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-lg shadow-sm transition flex items-center justify-center gap-2">
                         <i class="fa-solid fa-plus-circle"></i> Aggiungi Domanda
-                    </button>
-                    <button onclick="triggerGeminiDeepAnalysis()" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-sm rounded-lg shadow-sm transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-wand-magic-sparkles animate-pulse"></i> Elabora Riflessioni con IA
                     </button>
                     <button onclick="openResetConfirmModal()" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm rounded-lg shadow-sm transition flex items-center justify-center gap-2">
                         <i class="fa-solid fa-trash-can"></i> Svuota Database
@@ -334,6 +301,7 @@
                         <option value="1S">Classe 1S</option>
                         <option value="1P">Classe 1P</option>
                         <option value="1N">Classe 1N</option>
+                        <option value="5A">Classe 5A (Test Script)</option>
                     </select>
                 </div>
                 <div class="text-sm text-slate-500 font-semibold bg-slate-100 py-1.5 px-3 rounded-lg">
@@ -370,7 +338,7 @@
                             <div class="p-4 bg-rose-50 border-l-4 border-rose-500 rounded-r-xl">
                                 <h4 class="font-bold text-rose-800 text-sm">Rischio Difficoltà di Studio / Scarsa Autonomia</h4>
                                 <p class="text-xs text-rose-700 mt-1 leading-relaxed">
-                                    Il <span id="percentuale-fragili" class="font-bold">0%</span> degli studenti della classe/istituto dichiara un livello di autonomia "Poco" o "Per niente autonomo" unito ad un monte ore di studio quotidiano inferior a un'ora. 
+                                    Il <span id="percentuale-fragili" class="font-bold">0%</span> degli studenti della classe/istituto dichiara un livello di autonomia "Poco" o "Per niente autonomo" unito ad un monte ore di studio quotidiano inferiore a un'ora. 
                                 </p>
                             </div>
                             <div class="p-4 bg-amber-50 border-l-4 border-amber-500 rounded-r-xl">
@@ -382,9 +350,9 @@
                         </div>
                     </div>
                     <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
-                        <span class="text-xs text-slate-400">Analisi pedagogica dinamica</span>
-                        <button onclick="openClassReportModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-lg transition-all flex items-center gap-1">
-                            <i class="fa-solid fa-file-excel"></i> Invia Report Excel al Coordinatore
+                        <span class="text-xs text-slate-400">Analisi pedagogica dinamica locale</span>
+                        <button onclick="openClassReportModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-lg transition-all flex items-center gap-1 shadow-sm">
+                            <i class="fa-solid fa-envelope-open-text"></i> Invia Analisi al Coordinatore
                         </button>
                     </div>
                 </div>
@@ -426,7 +394,7 @@
                     <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
                         <i class="fa-solid fa-square-poll-vertical text-leviBlue"></i> Analisi Dettagliata delle Domande del Questionario
                     </h3>
-                    <span class="text-xs text-slate-500 font-semibold italic"><i class="fa-solid fa-circle-nodes text-purple-500"></i> Clicca in alto su "Elabora Riflessioni con IA" per un'analisi scientifica personalizzata basata sulle risposte reali degli studenti.</span>
+                    <span class="text-xs text-slate-500 font-semibold italic"><i class="fa-solid fa-brain text-purple-500"></i> Le riflessioni didattiche sono generate automaticamente per supportare i coordinatori.</span>
                 </div>
 
                 <!-- Container Dinamico delle domande -->
@@ -467,6 +435,11 @@
 
     </main>
 
+    <!-- FOOTER -->
+    <footer class="bg-slate-100 border-t border-slate-200 py-6 mt-12 text-center text-xs text-slate-500 relative z-10">
+        <p>© 2026 ITSCG Primo Levi - Portale Questionario d'Ingresso e Diagnostica Avanzata</p>
+    </footer>
+
     <!-- MODAL DI AUTENTICAZIONE AREA DOCENTI -->
     <div id="teacher-auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
         <div class="bg-white rounded-2xl w-full max-w-md p-8 border border-slate-100 shadow-2xl relative">
@@ -492,7 +465,7 @@
         </div>
     </div>
 
-    <!-- ================= MODAL AGGIUNGI DOMANDA PERSONALIZZATA ================= -->
+    <!-- MODAL AGGIUNGI DOMANDA PERSONALIZZATA -->
     <div id="question-creator-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
         <div class="bg-white rounded-3xl w-full max-w-md p-8 border border-slate-100 shadow-2xl relative">
             <button onclick="closeQuestionCreatorModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
@@ -528,43 +501,9 @@
         </div>
     </div>
 
-    <!-- ================= MODAL INVIA PERGAMENA ALUNNO (DA LATO DOCENTE) ================= -->
-    <div id="teacher-send-email-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
-        <div class="bg-white rounded-3xl w-full max-w-md p-8 border border-slate-100 shadow-2xl relative">
-            <button onclick="closeTeacherSendEmailModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
-                <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
-            <div class="text-center mb-6">
-                <div class="inline-flex p-3 bg-indigo-50 text-leviBlue rounded-full mb-3">
-                    <i class="fa-solid fa-envelope text-2xl"></i>
-                </div>
-                <h3 class="text-xl font-bold text-slate-800">Invia Pergamena PDF</h3>
-                <p class="text-xs text-slate-500 mt-1">Conferma o inserisci manualmente l'e-mail per l'invio della pergamena.</p>
-            </div>
-            <form id="teacher-send-email-form" onsubmit="handleTeacherSendEmail(event)" class="space-y-4">
-                <input type="hidden" id="teacher-send-student-id">
-                <input type="hidden" id="teacher-send-student-name">
-                <input type="hidden" id="teacher-send-student-class">
-                <input type="hidden" id="teacher-send-student-course">
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Studente</label>
-                    <input type="text" id="teacher-send-student-display" disabled class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-slate-500 font-bold">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">E-mail di Destinazione</label>
-                    <input type="email" id="teacher-send-email-input" required class="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-leviBlue" placeholder="nome.cognome@leviseregno.edu.it">
-                    <p class="text-[10px] text-slate-400 mt-1">Compilata automaticamente se lo studente non l'ha inserita all'accesso.</p>
-                </div>
-                <button type="submit" id="btn-teacher-send-submit" class="w-full bg-leviBlue hover:bg-blue-800 text-white font-bold py-3 px-4 rounded-xl transition duration-200 shadow-md flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-paper-plane"></i> Spedisci Pergamena PDF
-                </button>
-            </form>
-        </div>
-    </div>
-
     <!-- MODAL DI CONFERMA RESET DATABASE -->
     <div id="reset-confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
-        <div class="bg-white rounded-2xl w-full max-sm p-6 border border-slate-100 shadow-2xl">
+        <div class="bg-white rounded-2xl w-full max-w-sm p-6 border border-slate-100 shadow-2xl">
             <div class="text-center mb-4">
                 <div class="inline-flex p-3 bg-rose-50 text-rose-600 rounded-full mb-2">
                     <i class="fa-solid fa-trash-can text-2xl"></i>
@@ -579,7 +518,7 @@
         </div>
     </div>
 
-    <!-- ================= MODAL INVIO EXCEL AL COORDINATORE ================= -->
+    <!-- MODAL INVIO AL COORDINATORE -->
     <div id="coordinator-report-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
         <div class="bg-white rounded-3xl w-full max-w-lg p-8 border border-slate-100 shadow-2xl relative">
             <button onclick="closeClassReportModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
@@ -589,10 +528,10 @@
                 <div class="inline-flex p-3 bg-indigo-50 text-leviBlue rounded-full mb-3">
                     <i class="fa-solid fa-envelope-open-text text-2xl"></i>
                 </div>
-                <h3 class="text-xl font-bold text-slate-800">Invia Report Excel al Coordinatore</h3>
-                <p class="text-xs text-slate-500 mt-1">Spedisci via email un report Excel vero (.xlsx) con tutti i dettagli e la sintesi statistica della classe.</p>
+                <h3 class="text-xl font-bold text-slate-800">Invia Report al Coordinatore</h3>
+                <p class="text-xs text-slate-500 mt-1">Invia via e-mail la sintesi statistica e l'analisi conclusiva.</p>
             </div>
-            <form onsubmit="handleSendClassExcelReport(event)" class="space-y-4">
+            <form onsubmit="handleSendClassReportCoordinator(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Nome del Coordinatore</label>
                     <input type="text" id="coord-name" required class="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-leviBlue" placeholder="Es. Prof. Brambilla">
@@ -601,8 +540,50 @@
                     <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">E-mail del Coordinatore</label>
                     <input type="email" id="coord-email" required class="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-leviBlue" placeholder="coordinatore.classe@leviseregno.edu.it">
                 </div>
-                <button type="submit" id="btn-submit-excel-report" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition duration-200 shadow-md">
-                    Invia Report Excel via Email
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Link al Report Completo (Opzionale)</label>
+                    <input type="url" id="coord-url" class="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-leviBlue" placeholder="Es. Link al Drive o al foglio Excel">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Analisi Conclusiva</label>
+                    <textarea id="coord-analisi" required rows="4" class="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-leviBlue text-xs text-slate-600 leading-relaxed"></textarea>
+                </div>
+                <button type="submit" id="btn-submit-report" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition duration-200 shadow-md">
+                    Invia Report via Email
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DI INVIO MANUALE PERGAMENA (DA LATO DOCENTE) -->
+    <div id="teacher-send-email-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-3xl w-full max-w-md p-8 border border-slate-100 shadow-2xl relative">
+            <button onclick="closeTeacherSendEmailModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="inline-flex p-3 bg-indigo-50 text-leviBlue rounded-full mb-3">
+                    <i class="fa-solid fa-envelope text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800">Invia Pergamena PDF</h3>
+                <p class="text-xs text-slate-500 mt-1">Conferma o inserisci l'e-mail per l'invio della pergamena d'accoglienza.</p>
+            </div>
+            <form id="teacher-send-email-form" onsubmit="handleTeacherSendEmail(event)" class="space-y-4">
+                <input type="hidden" id="teacher-send-student-id">
+                <input type="hidden" id="teacher-send-student-name">
+                <input type="hidden" id="teacher-send-student-class">
+                <input type="hidden" id="teacher-send-student-course">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Studente</label>
+                    <input type="text" id="teacher-send-student-display" disabled class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-slate-500 font-bold">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">E-mail di Destinazione</label>
+                    <input type="email" id="teacher-send-email-input" required class="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-leviBlue">
+                    <p class="text-[10px] text-slate-400 mt-1">Compilata automaticamente se lo studente non l'ha inserita all'accesso.</p>
+                </div>
+                <button type="submit" id="btn-teacher-send-submit" class="w-full bg-leviBlue hover:bg-blue-800 text-white font-bold py-3 px-4 rounded-xl transition duration-200 shadow-md flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Spedisci Pergamena PDF
                 </button>
             </form>
         </div>
@@ -614,7 +595,7 @@
         <span id="toast-message" class="text-sm font-semibold"></span>
     </div>
 
-    <!-- CARICAMENTO SDK DI FIREBASE E LOGICHE INTEGRATE (UNICO BLOCCO MODULO JS) -->
+    <!-- CARICAMENTO SDK DI FIREBASE E LOGICHE INTEGRATE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -644,7 +625,7 @@
         let activeStudent = null;
         let chartInstances = {};
 
-        // Configurazione domande fisse (da 1 a 35, con aggiunta domanda preparazione)
+        // Questionario Fisso (35 Domande standard incluse)
         const questionsData = [
             { id: "provenienza", text: "Da quale scuola media provieni?", type: "text", required: true, placeholder: "Indica il nome e comune della scuola..." },
             { id: "voto_uscita", text: "Qual era il tuo voto di uscita dalle scuole medie?", type: "radio", required: true, options: ["6", "7-8", "9-10"] },
@@ -658,7 +639,7 @@
             { id: "scelta_indirizzo_chi", text: "Chi ha scelto l’indirizzo di studio che frequenti?", type: "radio", required: true, options: ["Un insegnante (Consiglio Orientativo Scuole Medie)", "I miei genitori", "Insieme ai genitori", "Io stesso/a"] },
             { id: "scelta_indirizzo_perche", text: "Perché hai scelto questo indirizzo di studio?", type: "radio", required: true, options: ["Perché consigliato", "Per le opportunità lavorative", "Per passione", "Perché vicino a casa", "Perché mi è piaciuto l'istituto", "Ho seguito un mio amico/a", "Non accettato in altro istituto"] },
             { id: "giusta_preparazione", text: "Credi di aver avuto la giusta preparazione dalla scuola di provenienza per affrontare l'indirizzo di studi scelto?", type: "radio", required: true, options: ["Sì", "Temo di no", "Non lo so"] },
-            { id: "settore_preferito", text: "Qual è il tuo settore disciplinare preferito?", type: "radio", required: true, options: ["Area linguistica (italiano, lingue straniere, latino, greco)", "Area scientifica (matematica, fisica, chimica, informatica)", "Area umanistica (storia, filosofia, geografia, storia dell’arte)", "Area tecnico-pratica (tecnologia, economia, diritto, discipline techniques)", "Area artistico-espressiva (musica, arte, educazione fisica, teatro)"] },
+            { id: "settore_preferito", text: "Qual è il tuo settore disciplinare preferito?", type: "radio", required: true, options: ["Area linguistica (italiano, lingue straniere, latino, greco)", "Area scientifica (matematica, fisica, chimica, informatica)", "Area umanistica (storia, filosofia, geografia, storia dell’arte)", "Area tecnico-pratica (tecnologia, economia, diritto, discipline tecniche)", "Area artistico-espressiva (musica, arte, educazione fisica, teatro)"] },
             { id: "sentimento_inizio", text: "Come ti senti all’inizio di questa nuova esperienza scolastica?", type: "radio", required: true, options: ["Entusiasta", "Indifferente", "Ansioso/a", "Un po’ preoccupato/a"] },
             { id: "valore_scuola", text: "Quale tra questi valori ritieni più importante a scuola?", type: "radio", required: true, options: ["Collaborazione", "Rispetto", "Creatività", "Impegno"] },
             { id: "attivita_extra", text: "Quale attività extrascolastica ti piacerebbe trovare a scuola?", type: "radio", required: true, options: ["Laboratori scientifici", "Attività sportive", "Corsi di teatro", "Corsi musicali", "Niente", "Altro"] },
@@ -682,32 +663,6 @@
             { id: "volontariato", text: "Hai mai partecipato ad attività di volontariato?", type: "radio", required: true, options: ["Sì, spesso", "Sì, qualche volta", "Vorrei farlo", "No, mai"] },
             { id: "aspect_curioso", text: "Quale aspetto della scuola ti incuriosisce di più?", type: "radio", required: true, options: ["I nuovi compagni", "Le materie nuove", "I professori", "Le attività extra"] }
         ];
-
-        const apiKey = "AQ.Ab8RN6I_37n3NTIKWIYEuwx1gEezbCjRjKnviseijb2PpBGQug";
-
-        async function askGemini(promptText) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            const payload = { contents: [{ parts: [{ text: promptText }] }] };
-            let delay = 1000;
-            for (let i = 0; i < 5; i++) {
-                try {
-                    const response = await fetch(url, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(payload)
-                    });
-                    if (response.ok) {
-                        const result = await response.json();
-                        return result.candidates?.[0]?.content?.parts?.[0]?.text || "Nessuna riflessione elaborata.";
-                    }
-                } catch (e) {
-                    // Exponential backoff silenzioso
-                }
-                await new Promise(resolve => setTimeout(resolve, delay));
-                delay *= 2;
-            }
-            throw new Error("Errore API Gemini.");
-        }
 
         async function runFirebaseSetup() {
             try {
@@ -867,7 +822,7 @@
                 case "volontariato":
                     reflection = `La partecipazione ad attività di volontariato vede il ${topPct}% della classe rispondere "${topVal}" e il ${lowPct}% "${lowVal}". Gli studenti attivi nel sociale possiedono una spiccata sensibilità civica ed empatica. Rappresentano risorse preziose all'interno del gruppo classe per favorire dinamiche di solidarietà, peer education e mutuo aiuto d'aula.`;
                     break;
-                case "aspetto_curioso":
+                case "aspect_curioso":
                     reflection = `L'aspect scolastico che desta maggiore curiosità nei ragazzi è "${topVal}" (${topPct}%), a fronte di un ${lowPct}% orientato verso "${lowVal}". Calibrare le prime attività di accoglienza d'istituto facendo leva su questi interessi dichiarati (es. visite ai laboratori scientifici o attività extrascolastiche) garantisce un'eccellente risposta motivazionale.`;
                     break;
                 default:
@@ -888,7 +843,7 @@
             return `${parts[0] || 'studente'}@leviseregno.edu.it`;
         }
 
-        // Auto-adatta la larghezza delle colonne del foglio di calcolo Excel
+        // Funzione per auto-adattare le colonne in SheetJS
         function XforceColumnWidths(ws) {
             const cols = [];
             for (let cell in ws) {
@@ -1212,7 +1167,6 @@
                     const ctx = document.getElementById(canvasId);
                     if (!ctx) return;
 
-                    // CORREZIONE ERRORE: Distrugge esplicitamente il grafico se preesistente sul canvas target per evitare collisioni di Chart.js
                     const existingChart = Chart.getChart(ctx);
                     if (existingChart) {
                         existingChart.destroy();
@@ -1288,7 +1242,6 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
                 
-                // Stato Pergamena Grafico badge
                 const statoBadge = stud.pergamenaInviata === "Sì" 
                     ? `<span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-bold border border-emerald-200"><i class="fa-solid fa-circle-check mr-1"></i> Inviato</span>`
                     : `<span class="px-2.5 py-1 bg-amber-50 text-amber-700 rounded-full text-xs font-bold border border-amber-200"><i class="fa-solid fa-circle-minus mr-1"></i> Non Inviato</span>`;
@@ -1311,11 +1264,12 @@
             });
         }
 
-        // Metodo per il caricamento dinamico e invio asincrono del tracciato Excel reale al coordinatore
-        function handleSendClassExcelReport(event) {
+        function handleSendClassReportCoordinator(event) {
             event.preventDefault();
             const coordName = document.getElementById('coord-name').value.trim();
             const coordEmail = document.getElementById('coord-email').value.trim();
+            const coordUrl = document.getElementById('coord-url').value.trim();
+            const coordAnalisi = document.getElementById('coord-analisi').value.trim();
             const filterClass = document.getElementById('filter-classe').value;
 
             let filteredData = [...mockDatabase];
@@ -1323,58 +1277,21 @@
                 filteredData = mockDatabase.filter(item => item.classe === filterClass);
             }
 
-            if (filteredData.length === 0) {
-                showNotification("Nessun dato a database per compilare l'Excel.", true);
-                return;
-            }
-
-            const btn = document.getElementById('btn-submit-excel-report');
+            const btn = document.getElementById('btn-submit-report');
             btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Generazione Excel in corso...`;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Spedizione in corso...`;
 
             try {
-                const flatExcelRows = filteredData.map(item => {
-                    const row = {
-                        "Studente": item.studente || "N/A",
-                        "Classe": item.classe || "N/A",
-                        "Indirizzo": item.indirizzo || "N/A",
-                        "Email": item.email || "N/A",
-                        "Pergamena Inviata": item.pergamenaInviata || "No",
-                        "Voto d'Uscita": item.voto_uscita || "N/A",
-                        "Scuola di Provenienza": item.provenienza || "N/A",
-                        "Autonomia": item.autonomia_studio || "N/A",
-                        "Ore Studio Quotidiane": item.ore_studio || "N/A",
-                        "Tempo Viaggio": item.tempo_scuola || "N/A"
-                    };
-                    questionsData.forEach(q => {
-                        if (row[q.text] === undefined) {
-                            row[q.text] = item[q.id] || "N/A";
-                        }
-                    });
-                    customQuestions.forEach(q => {
-                        if (row[q.text] === undefined) {
-                            row[q.text] = item[q.id] || "N/A";
-                        }
-                    });
-                    return row;
-                });
-
-                const wb = XLSX.utils.book_new();
-                const ws = XLSX.utils.json_to_sheet(flatExcelRows);
-                XforceColumnWidths(ws);
-                XLSX.utils.book_append_sheet(wb, ws, `Studenti Classe ${filterClass}`);
-
-                const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
-
                 const payload = {
                     coordinatorEmail: coordEmail,
                     coordinatorName: coordName,
                     classe: filterClass,
                     numeroStudenti: filteredData.length,
-                    excelBase64: wbout
+                    reportUrl: coordUrl || "#",
+                    analisiConclusiva: coordAnalisi
                 };
 
-                // Link dello script aggiornato per l'invio del report Excel al coordinatore
+                // Link Webhook aggiornato
                 fetch("https://script.google.com/macros/s/AKfycbwNOQYs4m6sLYiQ1OQdqCA5T9igHLdftT-pRjPuriRtMiKsKMtAkr1OCUjkmsvBbHa0/exec", {
                     method: "POST",
                     mode: "no-cors",
@@ -1382,19 +1299,18 @@
                     body: JSON.stringify(payload)
                 });
 
-                showNotification(`Report Excel in caricamento. Sarà recapitato a breve a: ${coordEmail}`);
+                showNotification(`Report inviato correttamente a: ${coordEmail}`);
                 closeClassReportModal();
 
             } catch (err) {
-                console.error("Errore esportazione o invio Excel:", err);
-                showNotification("Errore di compilazione, ma i dati sono al sicuro.", true);
+                console.error("Errore esportazione o invio report:", err);
+                showNotification("Errore di invio report.", true);
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = `Invia Report Excel via Email`;
+                btn.innerHTML = `Invia Report via Email`;
             }
         }
 
-        // Gestione della creazione dinamica delle domande personalizzate
         async function handleCreateCustomQuestion(event) {
             event.preventDefault();
             const text = document.getElementById('custom-q-text').value.trim();
@@ -1495,7 +1411,7 @@
             const responses = { 
                 ...activeStudent,
                 timestamp: new Date().toISOString(),
-                pergamenaInviata: "No" // Stato di partenza
+                pergamenaInviata: "No"
             };
 
             const allQuestions = getAllQuestions();
@@ -1517,7 +1433,6 @@
                 }
             });
 
-            // Se lo studente ha inserito la mail, l'invio è automatico
             if (responses.email && responses.email.trim() !== "") {
                 responses.pergamenaInviata = "Sì";
             }
@@ -1530,10 +1445,9 @@
                 generateCertificateCanvas(responses.studente, responses.classe, responses.indirizzo);
                 
                 // 3. Se l'e-mail è presente, procediamo all'invio automatico asincrono del PDF della Pergamena
-                if (responses.email && responses.email.trim() !== "") {
+                if (responses.pergamenaInviata === "Sì") {
                     document.getElementById('success-message-text').innerText = `Le tue risposte sono state registrate nel database del Primo Levi Seregno. La tua Pergamena di Accoglienza ufficiale in formato PDF è in corso di invio alla mail: ${responses.email}`;
 
-                    // Genera PDF da Canvas
                     const canvas = document.getElementById('certificate-canvas');
                     const imgData = canvas.toDataURL('image/jpeg', 1.0);
                     const { jsPDF } = window.jspdf;
@@ -1544,7 +1458,6 @@
                     });
                     pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
                     
-                    // Estrazione Base64 puro del PDF
                     const pdfBase64String = pdf.output('datauristring').split(',')[1];
                     
                     const firstSpace = responses.studente.indexOf(' ');
@@ -1558,7 +1471,6 @@
                         pdfBase64: pdfBase64String
                     };
 
-                    // Chiamata Webhook verso lo script per inviare la pergamena PDF allo studente (NUOVO URL CORRETTO)
                     fetch("https://script.google.com/macros/s/AKfycbwsFdNXO-gGcxgBezWnU2JPMjAJYMNKrPF6Z8cXR742ZxP4w6cacrmUfLIrv3FCHGAE/exec", {
                         method: "POST",
                         mode: "no-cors",
@@ -1634,10 +1546,8 @@
             btn.disabled = true;
             btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Spedizione...`;
 
-            // Rigenera canvas
             generateCertificateCanvas(name, classe, indirizzo);
             
-            // Genera PDF da Canvas
             const canvas = document.getElementById('certificate-canvas');
             const imgData = canvas.toDataURL('image/jpeg', 1.0);
             const { jsPDF } = window.jspdf;
@@ -1662,7 +1572,6 @@
             };
 
             try {
-                // Invia la pergamena PDF allo studente (Webhook corretto)
                 await fetch("https://script.google.com/macros/s/AKfycbwsFdNXO-gGcxgBezWnU2JPMjAJYMNKrPF6Z8cXR742ZxP4w6cacrmUfLIrv3FCHGAE/exec", {
                     method: "POST",
                     mode: "no-cors",
@@ -1670,7 +1579,6 @@
                     body: JSON.stringify(payload)
                 });
 
-                // Aggiorna istantaneamente Firebase Firestore per impostare lo stato su "Sì" e salvare la mail
                 if (id) {
                     const docRef = doc(db, ...databaseCollectionPath.split('/'), id);
                     await updateDoc(docRef, { 
@@ -1730,19 +1638,7 @@
             renderStudentsTable(filteredData);
         }
 
-        function injectDemoData() {
-            const demoPool = [
-                { studente: "Rossi Mario", classe: "1A", indirizzo: "Liceo Scientifico Opzione Scienze Applicate", email: "mario.rossi@email.it", pergamenaInviata: "Sì", provenienza: "Scuola Media Seregno Centro", voto_uscita: "9-10", conoscenza_istituto: "Docenti/scuola", consiglio_orientativo: "Liceo", openday: "SI, a più di uno", stage: "Si", gradimento_openday: "Interessanti, chiare e comprensibili", openday_punti_forza: "I laboratori ben tenuti", openday_punti_deboli: "Nulla", scelta_indirizzo_chi: "Io stesso/a", scelta_indirizzo_perche: "Per passione", giusta_preparazione: "Sì", settore_preferito: "Area scientifica (matematica, fisica, chimica, informatica)", sentimento_inizio: "Entusiasta", valore_scuola: "Impegno", attivita_extra: "Laboratori scientifici", piace_leggere: "Si", importance_diploma: "Si, è importante", tempo_tempo_libero: "con Amici", ore_studio: "2-3 ore", autonomia_studio: "Molto autonomo/a", metodo_studio: "Schemi e mappe concettuali", uso_pc_studio: "Sì, sempre", strumento_digital_preferito: "Computer", lavoro_lezione_preferito: "In gruppo", bisogno_supporto: "Mai", piace_gruppo: "Sì, molto", fratelli_levi: "No", numero_fratelli: "Uno", tempo_scuola: "10-30 minuti", mezzo_trasporto: "A piedi", pratica_sport: "Si", quale_sport: "Basket", volontariato: "Sì, qualche volta", aspetto_curioso: "Le materie nuove" },
-                { studente: "Bianchi Giulia", classe: "1A", indirizzo: "Liceo Scientifico Opzione Scienze Applicate", email: "", pergamenaInviata: "No", provenienza: "I.C. Don Milani", voto_uscita: "7-8", conoscenza_istituto: "Parenti/amici", consiglio_orientativo: "Tecnico", openday: "Si, ad uno", stage: "No", gradimento_openday: "Interessanti, chiare e comprensibili", openday_punti_forza: "L'aula di robotica", openday_punti_deboli: "Troppe persone", scelta_indirizzo_chi: "Insieme ai genitori", scelta_indirizzo_perche: "Per le opportunità lavorative", giusta_preparazione: "Temo di no", settore_preferito: "Area tecnico-pratica (tecnologia, economia, diritto, discipline techniques)", sentimento_inizio: "Un po’ preoccupato/a", valore_scuola: "Rispetto", attivita_extra: "Attività sportive", piace_leggere: "No", importance_diploma: "Si, è importante", tempo_tempo_libero: "Facendo sport", ore_studio: "1-2 ore", autonomia_studio: "Abbastanza autonomo/a", metodo_studio: "Ripetizione ad alta voce", uso_pc_studio: "Solo per alcune materie", strumento_digital_preferito: "Smartphone", lavoro_lezione_preferito: "In coppia", bisogno_supporto: "Qualche volta", piace_gruppo: "Solo a volte", fratelli_levi: "Sì, uno", numero_fratelli: "Due", tempo_scuola: "30-60 minuti", mezzo_trasporto: "In autobus", pratica_sport: "Si", quale_sport: "Pallavolo", volontariato: "No, mai", aspect_curioso: "I nuovi compagni" },
-                { studente: "Colombo Luca", classe: "1L", indirizzo: "Logistica", email: "cluca@email.it", pergamenaInviata: "Sì", provenienza: "Scuola Media Seregno Sud", voto_uscita: "6", conoscenza_istituto: "Ricerca on-line", consiglio_orientativo: "Tecnico", openday: "No, non ho trovato posto", stage: "No", gradimento_openday: "Non saprei", openday_punti_forza: "", openday_punti_deboli: "", scelta_indirizzo_chi: "I miei genitori", scelta_indirizzo_perche: "Perché vicino a casa", giusta_preparazione: "Non lo so", settore_preferito: "Area tecnico-pratica (tecnologia, economia, diritto, discipline techniques)", sentimento_inizio: "Ansioso/a", valore_scuola: "Collaborazione", attivita_extra: "Corsi musicali", piace_leggere: "No", importance_diploma: "Si, è importante", tempo_tempo_libero: "con Genitori", ore_studio: "Meno di 1 ora", autonomia_studio: "Poco autonomo/a", metodo_studio: "Studio di gruppo", uso_pc_studio: "Raramente", strumento_digital_preferito: "Smartphone", lavoro_lezione_preferito: "Dipende dalla materia", bisogno_supporto: "Sì, sempre", piace_gruppo: "Dipende dal gruppo", fratelli_levi: "Sì, più di uno", numero_fratelli: "Tre o più", tempo_scuola: "Plus di un'ora", mezzo_trasporto: "In autobus", pratica_sport: "No", quale_sport: "", volontariato: "Vorrei farlo", aspect_curioso: "Le attività extra" },
-                { studente: "Gatti Francesca", classe: "1L", indirizzo: "Logistica", email: "", pergamenaInviata: "No", provenienza: "I.C. Seregno Ovest", voto_uscita: "7-8", conoscenza_istituto: "Pubblicità", consiglio_orientativo: "Tecnico", openday: "SI, a più di uno", stage: "Si", gradimento_openday: "Interessanti, chiare e comprensibili", openday_punti_forza: "L'accoglienza", openday_punti_deboli: "Il freddo nei corridoi", scelta_indirizzo_chi: "Insieme ai genitori", scelta_indirizzo_perche: "Perché consigliato", giusta_preparazione: "Sì", settore_preferito: "Area linguistica (italiano, lingue straniere, latino, greco)", sentimento_inizio: "Entusiasta", valore_scuola: "Rispetto", attivita_extra: "Corsi musicali", piace_leggere: "Si", importance_diploma: "Si, è importante", tempo_tempo_libero: "con Amici", ore_studio: "2-3 ore", autonomia_studio: "Abbastanza autonomo/a", metodo_studio: "Schemi e mappe concettuali", uso_pc_studio: "Solo per alcune materie", strumento_digital_preferito: "Computer", lavoro_lezione_preferito: "In gruppo", bisogno_supporto: "Qualche volta", piace_gruppo: "Sì, molto", fratelli_levi: "No", numero_fratelli: "Uno", tempo_scuola: "10-30 minuti", mezzo_trasporto: "A piedi", pratica_sport: "Si", quale_sport: "Tennis", volontariato: "Sì, spesso", aspect_curioso: "I nuovi compagni" }
-            ];
-            mockDatabase = demoPool;
-            applyFiltersAndRegenerate();
-            showNotification("Dati dimostrativi iniettati con successo nel pannello d'analisi.");
-        }
-
-        async function triggerGeminiDeepAnalysis() {
+        function exportToExcel() {
             const filterClass = document.getElementById('filter-classe').value;
             let filteredData = [...mockDatabase];
 
@@ -1751,59 +1647,57 @@
             }
 
             if (filteredData.length === 0) {
-                showNotification("Nessun dato presente a database per avviare l'analisi.", true);
+                showNotification("Nessun dato a database da esportare.", true);
                 return;
             }
 
-            showNotification("Avvio elaborazione profonda con Intelligenza Artificiale...");
-
-            const allQuestions = getAllQuestions();
-
-            allQuestions.forEach(async (q) => {
-                const textContainer = document.getElementById(`pedagogical-text-${q.id}`);
-                if (!textContainer) return;
-
-                textContainer.innerHTML = `
-                    <div class="space-y-2 shimmer p-2 rounded-lg">
-                        <div class="h-3 bg-slate-200 rounded w-5/6"></div>
-                        <div class="h-3 bg-slate-200 rounded w-full"></div>
-                        <div class="h-3 bg-slate-200 rounded w-4/5"></div>
-                    </div>
-                `;
-
-                const counts = {};
-                filteredData.forEach(item => {
-                    const rawVal = item[q.id];
-                    let val = "Nessuna risposta";
-                    if (rawVal) {
-                        val = (typeof rawVal === 'string' && rawVal.startsWith("Altro:")) ? "Altro" : rawVal;
-                    }
-                    counts[val] = (counts[val] || 0) + 1;
+            try {
+                const flatExcelRows = filteredData.map(item => {
+                    const row = {
+                        "Studente": item.studente || "N/A",
+                        "Classe": item.classe || "N/A",
+                        "Indirizzo": item.indirizzo || "N/A",
+                        "Email": item.email || "N/A",
+                        "Pergamena Inviata": item.pergamenaInviata || "No",
+                        "Voto d'Uscita": item.voto_uscita || "N/A",
+                        "Scuola di Provenienza": item.provenienza || "N/A",
+                        "Autonomia": item.autonomia_studio || "N/A",
+                        "Ore Studio Quotidiane": item.ore_studio || "N/A",
+                        "Tempo Viaggio": item.tempo_scuola || "N/A"
+                    };
+                    questionsData.forEach(q => {
+                        if (row[q.text] === undefined) {
+                            row[q.text] = item[q.id] || "N/A";
+                        }
+                    });
+                    customQuestions.forEach(q => {
+                        if (row[q.text] === undefined) {
+                            row[q.text] = item[q.id] || "N/A";
+                        }
+                    });
+                    return row;
                 });
 
-                let statsText = "";
-                Object.keys(counts).forEach(key => {
-                    const pct = Math.round((counts[key] / filteredData.length) * 100);
-                    statsText += `- ${key}: ${counts[key]} studenti (${pct}%)\n`;
-                });
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.json_to_sheet(flatExcelRows);
+                XforceColumnWidths(ws);
+                XLSX.utils.book_append_sheet(wb, ws, `Studenti Classe ${filterClass}`);
+                XLSX.writeFile(wb, `Report_Diagnostico_Levi_Classe_${filterClass}.xlsx`);
+                showNotification("File Excel compilato ed esportato localmente con successo!");
+            } catch (err) {
+                console.error("Errore esportazione locale:", err);
+                showNotification("Errore di compilazione Excel.", true);
+            }
+        }
 
-                const prompt = `Analizza questi dati reali raccolti dal questionario d'ingresso degli studenti delle classi prime dell'ITSCG Primo Levi di Seregno.
-Domanda d'istituto: "${q.text}"
-Filtro d'analisi: Classe ${filterClass}
-Risposte e percentuali reali degli studenti:
-${statsText}
-
-Genera una riflessione pedagogica personale e concreta (non generica o banale) di circa 5-6 righe in lingua italiana. Spiega cosa indicano esattamente questi numeri sul profilo di partenza della classe, quali fragilità specifiche ed ostacoli potrebbero emergere e suggerisci esatte azioni didattiche pratiche immediate che i docenti del Consiglio di Classe possono adottare per favorire il successo formativo.`;
-
-                try {
-                    const aiReflection = await askGemini(prompt);
-                    textContainer.innerText = aiReflection;
-                } catch (e) {
-                    textContainer.innerText = "Impossibile caricare la riflessione IA per questa domanda. Riprovare.";
-                }
-            });
-
-            showNotification("Tutte le riflessioni pedagogiche reali sono state elaborate da Gemini!");
+        function injectDemoData() {
+            const demoPool = [
+                { studente: "Rossi Mario", classe: "1A", indirizzo: "Liceo Scientifico Opzione Scienze Applicate", email: "mario.rossi@email.it", pergamenaInviata: "Sì", provenienza: "Scuola Media Seregno Centro", voto_uscita: "9-10", conoscenza_istituto: "Docenti/scuola", consiglio_orientativo: "Liceo", openday: "SI, a più di uno", stage: "Si", gradimento_openday: "Interessanti, chiare e comprensibili", openday_punti_forza: "I laboratori ben tenuti", openday_punti_deboli: "Nulla", scelta_indirizzo_chi: "Io stesso/a", scelta_indirizzo_perche: "Per passione", giusta_preparazione: "Sì", settore_preferito: "Area scientifica (matematica, fisica, chimica, informatica)", sentimento_inizio: "Entusiasta", valore_scuola: "Impegno", attivita_extra: "Laboratori scientifici", piace_leggere: "Si", importance_diploma: "Si, è importante", tempo_tempo_libero: "con Amici", ore_studio: "2-3 ore", autonomia_studio: "Molto autonomo/a", metodo_studio: "Schemi e mappe concettuali", uso_pc_studio: "Sì, sempre", strumento_digital_preferito: "Computer", lavoro_lezione_preferito: "In gruppo", bisogno_supporto: "Mai", piace_gruppo: "Sì, molto", fratelli_levi: "No", numero_fratelli: "Uno", tempo_scuola: "10-30 minuti", mezzo_trasporto: "A piedi", pratica_sport: "Si", quale_sport: "Basket", volontariato: "Sì, qualche volta", aspetto_curioso: "Le materie nuove" },
+                { studente: "Bianchi Giulia", classe: "5A", indirizzo: "Liceo Scientifico Opzione Scienze Applicate", email: "", pergamenaInviata: "No", provenienza: "I.C. Don Milani", voto_uscita: "7-8", conoscenza_istituto: "Parenti/amici", consiglio_orientativo: "Tecnico", openday: "Si, ad uno", stage: "No", gradimento_openday: "Interessanti, chiare e comprensibili", openday_punti_forza: "L'aula di robotica", openday_punti_deboli: "Troppe persone", scelta_indirizzo_chi: "Insieme ai genitori", scelta_indirizzo_perche: "Per le opportunità lavorative", giusta_preparazione: "Temo di no", settore_preferito: "Area tecnico-pratica (tecnologia, economia, diritto, discipline techniques)", sentimento_inizio: "Un po’ preoccupato/a", valore_scuola: "Rispetto", attivita_extra: "Attività sportive", piace_leggere: "No", importance_diploma: "Si, è importante", tempo_tempo_libero: "Facendo sport", ore_studio: "1-2 ore", autonomia_studio: "Abbastanza autonomo/a", metodo_studio: "Ripetizione ad alta voce", uso_pc_studio: "Solo per alcune materie", strumento_digital_preferito: "Smartphone", lavoro_lezione_preferito: "In coppia", bisogno_supporto: "Qualche volta", piace_gruppo: "Solo a volte", fratelli_levi: "Sì, uno", numero_fratelli: "Due", tempo_scuola: "30-60 minuti", mezzo_trasporto: "In autobus", pratica_sport: "Si", quale_sport: "Pallavolo", volontariato: "No, mai", aspect_curioso: "I nuovi compagni" }
+            ];
+            mockDatabase = demoPool;
+            applyFiltersAndRegenerate();
+            showNotification("Dati dimostrativi iniettati con successo nel pannello d'analisi.");
         }
 
         function initApp() {
@@ -1815,7 +1709,7 @@ Genera una riflessione pedagogica personale e concreta (non generica o banale) d
             renderQuestionnaire();
         }
 
-        // Esponi i metodi a livello globale e la definizione di getAllQuestions prima di richiamarli
+        // Esponi esplicitamente tutti i metodi locali a window per renderli visibili ai gestori di eventi inline HTML
         window.getAllQuestions = getAllQuestions;
         window.renderQuestionnaire = renderQuestionnaire;
         window.generateClassPedagogicalReport = generateClassPedagogicalReport;
@@ -1827,10 +1721,10 @@ Genera una riflessione pedagogica personale e concreta (non generica o banale) d
         window.handleTeacherLogin = handleTeacherLogin;
         window.applyFiltersAndRegenerate = applyFiltersAndRegenerate;
         window.injectDemoData = injectDemoData;
-        window.triggerGeminiDeepAnalysis = triggerGeminiDeepAnalysis;
         window.executeDatabaseReset = executeDatabaseReset;
-        window.handleSendClassExcelReport = handleSendClassExcelReport;
+        window.handleSendClassReportCoordinator = handleSendClassReportCoordinator;
         window.handleCreateCustomQuestion = handleCreateCustomQuestion;
+        window.exportToExcel = exportToExcel;
         
         window.openTeacherSendEmailModal = openTeacherSendEmailModal;
         window.closeTeacherSendEmailModal = closeTeacherSendEmailModal;
@@ -1967,7 +1861,7 @@ Genera una riflessione pedagogica personale e concreta (non generica o banale) d
             ctx.font = "9px Arial";
             ctx.fillStyle = "#64748b";
             ctx.fillText("La Commissione Accoglienza", 150, 365);
-            ctx.fillText("Staff Accoglienza", 150, 385);
+            ctx.fillText("Prof. Staff Accoglienza", 150, 385);
 
             ctx.font = "9px Arial";
             ctx.fillStyle = "#64748b";
@@ -1998,6 +1892,16 @@ Genera una riflessione pedagogica personale e concreta (non generica o banale) d
 
         function closeQuestionCreatorModal() {
             document.getElementById('question-creator-modal').classList.add('hidden');
+        }
+
+        function openClassReportModal() {
+            const reportContent = document.getElementById('class-pedagogical-report').innerText;
+            document.getElementById('coord-analisi').value = reportContent;
+            document.getElementById('coordinator-report-modal').classList.remove('hidden');
+        }
+
+        function closeClassReportModal() {
+            document.getElementById('coordinator-report-modal').classList.add('hidden');
         }
 
         function toggleCustomQOptions() {
