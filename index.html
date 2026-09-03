@@ -14,6 +14,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <!-- Libreria SheetJS per generare file Excel in download locale -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- JSZip per pacchetti ZIP delle pergamene PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     
     <script>
         tailwind.config = {
@@ -571,6 +573,9 @@
                         <button onclick="window.exportFullResponsesToPDF()" class="px-3 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg transition flex items-center gap-2">
                             <i class="fa-solid fa-file-pdf"></i> PDF Risposte Complete
                         </button>
+                        <button onclick="window.downloadPergameneZip()" class="px-3 py-2 bg-violet-700 hover:bg-violet-800 text-white font-bold text-xs rounded-lg transition flex items-center gap-2">
+                            <i class="fa-solid fa-file-zipper"></i> ZIP Pergamene PDF
+                        </button>
                         <button onclick="window.deleteAllVisibleResponses('Archivio Completo delle Risposte')" class="px-3 py-2 bg-red-800 hover:bg-red-900 text-white font-bold text-xs rounded-lg transition flex items-center gap-2">
                             <i class="fa-solid fa-trash-can"></i> Cancella tutti i dati
                         </button>
@@ -578,6 +583,9 @@
                 </div>
                 <div class="px-6 py-3 bg-blue-50 border-b border-blue-100 text-xs text-blue-900 flex items-center gap-2">
                     <i class="fa-solid fa-database"></i> <strong>Salvataggio immediato:</strong> la compilazione viene scritta su Firebase prima di procedere con l'eventuale invio della pergamena via e-mail.
+                </div>
+                <div class="px-6 py-3 bg-violet-50 border-b border-violet-100 text-xs text-violet-900 flex items-center gap-2">
+                    <i class="fa-solid fa-file-zipper"></i> <strong>Pergamene in ZIP:</strong> il pulsante genera un PDF separato per ogni alunno visibile. Il coordinatore ottiene solo la propria classe; docente e dirigenza seguono il filtro selezionato.
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse" id="students-table">
@@ -610,9 +618,14 @@
                             </h3>
                             <p class="text-xs text-slate-500 mt-1">Scorrimento orizzontale disponibile. La prima colonna identifica lo studente; ogni domanda ha la propria colonna con la risposta effettivamente registrata.</p>
                         </div>
-                        <button onclick="window.deleteAllVisibleResponses('Dettaglio Integrale: Domanda → Risposta')" class="px-3 py-2 bg-red-800 hover:bg-red-900 text-white font-bold text-xs rounded-lg transition flex items-center justify-center gap-2 shrink-0">
-                            <i class="fa-solid fa-trash-can"></i> Cancella tutti i dati
-                        </button>
+                        <div class="flex flex-wrap gap-2 shrink-0">
+                            <button onclick="window.downloadPergameneZip()" class="px-3 py-2 bg-violet-700 hover:bg-violet-800 text-white font-bold text-xs rounded-lg transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-file-zipper"></i> ZIP Pergamene PDF
+                            </button>
+                            <button onclick="window.deleteAllVisibleResponses('Dettaglio Integrale: Domanda → Risposta')" class="px-3 py-2 bg-red-800 hover:bg-red-900 text-white font-bold text-xs rounded-lg transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-trash-can"></i> Cancella tutti i dati
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div id="full-responses-table-wrap" class="overflow-auto max-h-[650px]">
@@ -1171,6 +1184,99 @@
             const pdf=new jspdfObj({orientation:'landscape',unit:'px',format:[canvas.width,canvas.height],compress:true});
             pdf.addImage(canvas.toDataURL('image/jpeg',0.98),'JPEG',0,0,canvas.width,canvas.height,undefined,'FAST');
             return pdf;
+        };
+
+        // ================= ZIP PERGAMENE PDF: ADMIN + COORDINATOR =================
+        window.sanitizeFileName = function(value){
+            return String(value || 'Studente')
+                .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+                .replace(/[^a-zA-Z0-9._-]+/g,'_')
+                .replace(/^_+|_+$/g,'') || 'Studente';
+        };
+
+        window.downloadPergameneZip = async function(){
+            try {
+                if (!window.JSZip) {
+                    throw new Error('Libreria ZIP non disponibile.');
+                }
+                if (!window.jspdf?.jsPDF) {
+                    throw new Error('Libreria PDF non disponibile.');
+                }
+
+                const filterEl = document.getElementById('filter-classe');
+                const filterClass = activeCoordinator
+                    ? activeCoordinator.classe
+                    : (filterEl?.value || 'ALL');
+
+                let data = [...mockDatabase];
+                if (filterClass !== 'ALL') {
+                    data = data.filter(item => item.classe === filterClass);
+                }
+
+                if (!data.length) {
+                    window.showNotification('Nessuna pergamena disponibile per l’ambito selezionato.', true);
+                    return;
+                }
+
+                const zip = new JSZip();
+                const folderName = filterClass === 'ALL'
+                    ? 'Pergamene_Primo_Levi_Tutte_Classi'
+                    : `Pergamene_Primo_Levi_${window.sanitizeFileName(filterClass)}`;
+                const folder = zip.folder(folderName);
+                if (!folder) throw new Error('Impossibile creare la cartella ZIP.');
+                const usedNames = new Set();
+
+                const btns = [...document.querySelectorAll('button[onclick*="downloadPergameneZip"]')];
+                btns.forEach(btn => { btn.disabled = true; btn.dataset.originalHtml = btn.innerHTML; });
+
+                for (let i = 0; i < data.length; i++) {
+                    const item = data[i];
+                    btns.forEach(btn => {
+                        btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> ZIP ${i+1}/${data.length}`;
+                    });
+
+                    const name = item.studente || `${item.nome || ''} ${item.cognome || ''}`.trim() || `Studente_${i+1}`;
+                    const classe = item.classe || 'N/D';
+                    const indirizzo = item.indirizzo || 'Indirizzo di studio non indicato';
+                    const pdf = await window.buildCertificatePdf(name, classe, indirizzo);
+                    const pdfArrayBuffer = pdf.output('arraybuffer');
+                    const baseFilename = `${window.sanitizeFileName(classe)}_${window.sanitizeFileName(name)}_Pergamena`;
+                    let filename = `${baseFilename}.pdf`;
+                    let suffix = 2;
+                    while (usedNames.has(filename)) {
+                        filename = `${baseFilename}_${suffix++}.pdf`;
+                    }
+                    usedNames.add(filename);
+                    folder.file(filename, pdfArrayBuffer);
+                }
+
+                const blob = await zip.generateAsync({
+                    type: 'blob',
+                    compression: 'DEFLATE',
+                    compressionOptions: { level: 6 }
+                });
+
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `${folderName}.zip`;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                setTimeout(() => URL.revokeObjectURL(link.href), 1500);
+
+                btns.forEach(btn => {
+                    btn.disabled = false;
+                    btn.innerHTML = btn.dataset.originalHtml || '<i class="fa-solid fa-file-zipper"></i> ZIP Pergamene PDF';
+                });
+                window.showNotification(`ZIP creato: ${data.length} pergamene PDF singole pronte per la stampa.`);
+            } catch (err) {
+                console.error('Errore creazione ZIP pergamene:', err);
+                document.querySelectorAll('button[onclick*="downloadPergameneZip"]').forEach(btn => {
+                    btn.disabled = false;
+                    if (btn.dataset.originalHtml) btn.innerHTML = btn.dataset.originalHtml;
+                });
+                window.showNotification(`Errore nella creazione ZIP: ${err.message || 'operazione non riuscita'}`, true);
+            }
         };
 
         window.downloadCertificate = async function() {
