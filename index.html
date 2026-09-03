@@ -722,7 +722,7 @@
                             <option value="Relazioni Internazionali per il Marketing (R.I.M.)">Relazioni Internazionali per il Marketing (R.I.M.)</option>
                             <option value="Sistema Moda">Sistema Moda</option>
                             <option value="Logistica">Logistica</option>
-                            <option value="Liceo Scientifico opzione Scienze Applicate">Liceo Scientifico opzione Scienze Applicate</option>
+                            <option value="Liceo Scientifico opzione Scienze Applicate con curvatura economica">Liceo Scientifico opzione Scienze Applicate con curvatura economica</option>
                         </select>
                     </div>
                 </div>
@@ -1005,7 +1005,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, getDocs, writeBatch, doc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, getDocs, writeBatch, doc, updateDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // ESPOSIZIONE DI TUTTE LE FUNZIONI GLOBALI DIRETTAMENTE IN WINDOW PER PREVENIRE REFERENCE ERROR
         window.showSection = function(sectionId) {
@@ -2309,8 +2309,37 @@
                 const vals=[item.studente||'N/A',item.classe||'N/A',item.indirizzo||'N/A',item.email||'Nessuna',item.timestamp?new Date(item.timestamp).toLocaleString('it-IT'):'N/D'];
                 vals.forEach((v,idx)=>{ const td=document.createElement('td'); td.className='py-3 px-4 border-r border-slate-100 '+(idx===0?'font-bold sticky left-0 bg-white z-10':''); td.textContent=v; tr.appendChild(td); });
                 questions.forEach(q=>{ const td=document.createElement('td'); td.className='py-3 px-4 border-r border-slate-100 align-top whitespace-normal'; td.textContent=item[q.id] ?? 'N/D'; tr.appendChild(td); });
+                const actionTd=document.createElement('td');
+                actionTd.className='py-3 px-4 border-l-2 border-slate-200 bg-rose-50/40 min-w-[170px] sticky right-0 z-10';
+                actionTd.innerHTML=`<button type="button" onclick="window.deleteStudentResponse('${item.id}')" class="w-full px-3 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg shadow-sm transition flex items-center justify-center gap-2" title="Cancella definitivamente tutte le risposte di questo studente"><i class="fa-solid fa-trash-can"></i> Cancella dati</button>`;
+                tr.appendChild(actionTd);
                 body.appendChild(tr);
             });
+        };
+
+        window.deleteStudentResponse = async function(studentId) {
+            if (!studentId) {
+                window.showNotification('Identificativo dello studente non disponibile.', true);
+                return;
+            }
+            const student = mockDatabase.find(x => x.id === studentId);
+            if (!student) {
+                window.showNotification('Record non trovato nel database.', true);
+                return;
+            }
+            const nome = student.studente || 'questo studente';
+            const classe = student.classe || 'classe non indicata';
+            const conferma = confirm(`ATTENZIONE: vuoi cancellare DEFINITIVAMENTE tutte le risposte di ${nome} (${classe})?\n\nIl record verrà rimosso da Firebase e non sarà più disponibile negli archivi e nelle esportazioni.`);
+            if (!conferma) return;
+            try {
+                await deleteDoc(doc(db, ...databaseCollectionPath.split('/'), studentId));
+                mockDatabase = mockDatabase.filter(x => x.id !== studentId);
+                window.applyFiltersAndRegenerate();
+                window.showNotification(`Dati di ${nome} cancellati definitivamente dal database.`);
+            } catch (err) {
+                console.error('Errore cancellazione risposta studente:', err);
+                window.showNotification('Errore durante la cancellazione. Nessun dato è stato eliminato.', true);
+            }
         };
 
         window.exportFullResponsesToExcel = function(){
