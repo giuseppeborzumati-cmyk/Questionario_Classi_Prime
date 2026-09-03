@@ -32,6 +32,8 @@
     </script>
 
     <style>
+        /* Sfondo istituzionale azzurro-blu leggermente più saturo */
+        body { background-color: #d7e7fb !important; }
         /* Sfondo a bolle fluttuanti con movimento oscillatorio "avanti e indietro" */
         #bubble-container {
             position: fixed;
@@ -47,14 +49,14 @@
         .bubble {
             position: absolute;
             bottom: -150px;
-            background: rgba(96, 165, 250, 0.14);
+            background: rgba(59, 130, 246, 0.16);
             border-radius: 50%;
             pointer-events: none;
             box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.6), 0 4px 10px rgba(0, 0, 0, 0.05);
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid rgba(96, 165, 250, 0.28);
+            border: 1px solid rgba(59, 130, 246, 0.32);
         }
 
         /* Animazione oscillante verso sinistra */
@@ -1325,7 +1327,7 @@
                 img.src = 'levi.png';
                 img.onerror = function() {
                     this.style.display = 'none';
-                    bubble.style.background = 'rgba(147, 197, 253, 0.18)';
+                    bubble.style.background = 'rgba(59, 130, 246, 0.22)';
                 };
                 bubble.appendChild(img);
                 container.appendChild(bubble);
