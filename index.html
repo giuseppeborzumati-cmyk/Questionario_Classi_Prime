@@ -47,14 +47,14 @@
         .bubble {
             position: absolute;
             bottom: -150px;
-            background: rgba(30, 58, 138, 0.06);
+            background: rgba(96, 165, 250, 0.14);
             border-radius: 50%;
             pointer-events: none;
             box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.6), 0 4px 10px rgba(0, 0, 0, 0.05);
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid rgba(30, 58, 138, 0.1);
+            border: 1px solid rgba(96, 165, 250, 0.28);
         }
 
         /* Animazione oscillante verso sinistra */
@@ -247,6 +247,7 @@
 
                 <div id="form-actions-wrapper" class="bg-white border border-slate-200 p-6 rounded-2xl flex flex-col items-center justify-center gap-4 shadow-sm mt-8">
                     <p class="text-sm text-slate-500 text-center">Assicurati di aver risposto a tutti i quesiti obbligatori prima di trasmettere il modulo.</p>
+                    <p class="text-[11px] text-emerald-700 text-center font-semibold"><i class="fa-solid fa-database mr-1"></i>Le risposte vengono salvate immediatamente nel database; l'eventuale invio dell'attestato via e-mail avviene successivamente.</p>
                     <button type="submit" id="submit-quest-btn" class="w-full md:w-auto px-10 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-lg rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-3">
                         <i class="fa-solid fa-paper-plane"></i> Invia Risposte e Ottieni Attestato
                     </button>
@@ -255,7 +256,7 @@
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        <span class="text-sm text-emerald-600 font-bold mt-2">Salvataggio risposte e compilazione Pergamena PDF...</span>
+                        <span class="text-sm text-emerald-600 font-bold mt-2">Salvataggio immediato nel database e compilazione della Pergamena PDF...</span>
                     </div>
                 </div>
             </form>
@@ -1324,7 +1325,7 @@
                 img.src = 'levi.png';
                 img.onerror = function() {
                     this.style.display = 'none';
-                    bubble.style.background = 'rgba(59, 130, 246, 0.08)';
+                    bubble.style.background = 'rgba(147, 197, 253, 0.18)';
                 };
                 bubble.appendChild(img);
                 container.appendChild(bubble);
@@ -1375,18 +1376,18 @@
             { id: "openday_punti_forza", text: "Se hai partecipato ai nostri eventi, cosa ti ha colpito in particolare?", type: "text", required: false, placeholder: "Cosa ti è piaciuto di più..." },
             { id: "openday_punti_deboli", text: "Se hai partecipato ai nostri eventi, cosa non ti è piaciuto o consigli di migliorare?", type: "text", required: false, placeholder: "Cosa consiglieresti di migliorare..." },
             { id: "scelta_indirizzo_chi", text: "Chi ha scelto l’indirizzo di studio che frequenti?", type: "radio", required: true, options: ["Un insegnante (Consiglio Orientativo Scuole Medie)", "I miei genitori", "Insieme ai genitori", "Io stesso/a"] },
-            { id: "scelta_indirizzo_perche", text: "Perché hai scelto questo indirizzo di studio?", type: "radio", required: true, options: ["Perché consigliato", "Per le opportunità lavorative", "Per passione", "Perché vicino a casa", "Perché mi è piaciuto l'istituto", "Ho seguito un mio amico/a", "Non accettato in altro istituto"] },
+            { id: "scelta_indirizzo_perche", text: "Perché hai scelto questo indirizzo di studio?", type: "radio", required: true, options: ["Perché consigliato", "Per le opportunità lavorative", "Per passione", "Perché vicino a casa", "Perché mi è piaciuto l'istituto", "Ho seguito un mio amico/a", "Non accettato in altro istituto", "Altro"] },
             { id: "giusta_preparazione", text: "Credi di aver avuto la giusta preparazione dalla scuola di provenienza per affrontare l'indirizzo di studi scelto?", type: "radio", required: true, options: ["Sì", "Temo di no", "Non lo so"] },
             
             // --- DOMANDE TEATRO D'ISTITUTO CONDIZIONALI ---
             { id: "partecipazione_teatro", text: "Vorresti iscriverti e partecipare al nuovo corso di Teatro del Primo Levi?", type: "radio", required: true, options: ["Sì, mi piacerebbe molto!", "No, non credo di essere portato", "Forse, ci devo pensare", "Altro"] },
-            { id: "ruolo_teatro", text: "Se decidessi di partecipare allo spettacolo finale, quale ruolo ti incuriosirebbe di più? (Facoltativo)", type: "radio", required: false, options: ["Attore/Attrice (Recitare sul palco)", "Scenografia e Costumi (Dietro le quinte)", "Regia e Scrittura del copione", "Tecnico audio, luci o musiche"] },
+            { id: "ruolo_teatro", text: "Se decidessi di partecipare allo spettacolo finale, quale ruolo teatrale ti piacerebbe interpretare? (Facoltativo)", type: "radio", required: false, options: ["Protagonista", "Co-protagonista", "Ruolo secondario", "Antagonista", "Comprimario / Caratterista", "Narratore / Voce narrante", "Ensemble / Comparsa", "Altro"] },
             { id: "tema_teatro", text: "Se potessi inventare tu la trama dello spettacolo teatrale d'istituto, di cosa ti piacerebbe che parlasse? (Facoltativo)", type: "text", required: false, placeholder: "Es. Una commedia divertente sulla scuola, un giallo misterioso..." },
             // ----------------------------------------------
 
-            { id: "settore_preferito", text: "Qual è il tuo settore disciplinare preferito?", type: "radio", required: true, options: ["Area linguistica (italiano, lingue straniere, latino, greco)", "Area scientifica (matematica, fisica, chimica, informatica)", "Area umanistica (storia, filosofia, geografia, storia dell’arte)", "Area tecnico-pratica (tecnologia, economia, diritto, discipline tecniche)", "Area artistico-espressiva (musica, arte, educazione fisica, teatro)"] },
+            { id: "settore_preferito", text: "Qual è il tuo settore disciplinare preferito?", type: "radio", required: true, options: ["Area linguistica (italiano, lingue straniere, latino, greco)", "Area scientifica (matematica, fisica, chimica, informatica)", "Area umanistica (storia, filosofia, geografia, storia dell’arte)", "Area tecnico-pratica (tecnologia, economia, diritto, discipline tecniche)", "Area artistico-espressiva (musica, arte, educazione fisica, teatro)", "Altro"] },
             { id: "sentimento_inizio", text: "Come ti senti all’inizio di questa nuova esperienza scolastica?", type: "radio", required: true, options: ["Entusiasta", "Indifferente", "Ansioso/a", "Un po’ preoccupato/a"] },
-            { id: "valore_scuola", text: "Quale tra questi valori ritieni più importante a scuola?", type: "radio", required: true, options: ["Collaborazione", "Rispetto", "Creatività", "Impegno"] },
+            { id: "valore_scuola", text: "Quale tra questi valori ritieni più importante a scuola?", type: "radio", required: true, options: ["Collaborazione", "Rispetto", "Inclusione", "Impegno", "Altro"] },
             { id: "attivita_extra", text: "Quale altra attività extrascolastica ti piacerebbe trovare a scuola?", type: "radio", required: true, options: ["Laboratori scientifici", "Attività sportive", "Corsi musicali", "Niente", "Altro"] },
             { id: "piace_leggere", text: "Ti piace leggere?", type: "radio", required: true, options: ["Si", "No"] },
             { id: "importance_diploma", text: "Credi sia importante studiare e avere un diploma?", type: "radio", required: true, options: ["Si, è importante", "No, non lo è", "Non so"] },
@@ -2909,8 +2910,20 @@
                     };
 
                     await window.sendCertificateByAppsScript(payload);
-                    
-                    window.showNotification("Questionario salvato e richiesta di invio della Pergamena trasmessa.");
+                    responses.statoInvioEmail = "RICHIESTA_INVIATA";
+                    responses.dataRichiestaInvioEmail = new Date().toISOString();
+                    if (responses.id) {
+                        try {
+                            await updateDoc(doc(db, ...databaseCollectionPath.split('/'), responses.id), {
+                                statoInvioEmail: responses.statoInvioEmail,
+                                dataRichiestaInvioEmail: responses.dataRichiestaInvioEmail,
+                                pergamenaInviata: "Sì"
+                            });
+                        } catch (statusErr) {
+                            console.warn("Aggiornamento stato e-mail non riuscito:", statusErr);
+                        }
+                    }
+                    window.showNotification("Questionario salvato nel database e richiesta di invio della Pergamena trasmessa.");
                 } else {
                     document.getElementById('success-message-text').innerText = "Le tue risposte sono state salvate immediatamente nel database del Primo Levi Seregno. Puoi scaricare la tua Pergamena d'Accoglienza direttamente cliccando sul pulsante qui sotto.";
                     window.showNotification("Questionario registrato con successo! Scarica l'attestato qui sotto.");
