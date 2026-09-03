@@ -1152,7 +1152,7 @@
         };
 
         window.sendCertificateByAppsScript = async function(payload) {
-            const endpoint='https://script.google.com/macros/s/AKfycbwsFdNXO-gGcxgBezWnU2JPMjAJYMNKrPF6Z8cXR742ZxP4w6cacrmUfLIrv3FCHGAE/exec';
+            const endpoint='https://script.google.com/macros/s/AKfycbyp1lcHOVnpSno4kPkAqZgiewznZj21o2X9oWwSl_bWWxjcPOm677v_AnIBCFUNGU17rQ/exec';
             const body=JSON.stringify(payload);
             // no-cors è intenzionale: il browser non consente di leggere la risposta, ma la richiesta POST viene consegnata al Web App.
             await fetch(endpoint,{method:'POST',mode:'no-cors',cache:'no-store',redirect:'follow',headers:{'Content-Type':'text/plain;charset=utf-8'},body});
@@ -1338,7 +1338,7 @@
                             <div>
                                 <h4 class="text-sm font-bold text-purple-900 flex items-center gap-2">Il Primo Levi alza il sipario!</h4>
                                 <p class="text-purple-800 style-normal text-xs mt-1.5 leading-relaxed">
-                                    La nostra scuola organizza un <strong>Corso di Teatro gratuito</strong> all'interno dell'Istituto!<br>
+                                    La nostra scuola organizza un <strong>Corso di Teatro gratuito della durata di 30 h con 2h settimanali </strong> all'interno dell'Istituto!<br>
                                     È un'opportunità fantastica che permette la <strong>socializzazione</strong>, la <strong>condivisione di idee</strong> e crea <strong>spensieratezza</strong> tra gli studenti. Un'occasione per staccare dallo studio e coronare il percorso con la <strong>realizzazione di uno spettacolo finale</strong>.
                                 </p>
                             </div>
