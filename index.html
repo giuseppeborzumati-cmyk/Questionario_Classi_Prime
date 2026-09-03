@@ -571,6 +571,9 @@
                         <button onclick="window.exportFullResponsesToPDF()" class="px-3 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg transition flex items-center gap-2">
                             <i class="fa-solid fa-file-pdf"></i> PDF Risposte Complete
                         </button>
+                        <button onclick="window.deleteAllVisibleResponses('Archivio Completo delle Risposte')" class="px-3 py-2 bg-red-800 hover:bg-red-900 text-white font-bold text-xs rounded-lg transition flex items-center gap-2">
+                            <i class="fa-solid fa-trash-can"></i> Cancella tutti i dati
+                        </button>
                     </div>
                 </div>
                 <div class="px-6 py-3 bg-blue-50 border-b border-blue-100 text-xs text-blue-900 flex items-center gap-2">
@@ -600,10 +603,17 @@
             <!-- ARCHIVIO ORIZZONTALE: UNA COLONNA PER OGNI DOMANDA -->
             <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mt-8">
                 <div class="p-5 border-b border-slate-100 bg-slate-50">
-                    <h3 class="text-lg font-black text-slate-800 flex items-center gap-2">
-                        <i class="fa-solid fa-list-check text-leviBlue"></i> Dettaglio Integrale: Domanda → Risposta
-                    </h3>
-                    <p class="text-xs text-slate-500 mt-1">Scorrimento orizzontale disponibile. La prima colonna identifica lo studente; ogni domanda ha la propria colonna con la risposta effettivamente registrata.</p>
+                    <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3">
+                        <div>
+                            <h3 class="text-lg font-black text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-list-check text-leviBlue"></i> Dettaglio Integrale: Domanda → Risposta
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-1">Scorrimento orizzontale disponibile. La prima colonna identifica lo studente; ogni domanda ha la propria colonna con la risposta effettivamente registrata.</p>
+                        </div>
+                        <button onclick="window.deleteAllVisibleResponses('Dettaglio Integrale: Domanda → Risposta')" class="px-3 py-2 bg-red-800 hover:bg-red-900 text-white font-bold text-xs rounded-lg transition flex items-center justify-center gap-2 shrink-0">
+                            <i class="fa-solid fa-trash-can"></i> Cancella tutti i dati
+                        </button>
+                    </div>
                 </div>
                 <div id="full-responses-table-wrap" class="overflow-auto max-h-[650px]">
                     <table id="full-responses-table" class="min-w-max w-full text-left border-collapse">
@@ -2315,6 +2325,34 @@
                 tr.appendChild(actionTd);
                 body.appendChild(tr);
             });
+        };
+
+        window.deleteAllVisibleResponses = async function(sourceLabel = 'Archivio delle Risposte') {
+            if (!coordinatorManagementEnabled) {
+                window.showNotification('Operazione consentita solo dall’Area Docenti amministrativa.', true);
+                return;
+            }
+            const { data, filterClass } = window.getVisibleResponseData();
+            if (!data.length) {
+                window.showNotification('Non ci sono dati da cancellare nell’ambito attualmente visualizzato.', true);
+                return;
+            }
+            const ambito = filterClass === 'ALL' ? "TUTTO L'ISTITUTO" : `la classe ${filterClass}`;
+            const conferma = confirm(`ATTENZIONE: stai per cancellare DEFINITIVAMENTE ${data.length} record dall’${sourceLabel}.\n\nAmbito: ${ambito}.\n\nQuesta operazione rimuoverà i record direttamente da Firebase/Firestore e non potrà essere annullata. Vuoi continuare?`);
+            if (!conferma) return;
+            try {
+                const batch = writeBatch(db);
+                data.forEach(item => {
+                    if (item.id) batch.delete(doc(db, ...databaseCollectionPath.split('/'), item.id));
+                });
+                await batch.commit();
+                mockDatabase = mockDatabase.filter(item => !data.some(x => x.id === item.id));
+                window.applyFiltersAndRegenerate();
+                window.showNotification(`${data.length} record cancellati definitivamente dal database.`);
+            } catch (err) {
+                console.error('Errore cancellazione complessiva risposte:', err);
+                window.showNotification('Errore durante la cancellazione complessiva. I dati non sono stati eliminati in modo parziale.', true);
+            }
         };
 
         window.deleteStudentResponse = async function(studentId) {
