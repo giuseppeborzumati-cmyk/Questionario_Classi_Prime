@@ -431,7 +431,7 @@
                         <div class="w-full sm:w-auto">
                             <label class="block text-[10px] font-bold text-fuchsia-600 uppercase mb-1">Seleziona Attività / Evento:</label>
                             <select id="course-filter-select" onchange="window.renderAdvancedAnalytics()" class="w-full py-2 px-4 border border-fuchsia-300 bg-white rounded-xl text-sm focus:ring-2 focus:ring-fuchsia-500 outline-none font-bold text-fuchsia-900 shadow-sm cursor-pointer">
-                                <option value="teatro">🎭 Iscritti Corso di Teatro</option>
+                                <option value="teatro">🎭 Corso di Teatro — 30 ore</option>
                                 <option value="scienze">🔬 Interessati Laboratori Scientifici / STEM</option>
                                 <option value="sport">⚽ Attività Sportive d'Istituto</option>
                                 <option value="musica">🎵 Corsi Musicali</option>
@@ -556,11 +556,25 @@
 
             <!-- TABELLA COMPLETA DEI RISULTATI IN STILE GOOGLE MODULI -->
             <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-                <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div class="p-6 border-b border-slate-100 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
                     <div>
-                        <h3 class="text-lg font-bold text-slate-800">Elenco Completo Risposte Studenti</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Vista tabellare dettagliata di ogni singolo studente iscritto al database</p>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-table-list text-leviBlue"></i>
+                            <h3 class="text-lg font-bold text-slate-800">Archivio Completo delle Risposte</h3>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1 max-w-3xl">Ogni compilazione viene conservata nel database e resa disponibile qui in forma tabellare. Ogni colonna successiva contiene la risposta alla relativa domanda del questionario.</p>
                     </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="window.exportFullResponsesToExcel()" class="px-3 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-lg transition flex items-center gap-2">
+                            <i class="fa-solid fa-file-excel"></i> Excel Risposte Complete
+                        </button>
+                        <button onclick="window.exportFullResponsesToPDF()" class="px-3 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg transition flex items-center gap-2">
+                            <i class="fa-solid fa-file-pdf"></i> PDF Risposte Complete
+                        </button>
+                    </div>
+                </div>
+                <div class="px-6 py-3 bg-blue-50 border-b border-blue-100 text-xs text-blue-900 flex items-center gap-2">
+                    <i class="fa-solid fa-database"></i> <strong>Salvataggio immediato:</strong> la compilazione viene scritta su Firebase prima di procedere con l'eventuale invio della pergamena via e-mail.
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse" id="students-table">
@@ -579,6 +593,22 @@
                         <tbody class="divide-y divide-slate-100 text-sm text-slate-700" id="table-body">
                             <!-- Popolato dinamicamente da JavaScript -->
                         </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ARCHIVIO ORIZZONTALE: UNA COLONNA PER OGNI DOMANDA -->
+            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mt-8">
+                <div class="p-5 border-b border-slate-100 bg-slate-50">
+                    <h3 class="text-lg font-black text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-leviBlue"></i> Dettaglio Integrale: Domanda → Risposta
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-1">Scorrimento orizzontale disponibile. La prima colonna identifica lo studente; ogni domanda ha la propria colonna con la risposta effettivamente registrata.</p>
+                </div>
+                <div id="full-responses-table-wrap" class="overflow-auto max-h-[650px]">
+                    <table id="full-responses-table" class="min-w-max w-full text-left border-collapse">
+                        <thead id="full-responses-head" class="sticky top-0 z-10 bg-white shadow-sm"></thead>
+                        <tbody id="full-responses-body" class="divide-y divide-slate-100 text-xs text-slate-700"></tbody>
                     </table>
                 </div>
             </div>
@@ -692,7 +722,7 @@
                             <option value="Relazioni Internazionali per il Marketing (R.I.M.)">Relazioni Internazionali per il Marketing (R.I.M.)</option>
                             <option value="Sistema Moda">Sistema Moda</option>
                             <option value="Logistica">Logistica</option>
-                            <option value="Liceo Scientifico opzione Scienze Applicate">Liceo Scientifico opzione Scienze Applicate </option>
+                            <option value="Liceo Scientifico opzione Scienze Applicate con curvatura economica">Liceo Scientifico opzione Scienze Applicate con curvatura economica</option>
                         </select>
                     </div>
                 </div>
@@ -1152,7 +1182,7 @@
         };
 
         window.sendCertificateByAppsScript = async function(payload) {
-            const endpoint='https://script.google.com/macros/s/AKfycbyp1lcHOVnpSno4kPkAqZgiewznZj21o2X9oWwSl_bWWxjcPOm677v_AnIBCFUNGU17rQ/exec';
+            const endpoint='https://script.google.com/macros/s/AKfycbwsFdNXO-gGcxgBezWnU2JPMjAJYMNKrPF6Z8cXR742ZxP4w6cacrmUfLIrv3FCHGAE/exec';
             const body=JSON.stringify(payload);
             // no-cors è intenzionale: il browser non consente di leggere la risposta, ma la richiesta POST viene consegnata al Web App.
             await fetch(endpoint,{method:'POST',mode:'no-cors',cache:'no-store',redirect:'follow',headers:{'Content-Type':'text/plain;charset=utf-8'},body});
@@ -1234,7 +1264,7 @@
             
             // --- DOMANDE TEATRO D'ISTITUTO CONDIZIONALI ---
             { id: "partecipazione_teatro", text: "Vorresti iscriverti e partecipare al nuovo corso di Teatro del Primo Levi?", type: "radio", required: true, options: ["Sì, mi piacerebbe molto!", "No, non credo di essere portato", "Forse, ci devo pensare", "Altro"] },
-            { id: "ruolo_teatro", text: "Se decidessi di partecipare allo spettacolo finale, quale ruolo ti incuriosirebbe di più? (Facoltativo)", type: "radio", required: false, options: ["Personaggio Principale/Secondario", "Comparsa", "Antagosista", "Coprotagonista"] },
+            { id: "ruolo_teatro", text: "Se decidessi di partecipare allo spettacolo finale, quale ruolo ti incuriosirebbe di più? (Facoltativo)", type: "radio", required: false, options: ["Attore/Attrice (Recitare sul palco)", "Scenografia e Costumi (Dietro le quinte)", "Regia e Scrittura del copione", "Tecnico audio, luci o musiche"] },
             { id: "tema_teatro", text: "Se potessi inventare tu la trama dello spettacolo teatrale d'istituto, di cosa ti piacerebbe che parlasse? (Facoltativo)", type: "text", required: false, placeholder: "Es. Una commedia divertente sulla scuola, un giallo misterioso..." },
             // ----------------------------------------------
 
@@ -1338,7 +1368,7 @@
                             <div>
                                 <h4 class="text-sm font-bold text-purple-900 flex items-center gap-2">Il Primo Levi alza il sipario!</h4>
                                 <p class="text-purple-800 style-normal text-xs mt-1.5 leading-relaxed">
-                                    La nostra scuola organizza un <strong>Corso di Teatro gratuito della durata di 30 h </strong> all'interno dell'Istituto!<br>
+                                    La nostra scuola organizza un <strong>Corso di Teatro gratuito di 30 ore</strong> all'interno dell'Istituto!<br>
                                     È un'opportunità fantastica che permette la <strong>socializzazione</strong>, la <strong>condivisione di idee</strong> e crea <strong>spensieratezza</strong> tra gli studenti. Un'occasione per staccare dallo studio e coronare il percorso con la <strong>realizzazione di uno spettacolo finale</strong>.
                                 </p>
                             </div>
@@ -2250,6 +2280,69 @@
                 `;
                 tbody.appendChild(tr);
             });
+            window.renderFullResponsesTable?.(dataList);
+        };
+
+        window.getVisibleResponseData = function() {
+            const filterEl = document.getElementById('filter-classe');
+            const filterClass = activeCoordinator ? activeCoordinator.classe : (filterEl?.value || 'ALL');
+            let data = [...mockDatabase];
+            if (filterClass !== 'ALL') data = data.filter(item => item.classe === filterClass);
+            return { data, filterClass };
+        };
+
+        window.renderFullResponsesTable = function(dataList) {
+            const head = document.getElementById('full-responses-head');
+            const body = document.getElementById('full-responses-body');
+            if(!head || !body) return;
+            const questions = window.getAllQuestions();
+            head.innerHTML = ''; body.innerHTML = '';
+            const trh = document.createElement('tr');
+            trh.className = 'text-[10px] font-black text-slate-500 uppercase tracking-wider border-b border-slate-200';
+            const fixed = ['Studente','Classe','Indirizzo','Email','Data compilazione'];
+            fixed.forEach(h=>{ const th=document.createElement('th'); th.className='py-3 px-4 sticky left-0 bg-white z-20 border-r border-slate-100 min-w-[150px]'; th.textContent=h; trh.appendChild(th); });
+            questions.forEach((q,i)=>{ const th=document.createElement('th'); th.className='py-3 px-4 border-r border-slate-100 align-top min-w-[260px]'; th.innerHTML=`<div class="text-[9px] text-leviBlue mb-1">D${i+1}</div><div>${q.text}</div>`; trh.appendChild(th); });
+            head.appendChild(trh);
+            if(!dataList?.length){ body.innerHTML='<tr><td colspan="100" class="py-10 text-center text-slate-400">Nessuna risposta disponibile.</td></tr>'; return; }
+            dataList.forEach(item=>{
+                const tr=document.createElement('tr'); tr.className='hover:bg-slate-50 transition';
+                const vals=[item.studente||'N/A',item.classe||'N/A',item.indirizzo||'N/A',item.email||'Nessuna',item.timestamp?new Date(item.timestamp).toLocaleString('it-IT'):'N/D'];
+                vals.forEach((v,idx)=>{ const td=document.createElement('td'); td.className='py-3 px-4 border-r border-slate-100 '+(idx===0?'font-bold sticky left-0 bg-white z-10':''); td.textContent=v; tr.appendChild(td); });
+                questions.forEach(q=>{ const td=document.createElement('td'); td.className='py-3 px-4 border-r border-slate-100 align-top whitespace-normal'; td.textContent=item[q.id] ?? 'N/D'; tr.appendChild(td); });
+                body.appendChild(tr);
+            });
+        };
+
+        window.exportFullResponsesToExcel = function(){
+            const {data,filterClass}=window.getVisibleResponseData();
+            if(!data.length) return window.showNotification('Nessun dato a database da esportare.',true);
+            const rows=data.map(item=>{
+                const row={'Studente':item.studente||'N/A','Classe':item.classe||'N/A','Indirizzo':item.indirizzo||'N/A','Email':item.email||'N/A','Data compilazione':item.timestamp?new Date(item.timestamp).toLocaleString('it-IT'):'N/D','Stato salvataggio':item.statoSalvataggio||'CONFERMATO_FIREBASE'};
+                window.getAllQuestions().forEach(q=>row[`D${window.getAllQuestions().indexOf(q)+1} - ${q.text}`]=item[q.id]??'N/D');
+                return row;
+            });
+            const wb=XLSX.utils.book_new(); const ws=XLSX.utils.json_to_sheet(rows); window.XforceColumnWidths(ws); XLSX.utils.book_append_sheet(wb,ws,'Risposte Complete'); XLSX.writeFile(wb,`Risposte_Complete_${filterClass}.xlsx`); window.showNotification('Esportazione Excel delle risposte complete completata.');
+        };
+
+        window.exportFullResponsesToPDF = function(){
+            const {data,filterClass}=window.getVisibleResponseData();
+            if(!data.length) return window.showNotification('Nessun dato a database da esportare.',true);
+            const {jsPDF}=window.jspdf||{}; if(!jsPDF) return window.showNotification('Libreria PDF non disponibile.',true);
+            const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+            const questions=window.getAllQuestions(); let page=0;
+            data.forEach((item,rowIdx)=>{
+                if(rowIdx>0) pdf.addPage(); page++;
+                pdf.setFont('helvetica','bold'); pdf.setFontSize(14); pdf.text('ITSCG Primo Levi di Seregno - Scheda Risposte Studente',14,14);
+                pdf.setFont('helvetica','normal'); pdf.setFontSize(9); pdf.text(`Classe: ${item.classe||'N/D'}    Studente: ${item.studente||'N/D'}`,14,21); pdf.text(`Compilazione: ${item.timestamp?new Date(item.timestamp).toLocaleString('it-IT'):'N/D'}`,14,27);
+                let y=36;
+                questions.forEach((q,idx)=>{
+                    const answer=String(item[q.id]??'N/D');
+                    const lines=pdf.splitTextToSize(`D${idx+1}. ${q.text} — ${answer}`,265);
+                    if(y+lines.length*4.5>190){ pdf.addPage(); y=16; pdf.setFont('helvetica','bold'); pdf.setFontSize(11); pdf.text('Scheda Risposte - continuazione',14,y); y+=8; }
+                    pdf.setFont('helvetica','normal'); pdf.setFontSize(8.5); pdf.text(lines,14,y); y+=lines.length*4.5+2.5;
+                });
+            });
+            pdf.save(`Risposte_Complete_Dettaglio_${filterClass}.pdf`); window.showNotification('PDF dettagliato delle risposte generato correttamente.');
         };
 
         window.exportToExcel = function() {
@@ -2592,6 +2685,8 @@
             const responses = { 
                 ...activeStudent,
                 timestamp: new Date().toISOString(),
+                salvatoImmediatamente: true,
+                statoSalvataggio: "CONFERMATO_FIREBASE",
                 pergamenaInviata: "No"
             };
 
@@ -2619,11 +2714,13 @@
             }
 
             try {
-                await addDoc(collection(db, ...databaseCollectionPath.split('/')), responses);
+                const savedDocRef = await addDoc(collection(db, ...databaseCollectionPath.split('/')), responses);
+                responses.id = savedDocRef.id;
+                window.showNotification("Risposte salvate immediatamente nel database. Preparazione attestato...", false);
                 await window.generateCertificateCanvas(responses.studente, responses.classe, responses.indirizzo);
                 
                 if (responses.pergamenaInviata === "Sì") {
-                    document.getElementById('success-message-text').innerText = `Le tue risposte sono state registrate nel database del Primo Levi Seregno. La tua Pergamena di Accoglienza ufficiale in formato PDF è in corso di invio alla mail: ${responses.email}`;
+                    document.getElementById('success-message-text').innerText = `Le tue risposte sono state salvate immediatamente nel database del Primo Levi Seregno. La tua Pergamena di Accoglienza ufficiale in formato PDF è in corso di invio alla mail: ${responses.email}`;
                     const pdf = await window.buildCertificatePdf(responses.studente, responses.classe, responses.indirizzo);
                     const pdfBase64String = pdf.output('datauristring').split(',')[1];
                     
@@ -2642,7 +2739,7 @@
                     
                     window.showNotification("Questionario salvato e richiesta di invio della Pergamena trasmessa.");
                 } else {
-                    document.getElementById('success-message-text').innerText = "Le tue risposte sono state registrate nel database del Primo Levi Seregno. Puoi scaricare la tua Pergamena d'Accoglienza direttamente cliccando sul pulsante qui sotto.";
+                    document.getElementById('success-message-text').innerText = "Le tue risposte sono state salvate immediatamente nel database del Primo Levi Seregno. Puoi scaricare la tua Pergamena d'Accoglienza direttamente cliccando sul pulsante qui sotto.";
                     window.showNotification("Questionario registrato con successo! Scarica l'attestato qui sotto.");
                 }
 
